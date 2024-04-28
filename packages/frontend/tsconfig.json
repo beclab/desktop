@@ -1,0 +1,10 @@
+{
+  "extends": "@quasar/app-webpack/tsconfig-preset",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "lib": ["ES2021.String", "dom"]
+  },
+  "paths": {
+    "crypto": ["node_modules/crypto-browserify"]
+  }
+}

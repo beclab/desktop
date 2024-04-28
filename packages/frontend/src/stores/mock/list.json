@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Ashia",
+    "title": "Ashia",
+    "icon": "./app-icon/askAi.svg",
+    "type": "Command",
+    "id": "terminus-ai"
+  },
+  {
+    "name": "Files Search",
+    "title": "Files Search",
+    "icon": "./app-icon/files.svg",
+    "type": "Command",
+    "id": "files"
+  },
+  {
+    "name": "Ashia Doc",
+    "title": "Ashia Doc",
+    "icon": "./app-icon/files.svg",
+    "type": "Command",
+    "id": "files-doc"
+  }
+]

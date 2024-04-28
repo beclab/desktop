@@ -1,0 +1,7 @@
+/dist
+/.quasar
+/node_modules
+.eslintrc.js
+babel.config.js
+/src/lib/
+/src/assets

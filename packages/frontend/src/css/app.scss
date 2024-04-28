@@ -1,0 +1,15 @@
+// app global css in SCSS form
+.q-notification {
+	background: linear-gradient(
+			0deg,
+			rgba(246, 246, 246, 0.3),
+			rgba(246, 246, 246, 0.3)
+		),
+		linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)) !important;
+	backdrop-filter: blur(10px) !important;
+	border-radius: 16px !important;
+	max-width: 360px !important;
+	overflow: hidden !important;
+	color: rgba(31, 24, 20, 1) !important;
+	padding: 4px 20px !important;
+}

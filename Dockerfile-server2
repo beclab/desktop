@@ -1,0 +1,46 @@
+FROM node:16.13.1-alpine as server_dist
+
+WORKDIR /server_dist
+
+# Only copy over the packages files of all required packages.
+# This will ensure that we don't have to install all dependencies
+# again if any source files change.
+COPY package*.json lerna.json tsconfig.json ./
+COPY packages/server2/package*.json ./packages/server2/
+COPY packages/core/package*.json ./packages/core/
+# Install dependencies and bootstrap packages
+RUN npm ci --unsafe-perm
+
+# Now copy over source files and assets
+COPY packages/server2/src ./packages/server2/src
+COPY packages/core/src ./packages/core/src
+COPY packages/server2/tsconfig.json ./packages/server2/
+COPY packages/core/tsconfig.json ./packages/core/
+COPY packages/server2/webpack.config.js ./packages/server2/webpack.config.js
+
+RUN npm run server2:build
+
+
+
+FROM node:16.13.1 as server_dist2
+
+WORKDIR /server_dist2/packages/server
+
+COPY --from=server_dist /server_dist/packages/server2/dist/package*.json .
+
+RUN npm install
+
+COPY --from=server_dist /server_dist/packages/server2/dist/ .
+
+
+FROM node:16.13.1-buster-slim
+
+EXPOSE 3000
+
+WORKDIR /desktop
+
+COPY --from=server_dist2 /server_dist2/packages/server/ .
+
+ENTRYPOINT ["npm", "run"]
+
+CMD [ "server"]

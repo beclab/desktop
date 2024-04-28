@@ -1,0 +1,94 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/bin/yarn
+
+PATH: 
+  /usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  16.14.0
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Error: http://npm.ixiaochuan.cn/@desktop%2fcore: no such package available
+      at Request.params.callback [as _callback] (/usr/local/lib/node_modules/yarn/lib/cli.js:66145:18)
+      at Request.self.callback (/usr/local/lib/node_modules/yarn/lib/cli.js:140890:22)
+      at Request.emit (node:events:520:28)
+      at Request.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:141862:10)
+      at Request.emit (node:events:520:28)
+      at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:141784:12)
+      at Object.onceWrapper (node:events:639:28)
+      at IncomingMessage.emit (node:events:532:35)
+      at endReadableNT (node:internal/streams/readable:1346:12)
+      at processTicksAndRejections (node:internal/process/task_queues:83:21)
+
+npm manifest: 
+  {
+      "name": "@desktop/frontend",
+      "version": "0.0.1",
+      "description": "Terminus OS Launcher",
+      "productName": "Terminus",
+      "author": "Peng Peng <billpengpeng@gmail.com>",
+      "private": true,
+      "scripts": {
+          "lint": "eslint --ext .js,.ts,.vue ./",
+          "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
+          "test": "echo \"No test specified\" && exit 0",
+          "dev": "URL=http://18.140.197.219:30883 WS_URL=ws://127.0.0.1:3100 quasar dev",
+          "build": "quasar build"
+      },
+      "dependencies": {
+          "@desktop/core": "0.1.0",
+          "@bytetrade/bytetrade-ui": "^0.0.26",
+          "@quasar/extras": "^1.0.0",
+          "axios": "^0.21.1",
+          "fetch": "1.1.0",
+          "pinia": "^2.0.11",
+          "quasar": "^2.6.0",
+          "request": "^2.88.2",
+          "sortablejs": "^1.15.0",
+          "vue": "^3.0.0",
+          "vue-i18n": "^9.2.2",
+          "vue-native-websocket-vue3": "^3.1.5",
+          "vue-router": "^4.0.0",
+          "vue3-otp-input": "^0.3.6"
+      },
+      "devDependencies": {
+          "@intlify/vite-plugin-vue-i18n": "^3.3.1",
+          "@quasar/app-vite": "^1.0.0",
+          "@types/node": "^12.20.21",
+          "@typescript-eslint/eslint-plugin": "^5.10.0",
+          "@typescript-eslint/parser": "^5.10.0",
+          "autoprefixer": "^10.4.2",
+          "eslint": "^8.10.0",
+          "eslint-config-prettier": "^8.1.0",
+          "eslint-plugin-vue": "^9.0.0",
+          "prettier": "^2.5.1",
+          "qrcode.vue": "^3.3.3",
+          "sass": "1.32.12",
+          "typescript": "^4.5.4",
+          "vite-plugin-env-command": "^1.0.7",
+          "workbox-build": "^6.5.0",
+          "workbox-cacheable-response": "^6.5.0",
+          "workbox-core": "^6.5.0",
+          "workbox-expiration": "^6.5.0",
+          "workbox-precaching": "^6.5.0",
+          "workbox-routing": "^6.5.0",
+          "workbox-strategies": "^6.5.0"
+      },
+      "engines": {
+          "node": "^18 || ^16 || ^14.19",
+          "npm": ">= 6.13.4",
+          "yarn": ">= 1.21.1"
+      }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

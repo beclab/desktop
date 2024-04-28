@@ -1,0 +1,35 @@
+{
+    "name": "@desktop/core",
+    "version": "0.1.0",
+    "description": "Desktop Core",
+    "private": true,
+    "files": [
+        "src",
+        "tsconfig.json"
+    ],
+    "main": "index.js",
+    "author": "Pengpeng <pengpeng@bytetrade.io>",
+    "license": "GPLv3",
+    "devDependencies": {
+        "@types/chai": "4.2.18",
+        "@types/dompurify": "2.3.3",
+        "@types/jsdom": "16.2.14",
+        "@types/mocha": "8.2.2",
+        "chai": "4.3.4",
+        "mocha": "9.2.2",
+        "ts-node-dev": "1.1.8"
+    },
+    "dependencies": {
+        "dotenv": "16.0.0",
+        "ts-node": "10.1.0",
+        "typescript": "4.5.4"
+    },
+    "scripts": {
+        "start": "ts-node src/app.ts",
+        "start-dry": "ts-node src/app.ts --dryrun"
+    },
+    "engines": {
+        "node": "16.17.1",
+        "npm": "8.10.0"
+    }
+}

@@ -1,0 +1,14 @@
+.history
+server/web-box
+db/
+server/node_modules
+cmd
+server/.env
+node_modules
+dist/
+.quasar
+.DS_Store
+.lintcache
+packages/server/data
+.eslintcache
+data/

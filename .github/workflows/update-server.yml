@@ -1,0 +1,39 @@
+name: Server
+
+on:
+    workflow_dispatch:
+
+    push:
+        branches:
+            - "main"
+            - "chore/server"
+        tags:
+          - 'v*'
+
+jobs:
+    update_server:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out the repo
+              uses: actions/checkout@v3
+            - name: Set up QEMU
+              uses: docker/setup-qemu-action@v1
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v2
+            - name: Login to GitHub Container Registry
+              uses: docker/login-action@v2
+              with:
+                username: ${{ secrets.DOCKERHUB_USERNAME }}
+                password: ${{ secrets.DOCKERHUB_PASS }}
+            - name: get latest tag
+              uses: "WyriHaximus/github-action-get-previous-tag@v1"
+              id: get-latest-tag
+              with:
+                fallback: latest
+            - name: Build and push
+              uses: docker/build-push-action@v2
+              with:
+                context: .
+                file: Dockerfile-server2
+                push: true
+                tags: beclab/desktop-server:${{ steps.get-latest-tag.outputs.tag }}
