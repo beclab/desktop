@@ -98,7 +98,8 @@ export const useTokenStore = defineStore('token', {
 			if (!url.endsWith('/')) url += '/';
 			try {
 				await axios.get(`${url}server/init`, {
-					timeout: 1000
+					timeout: 1000,
+					withCredentials: true
 				});
 				return true;
 			} catch (error) {
