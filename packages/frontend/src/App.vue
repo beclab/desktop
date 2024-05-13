@@ -6,7 +6,6 @@
 import { defineComponent, onMounted } from 'vue';
 import { useTokenStore } from './stores/token';
 import { useSocketStore } from './stores/websocketStore';
-import { initPing } from '@bytetrade/core';
 import axios from 'axios';
 import { WebPlatform } from './utils/platform';
 
@@ -18,27 +17,6 @@ export default defineComponent({
 		const tokenStore = useTokenStore();
 		const host = window.location.origin;
 		tokenStore.setUrl(host);
-
-		let hrefSplit = window.location.href.split('.');
-		if (hrefSplit) {
-			let myTerminusIndex = hrefSplit.findIndex(
-				(item) => item === 'myterminus'
-			);
-			let did = hrefSplit[myTerminusIndex - 1];
-
-			if (did && did !== 'auth') {
-				const local = await initPing(did);
-				let localIndex = hrefSplit.findIndex((item) => item === 'local');
-				if (local) {
-					if (localIndex <= -1) {
-						hrefSplit.splice(1, 0, 'local');
-						const local_url = hrefSplit.join('.');
-						window.location.replace(local_url);
-						return false;
-					}
-				}
-			}
-		}
 
 		if (document.getElementById('Loading'))
 			document.getElementById('Loading')?.remove();
@@ -58,8 +36,6 @@ export default defineComponent({
 	},
 	setup() {
 		const tokenStore = useTokenStore();
-		const host = window.location.origin;
-		tokenStore.setUrl(host);
 
 		onMounted(async () => {
 			const href = window.location.href;
