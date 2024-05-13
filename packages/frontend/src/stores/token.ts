@@ -95,8 +95,9 @@ export const useTokenStore = defineStore('token', {
 		},
 
 		async pingLoadData(url: string): Promise<boolean> {
+			if (!url.endsWith('/')) url += '/';
 			try {
-				await axios.get(`${url}/server/init`, {
+				await axios.get(`${url}server/init`, {
 					timeout: 1000
 				});
 				return true;
