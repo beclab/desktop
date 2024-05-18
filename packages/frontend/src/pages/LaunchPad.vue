@@ -81,6 +81,7 @@
 								@click.stop="
 									deleteLaunch(
 										appStore.desktopApps[element].icon,
+										appStore.desktopApps[element].title,
 										element,
 										Indexlist
 									)
@@ -247,11 +248,17 @@ function blurSearch() {
 	isFocus.value = true;
 }
 
-function deleteLaunch(launchlogo: string, index: number, Indexlist: number) {
+function deleteLaunch(
+	launchlogo: string,
+	launchTitle: string,
+	index: number,
+	Indexlist: number
+) {
 	$q.dialog({
 		component: DeleteAppDialog,
 		componentProps: {
-			launchlogoIocn: launchlogo
+			launchlogoIocn: launchlogo,
+			launchTitle: launchTitle
 		}
 	}).onOk(async () => {
 		const fatherName = appStore.desktopApps[index].fatherName;
