@@ -4,8 +4,9 @@
 			<q-card-section class="row items-center">
 				<q-img fit="contain" class="launch_pad_dialog" :src="launchlogoIocn" />
 				<span class="q-ml-sm launch_dialog_span"
-					>Are you sure you want to delete the application “Monument
-					Valley”？</span
+					>Are you sure you want to delete the application "{{
+						launchTitle
+					}}"？</span
 				>
 			</q-card-section>
 			<q-card-actions align="right" class="launch_dialog_btn">
@@ -31,6 +32,10 @@ export default {
 	name: 'DeleteAppDialog',
 	props: {
 		launchlogoIocn: {
+			type: String,
+			required: false
+		},
+		launchTitle: {
 			type: String,
 			required: false
 		}
