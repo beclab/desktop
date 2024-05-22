@@ -89,7 +89,6 @@ export default defineComponent({
 	setup() {
 		const notificationStore = useNotificationStore();
 		const notificationData = ref(notificationStore.data);
-		console.log('notificationStore', notificationStore.data);
 
 		const toggleNotiyItem = (appName: string) => {
 			console.log('appNameappNameappName', appName);

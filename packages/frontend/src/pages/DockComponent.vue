@@ -28,7 +28,10 @@
 								appStore.DOCKER_APP_SIZE
 							}px;height:${appStore.DOCKER_APP_SIZE}px;left:${
 								(60 - appStore.DOCKER_APP_SIZE) / 2
-							}px;border-radius: 12px`"
+							}px;border-radius: ${borderRadiusFormat(
+								appStore.DOCKER_APP_SIZE,
+								appStore.DOCKER_APP_SIZE
+							)}px`"
 							draggable="true"
 							@dragstart="onDragStart"
 							@dragenter="onDragEnter"
@@ -97,6 +100,8 @@ import { Loading, Notify } from 'quasar';
 import { DockerAppInfo, AppClickInfo } from '@desktop/core/src/types';
 import { useTokenStore } from 'stores/token';
 import { useAppStore } from 'stores/app';
+import { borderRadiusFormat } from 'src/utils/utils';
+
 // import { useNotificationStore } from 'stores/notification';
 
 const props = defineProps({

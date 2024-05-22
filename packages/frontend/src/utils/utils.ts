@@ -135,3 +135,7 @@ export function sizeFormat(size: number) {
 	}
 	return sizestr;
 }
+
+export function borderRadiusFormat(width: number, height: number) {
+	return Math.round(width * 0.28);
+}

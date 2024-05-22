@@ -102,7 +102,12 @@
 							</div>
 							<img
 								:src="appStore.desktopApps[element].icon"
-								:style="`width:${appStore.DESKTOP_APP_SIZE}px;height:${appStore.DESKTOP_APP_SIZE}px;border-radius: 16px;`"
+								:style="`width:${appStore.DESKTOP_APP_SIZE}px;height:${
+									appStore.DESKTOP_APP_SIZE
+								}px;border-radius: ${borderRadiusFormat(
+									appStore.DESKTOP_APP_SIZE,
+									appStore.DESKTOP_APP_SIZE
+								)}px;`"
 							/>
 							<div
 								class="launchpadapps_name"
@@ -130,6 +135,7 @@ import {
 import { useI18n } from 'vue-i18n';
 import { useAppStore, isSystemApp } from 'stores/app';
 import DeleteAppDialog from 'components/ConfirmDeleteAppDialog.vue';
+import { borderRadiusFormat } from 'src/utils/utils';
 
 defineProps({
 	isShowLaunc: {
@@ -143,7 +149,6 @@ const emits = defineEmits(['appClick', 'dismiss', 'drag_launch_app']);
 const { t } = useI18n();
 const launchpadPage = ref<HTMLElement>();
 const searchBox = ref<HTMLElement>();
-
 onMounted(() => {
 	let grid_x: number = Math.floor(launchpadPage.value!.offsetWidth / 20);
 	const grid_y: number = Math.floor(launchpadPage.value!.offsetHeight / 11.5);
