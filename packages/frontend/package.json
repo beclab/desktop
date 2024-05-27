@@ -13,9 +13,10 @@
     "build": "quasar build"
   },
   "dependencies": {
-    "@desktop/core": "0.1.0",
     "@bytetrade/ui": "0.0.37",
+    "@desktop/core": "../core",
     "@quasar/extras": "^1.16.7",
+    "@types/ua-parser-js": "0.7.36",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "crypto": "npm:crypto-browserify",
@@ -25,12 +26,11 @@
     "request": "^2.88.2",
     "sortablejs": "^1.15.0",
     "stream": "npm:stream-browserify",
+    "ua-parser-js": "0.7.28",
     "vue": "^3.0.0",
     "vue-i18n": "^9.2.2",
     "vue-router": "^4.0.0",
-    "vue3-otp-input": "^0.3.6",
-    "@types/ua-parser-js": "0.7.36",
-    "ua-parser-js": "0.7.28"
+    "vue3-otp-input": "^0.3.6"
   },
   "devDependencies": {
     "@quasar/app-webpack": "^3.0.0",
@@ -46,7 +46,8 @@
     "node-polyfill-webpack-plugin": "^1.1.4",
     "prettier": "^2.5.1",
     "qrcode.vue": "^3.3.3",
-    "sass": "1.32.12"
+    "sass": "1.32.12",
+    "workbox-webpack-plugin": "^7.1.0"
   },
   "engines": {
     "node": "^18 || ^16 || ^14.19",
