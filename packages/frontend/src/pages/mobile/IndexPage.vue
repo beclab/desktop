@@ -13,6 +13,10 @@
 				<img fit="fill" class="desktop-bg" :src="tokenStore.config.bg" />
 			</div>
 
+			<div class="desktop-avator">
+				<AvatorComponent :width="48" :height="48" />
+			</div>
+
 			<DailyDescription />
 
 			<dock-component
@@ -90,13 +94,15 @@ import { useAppStore } from 'stores/app';
 import { useTokenStore } from 'stores/token';
 import { useUpgradeStore } from 'stores/upgrade';
 import { expiresStorage } from 'src/utils/location';
-import DockComponent from './DockComponent.vue';
-import LaunchPad from './LaunchPad.vue';
-import Notification from './Notification.vue';
-import Search from './Search/IndexPage.vue';
-import DailyDescription from './DailyDescription.vue';
+import Notification from '../Notification.vue';
+import Search from '../Search/IndexPage.vue';
+import AvatorComponent from 'components/AvatorComponent.vue';
 import BasicWindow from 'components/BasicWindow.vue';
 import UpgradeComponent from 'components/UpgradeComponent.vue';
+
+import DockComponent from './DockComponent.vue';
+import LaunchPad from './LaunchPad.vue';
+import DailyDescription from './DailyDescription.vue';
 
 const $q = useQuasar();
 const appStore = useAppStore();
@@ -301,7 +307,7 @@ onMounted(async () => {
 	bytetrade.observeUrlChange.parentEventListener(listenerMessage);
 	//updateDesktopList();
 
-	appStore.get_my_apps_info();
+	appStore.get_mobile_apps_info();
 
 	window_update_interval = setInterval(() => {
 		if (need_save_window) {
@@ -460,90 +466,8 @@ const onAppClick = async (click: AppClickInfo) => {
 			url = url + '/' + click.data.path;
 			url = url.replaceAll('//', '/');
 		}
-		console.log('app.openMethod' + app.openMethod);
-		if (app.openMethod == 'window') {
-			window.open('//' + url);
-			return;
-		}
 
-		let w = window_infos.value.find((window) => window.id == rid);
-
-		if (w) {
-			w.is_show = true;
-			for (let i = 0; i < window_infos.value.length; ++i) {
-				if (window_infos.value[i].z > w.z) {
-					window_infos.value[i].z--;
-					window_infos.value[i].active = false;
-				}
-			}
-			w.z = window_infos.value.length;
-			w.active = true;
-		} else {
-			let width = window_parent.value?.offsetWidth
-				? window_parent.value?.offsetWidth * 0.9 - 108
-				: 800;
-			let height = window_parent.value?.offsetHeight
-				? window_parent.value?.offsetHeight * 0.9
-				: 600;
-
-			if (app.id.startsWith('settings')) {
-				height = window_parent.value?.offsetHeight
-					? window_parent.value?.offsetHeight * 0.8
-					: 600;
-				// width = (height / 544) * 720;
-				width = 858;
-			}
-
-			let left = window_parent.value?.offsetWidth
-				? (window_parent.value?.offsetWidth - width) / 2 + 54
-				: 0;
-			let top = window_parent.value?.offsetHeight
-				? (window_parent.value?.offsetHeight - height) / 2
-				: 0;
-
-			let obj: WindowInfo = {
-				width: width,
-				height: height,
-				max_height: window_parent.value?.offsetHeight || 800,
-				max_width: window_parent.value?.offsetWidth || 600,
-				min_width: 400,
-				min_height: 200,
-				left: left + screenWidth.value,
-				top: top,
-				id: app.id,
-				url: '//' + url,
-				ssl_type: 'http',
-				title: app.title,
-				is_show: true,
-				z: window_infos.value.length,
-				icon: app.icon,
-				active: true,
-				isResizable: true
-			};
-
-			if (app.id.startsWith('settings')) {
-				obj.isResizable = false;
-				obj.min_width = obj.width;
-				obj.min_height = obj.height;
-				obj.max_width = obj.width;
-			} else if (app.id.startsWith('appstore')) {
-				obj.min_width = obj.width / 2;
-				obj.min_height = obj.height / 2;
-			} else {
-				obj.left = obj.left + window_infos.value.length * 25;
-				obj.top = obj.top + window_infos.value.length * 25;
-			}
-
-			window_infos.value.push(obj);
-
-			for (let i = 0; i < window_infos.value.length - 1; ++i) {
-				window_infos.value[i].active = false;
-			}
-
-			if (rid != 'home') {
-				dockRef.value?.handleOpenApp(rid);
-			}
-		}
+		window.open('https://' + url);
 	} else {
 		Notify.create({
 			type: 'negative',
@@ -615,6 +539,11 @@ const changeSearchDialog = (value: boolean) => {
 	justify-content: center;
 	align-items: center;
 	overflow: hidden;
+}
+.desktop-avator {
+	position: fixed;
+	right: 20px;
+	top: 20px;
 }
 .desktop-box {
 	width: 100%;

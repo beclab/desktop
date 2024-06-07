@@ -139,3 +139,12 @@ export function sizeFormat(size: number) {
 export function borderRadiusFormat(width: number, height: number) {
 	return Math.round(width * 0.28);
 }
+
+export function debounce(fn: (...args: any[]) => any, delay: number) {
+	let timeout: number;
+
+	return function (...args: any[]) {
+		clearTimeout(timeout);
+		timeout = window.setTimeout(() => fn(...args), delay);
+	};
+}

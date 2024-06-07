@@ -100,7 +100,7 @@ export const useAppStore = defineStore('app', {
 			await this.update_my_apps_info();
 
 			const files = this.myapps.find((app) => app.id.startsWith('files'));
-			const appstore = this.myapps.find((app) => app.id.startsWith('appstore'));
+			const appstore = this.myapps.find((app) => app.id.startsWith('market'));
 			const settings = this.myapps.find((app) => app.id.startsWith('settings'));
 			const profile = this.myapps.find((app) => app.id.startsWith('profile'));
 			this.profile_id = profile?.id;
@@ -151,8 +151,71 @@ export const useAppStore = defineStore('app', {
 					index = index + 1;
 				}
 			}
+		},
 
-			console.log(this.dockerapps);
+		async get_mobile_apps_info() {
+			await this.update_my_apps_info();
+
+			const files = this.myapps.find((app) => app.id.startsWith('files'));
+			const settings = this.myapps.find((app) => app.id.startsWith('settings'));
+			const profile = this.myapps.find((app) => app.id.startsWith('profile'));
+			const wise = this.myapps.find((app) => app.id.startsWith('wise'));
+			const vault = this.myapps.find((app) => app.id.startsWith('vault'));
+
+			this.profile_id = profile?.id;
+
+			const docker_list = [
+				settings?.id,
+				files?.id,
+				'launchpad',
+				wise?.id,
+				vault?.id
+			];
+
+			this.dockerapps = [];
+			let index = 0;
+			for (let j = 0; j < docker_list.length; ++j) {
+				let fapp = this.myapps.find((app) => app.id == docker_list[j]);
+
+				if (docker_list[j] == 'launchpad') {
+					fapp = {
+						id: 'launchpad',
+						appid: 'launchpad',
+						icon: './app-icon/launch-icon.png',
+						name: 'Launchpad',
+						title: '',
+						target: '',
+						//installed: true,
+						state: 'running',
+						fatherName: null,
+						openMethod: 'window'
+					};
+				}
+
+				if (fapp) {
+					const d: DockerAppInfo = {
+						id: 'bdock:' + fapp.id,
+						left: 0,
+						top:
+							index == 0
+								? this.DOCKER_APP_START_GAP
+								: this.DOCKER_APP_START_GAP +
+								  this.DOCKER_APP_SIZE * index +
+								  this.DOCKER_APP_GAP * index,
+						size: this.DOCKER_APP_SIZE,
+						icon: fapp.icon,
+						name: fapp.name,
+						title: fapp.title,
+						namespace: fapp.namespace!,
+						owner: fapp.owner!,
+						url: fapp.url!,
+						is_temp: false,
+						show_dot: false
+					};
+					this.dockerapps.push(d);
+					index = index + 1;
+				}
+			}
 		},
 
 		async update_search_result(searchTxt?: string) {
