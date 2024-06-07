@@ -327,6 +327,7 @@ function deleteLaunch(
 	position: absolute;
 	top: 0px;
 	left: 0px;
+	touch-action: none;
 }
 .launch_pad_box {
 	width: 100%;

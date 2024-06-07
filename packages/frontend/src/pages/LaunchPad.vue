@@ -526,12 +526,11 @@ const cleanSearchVal = () => {
 .dragMask {
 	width: 140%;
 	height: 120%;
-	transform: translate(-14%, -10%);
+	transform: translate(-13%, -10%);
 	position: absolute;
 	top: 0;
 	left: 0;
 	z-index: 2;
-	border-radius: 10px;
 	overflow: hidden;
 	cursor: pointer;
 }

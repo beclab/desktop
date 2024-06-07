@@ -39,7 +39,7 @@
 
 		<div style="width: 100%; height: 100vh" ref="window_parent">
 			<div
-				:style="`position: fixed;width: 300%;height: 200%; left: -100%; top: 0;`"
+				:style="`position: relative;width: 300%;height: 200%; left: -100%; top: 0;`"
 			>
 				<template v-for="window_info in window_infos" :key="window_info.id">
 					<BasicWindow
@@ -49,7 +49,6 @@
 						@close="onWindowClose"
 						@mini="onWindowMiniSize"
 						@ontop="onWindowRequestOnTop"
-						@full="onWindowFullSize"
 						:style="`z-index:${window_info.z};`"
 					/>
 				</template>
@@ -97,7 +96,7 @@ import { expiresStorage } from 'src/utils/location';
 import Notification from '../Notification.vue';
 import Search from '../Search/IndexPage.vue';
 import AvatorComponent from 'components/AvatorComponent.vue';
-import BasicWindow from 'components/BasicWindow.vue';
+import BasicWindow from './BasicWindow.vue';
 import UpgradeComponent from 'components/UpgradeComponent.vue';
 
 import DockComponent from './DockComponent.vue';
@@ -173,37 +172,37 @@ const onWindowRequestOnTop = (window_info: WindowInfo) => {
 	need_save_window = true;
 };
 
-const onWindowFullSize = async (window_info: WindowInfo) => {
-	let index = window_infos.value.findIndex(
-		(window) => window.id == window_info.id
-	);
+// const onWindowFullSize = async (window_info: WindowInfo) => {
+// 	let index = window_infos.value.findIndex(
+// 		(window) => window.id == window_info.id
+// 	);
 
-	if (index < 0) {
-		return;
-	}
+// 	if (index < 0) {
+// 		return;
+// 	}
 
-	if (window_infos.value[index].isResizable) {
-		window_infos.value[index].width = window_parent.value?.offsetWidth
-			? window_parent.value?.offsetWidth - 108
-			: 800;
-		await nextTick();
-		await nextTick();
-		window_infos.value[index].left = 108 + screenWidth.value;
-		await nextTick();
-		await nextTick();
-	}
+// 	if (window_infos.value[index].isResizable) {
+// 		window_infos.value[index].width = window_parent.value?.offsetWidth
+// 			? window_parent.value?.offsetWidth - 108
+// 			: 800;
+// 		await nextTick();
+// 		await nextTick();
+// 		window_infos.value[index].left = 108 + screenWidth.value;
+// 		await nextTick();
+// 		await nextTick();
+// 	}
 
-	await nextTick();
-	await nextTick();
-	window_infos.value[index].height = window_parent.value?.offsetHeight
-		? window_parent.value?.offsetHeight
-		: 600;
-	await nextTick();
-	await nextTick();
-	window_infos.value[index].top = 0;
-	await nextTick();
-	await nextTick();
-};
+// 	await nextTick();
+// 	await nextTick();
+// 	window_infos.value[index].height = window_parent.value?.offsetHeight
+// 		? window_parent.value?.offsetHeight
+// 		: 600;
+// 	await nextTick();
+// 	await nextTick();
+// 	window_infos.value[index].top = 0;
+// 	await nextTick();
+// 	await nextTick();
+// };
 
 const closeUpgrade = () => {
 	upgradeFlag.value = false;
@@ -466,8 +465,89 @@ const onAppClick = async (click: AppClickInfo) => {
 			url = url + '/' + click.data.path;
 			url = url.replaceAll('//', '/');
 		}
+		if (app.openMethod == 'window') {
+			window.open('//' + url);
+			return;
+		}
 
-		window.open('https://' + url);
+		let w = window_infos.value.find((window) => window.id == rid);
+
+		if (w) {
+			w.is_show = true;
+			for (let i = 0; i < window_infos.value.length; ++i) {
+				if (window_infos.value[i].z > w.z) {
+					window_infos.value[i].z--;
+					window_infos.value[i].active = false;
+				}
+			}
+			w.z = window_infos.value.length;
+			w.active = true;
+		} else {
+			let width = window_parent.value?.offsetWidth
+				? window_parent.value?.offsetWidth * 0.9
+				: 800;
+			let height = window_parent.value?.offsetHeight
+				? window_parent.value?.offsetHeight * 0.9 - 100
+				: 600;
+
+			if (app.id.startsWith('settings')) {
+				height = window_parent.value?.offsetHeight
+					? window_parent.value?.offsetHeight * 0.8
+					: 600;
+				// width = (height / 544) * 720;
+				width = 858;
+			}
+
+			let left = window_parent.value?.offsetWidth
+				? (window_parent.value?.offsetWidth - width) / 2
+				: 0;
+			let top = window_parent.value?.offsetHeight
+				? (window_parent.value?.offsetHeight - height) / 2
+				: 0;
+
+			let obj: WindowInfo = {
+				width: width,
+				height: height,
+				max_height: window_parent.value?.offsetHeight || 800,
+				max_width: window_parent.value?.offsetWidth || 600,
+				min_width: 400,
+				min_height: 200,
+				left: left + screenWidth.value,
+				top: top,
+				id: app.id,
+				url: '//' + url,
+				ssl_type: 'http',
+				title: app.title,
+				is_show: true,
+				z: window_infos.value.length,
+				icon: app.icon,
+				active: true,
+				isResizable: true
+			};
+
+			if (app.id.startsWith('settings')) {
+				obj.isResizable = false;
+				obj.min_width = obj.width;
+				obj.min_height = obj.height;
+				obj.max_width = obj.width;
+			} else if (app.id.startsWith('appstore')) {
+				obj.min_width = obj.width / 2;
+				obj.min_height = obj.height / 2;
+			} else {
+				obj.left = obj.left + window_infos.value.length * 25;
+				obj.top = obj.top + window_infos.value.length * 25;
+			}
+
+			window_infos.value.push(obj);
+
+			for (let i = 0; i < window_infos.value.length - 1; ++i) {
+				window_infos.value[i].active = false;
+			}
+
+			if (rid != 'home') {
+				dockRef.value?.handleOpenApp(rid);
+			}
+		}
 	} else {
 		Notify.create({
 			type: 'negative',
@@ -559,7 +639,7 @@ const onLogout = async () => {
 	position: fixed;
 	right: 20px;
 	top: 20px;
-	z-index: 1;
+	z-index: -1;
 }
 .desktop-box {
 	width: 100%;
