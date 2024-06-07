@@ -13,7 +13,7 @@
 				<img fit="fill" class="desktop-bg" :src="tokenStore.config.bg" />
 			</div>
 
-			<div class="desktop-avator">
+			<div class="desktop-avator" @click="onLogout">
 				<AvatorComponent :width="48" :height="48" />
 			</div>
 
@@ -80,7 +80,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue';
-import { useQuasar, Notify } from 'quasar';
+import { useQuasar, Notify, Loading } from 'quasar';
 import {
 	IntentFilter,
 	Action,
@@ -524,6 +524,21 @@ const onDragEnd = async (e: any) => {
 const changeSearchDialog = (value: boolean) => {
 	showSearchDialog.value = value;
 };
+
+const onLogout = async () => {
+	Loading.show();
+	try {
+		await tokenStore.logout();
+		window.location.href = '/';
+	} catch (err) {
+		Notify.create({
+			type: 'negative',
+			message: (err as Error).message
+		});
+	} finally {
+		Loading.hide();
+	}
+};
 </script>
 <style lang="scss" scoped>
 .bg-container {
@@ -544,6 +559,7 @@ const changeSearchDialog = (value: boolean) => {
 	position: fixed;
 	right: 20px;
 	top: 20px;
+	z-index: 1;
 }
 .desktop-box {
 	width: 100%;
