@@ -15,17 +15,9 @@ module.exports = configure(function (ctx) {
 
 		boot: ['i18n', 'axios', 'smartEnginEntrance'],
 
-		css: ['app.scss'],
+		css: ['app.scss', ctx.dev ? 'font.dev.scss' : 'font.pro.scss'],
 
-		extras: [
-			'roboto-font', // optional, you are not bound to it
-			'material-icons', // optional, you are not bound to it
-			'bootstrap-icons',
-			'themify',
-			'material-icons',
-			'material-symbols-outlined',
-			'material-symbols-rounded'
-		],
+		extras: ['material-icons'],
 
 		build: {
 			vueRouterMode: 'history',
