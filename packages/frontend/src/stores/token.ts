@@ -33,10 +33,7 @@ export const useTokenStore = defineStore('token', {
 				this.id = uuidv4();
 				localStorage.setItem('desktop-id', this.id);
 			}
-			console.log('loadData');
-			console.log(this.id);
 			const data: any = await axios.get(this.url + '/server/init', {});
-			console.log(data);
 			this.terminus = data.terminus;
 			this.config = data.config;
 		},
@@ -46,7 +43,6 @@ export const useTokenStore = defineStore('token', {
 				this.url + '/server/updateConfig',
 				config
 			);
-			console.log(data);
 
 			this.config = data;
 		},

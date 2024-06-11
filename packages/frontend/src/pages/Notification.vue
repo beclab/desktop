@@ -91,7 +91,6 @@ export default defineComponent({
 		const notificationData = ref(notificationStore.data);
 
 		const toggleNotiyItem = (appName: string) => {
-			console.log('appNameappNameappName', appName);
 			for (let index = 0; index < notificationData.value.length; index++) {
 				const element = notificationData.value[index];
 				if (element.application === appName) {

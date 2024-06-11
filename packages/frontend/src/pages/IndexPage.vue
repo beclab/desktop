@@ -460,7 +460,6 @@ const onAppClick = async (click: AppClickInfo) => {
 			url = url + '/' + click.data.path;
 			url = url.replaceAll('//', '/');
 		}
-		console.log('app.openMethod' + app.openMethod);
 		if (app.openMethod == 'window') {
 			window.open('//' + url);
 			return;
