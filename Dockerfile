@@ -5,7 +5,7 @@ RUN sed -i '1idaemon off;' /etc/nginx/nginx.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # adapt the `dist/` folder to the output directory your build tool uses (such as `dist/`, `build/` or `www/`).
-COPY packages/frontend/dist/spa/ /app
+COPY packages/frontend/dist/pwa/ /app
 
 EXPOSE 80
 

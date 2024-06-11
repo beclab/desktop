@@ -13,6 +13,10 @@
 				<img fit="fill" class="desktop-bg" :src="tokenStore.config.bg" />
 			</div>
 
+			<div class="desktop-avator" @click="onLogout">
+				<AvatorComponent :width="48" :height="48" />
+			</div>
+
 			<DailyDescription />
 
 			<dock-component
@@ -35,7 +39,7 @@
 
 		<div style="width: 100%; height: 100vh" ref="window_parent">
 			<div
-				:style="`position: fixed;width: 300%;height: 200%; left: -100%; top: 0;`"
+				:style="`position: relative;width: 100%;height: 100%; left: 0; top: 0;`"
 			>
 				<template v-for="window_info in window_infos" :key="window_info.id">
 					<BasicWindow
@@ -45,7 +49,6 @@
 						@close="onWindowClose"
 						@mini="onWindowMiniSize"
 						@ontop="onWindowRequestOnTop"
-						@full="onWindowFullSize"
 						:style="`z-index:${window_info.z};`"
 					/>
 				</template>
@@ -76,7 +79,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue';
-import { useQuasar, Notify } from 'quasar';
+import { useQuasar, Notify, Loading } from 'quasar';
 import {
 	IntentFilter,
 	Action,
@@ -90,13 +93,15 @@ import { useAppStore } from 'stores/app';
 import { useTokenStore } from 'stores/token';
 import { useUpgradeStore } from 'stores/upgrade';
 import { expiresStorage } from 'src/utils/location';
+import Notification from '../Notification.vue';
+import Search from '../Search/IndexPage.vue';
+import AvatorComponent from 'components/AvatorComponent.vue';
+import BasicWindow from './BasicWindow.vue';
+import UpgradeComponent from 'components/UpgradeComponent.vue';
+
 import DockComponent from './DockComponent.vue';
 import LaunchPad from './LaunchPad.vue';
-import Notification from './Notification.vue';
-import Search from './Search/IndexPage.vue';
 import DailyDescription from './DailyDescription.vue';
-import BasicWindow from 'components/BasicWindow.vue';
-import UpgradeComponent from 'components/UpgradeComponent.vue';
 
 const $q = useQuasar();
 const appStore = useAppStore();
@@ -167,37 +172,37 @@ const onWindowRequestOnTop = (window_info: WindowInfo) => {
 	need_save_window = true;
 };
 
-const onWindowFullSize = async (window_info: WindowInfo) => {
-	let index = window_infos.value.findIndex(
-		(window) => window.id == window_info.id
-	);
+// const onWindowFullSize = async (window_info: WindowInfo) => {
+// 	let index = window_infos.value.findIndex(
+// 		(window) => window.id == window_info.id
+// 	);
 
-	if (index < 0) {
-		return;
-	}
+// 	if (index < 0) {
+// 		return;
+// 	}
 
-	if (window_infos.value[index].isResizable) {
-		window_infos.value[index].width = window_parent.value?.offsetWidth
-			? window_parent.value?.offsetWidth - 108
-			: 800;
-		await nextTick();
-		await nextTick();
-		window_infos.value[index].left = 108 + screenWidth.value;
-		await nextTick();
-		await nextTick();
-	}
+// 	if (window_infos.value[index].isResizable) {
+// 		window_infos.value[index].width = window_parent.value?.offsetWidth
+// 			? window_parent.value?.offsetWidth - 108
+// 			: 800;
+// 		await nextTick();
+// 		await nextTick();
+// 		window_infos.value[index].left = 108 + screenWidth.value;
+// 		await nextTick();
+// 		await nextTick();
+// 	}
 
-	await nextTick();
-	await nextTick();
-	window_infos.value[index].height = window_parent.value?.offsetHeight
-		? window_parent.value?.offsetHeight
-		: 600;
-	await nextTick();
-	await nextTick();
-	window_infos.value[index].top = 0;
-	await nextTick();
-	await nextTick();
-};
+// 	await nextTick();
+// 	await nextTick();
+// 	window_infos.value[index].height = window_parent.value?.offsetHeight
+// 		? window_parent.value?.offsetHeight
+// 		: 600;
+// 	await nextTick();
+// 	await nextTick();
+// 	window_infos.value[index].top = 0;
+// 	await nextTick();
+// 	await nextTick();
+// };
 
 const closeUpgrade = () => {
 	upgradeFlag.value = false;
@@ -301,7 +306,7 @@ onMounted(async () => {
 	bytetrade.observeUrlChange.parentEventListener(listenerMessage);
 	//updateDesktopList();
 
-	appStore.get_my_apps_info();
+	appStore.get_mobile_apps_info();
 
 	window_update_interval = setInterval(() => {
 		if (need_save_window) {
@@ -479,10 +484,10 @@ const onAppClick = async (click: AppClickInfo) => {
 			w.active = true;
 		} else {
 			let width = window_parent.value?.offsetWidth
-				? window_parent.value?.offsetWidth * 0.9 - 108
+				? window_parent.value?.offsetWidth * 0.9
 				: 800;
 			let height = window_parent.value?.offsetHeight
-				? window_parent.value?.offsetHeight * 0.9
+				? window_parent.value?.offsetHeight * 0.9 - 100
 				: 600;
 
 			if (app.id.startsWith('settings')) {
@@ -494,7 +499,7 @@ const onAppClick = async (click: AppClickInfo) => {
 			}
 
 			let left = window_parent.value?.offsetWidth
-				? (window_parent.value?.offsetWidth - width) / 2 + 54
+				? (window_parent.value?.offsetWidth - width) / 2
 				: 0;
 			let top = window_parent.value?.offsetHeight
 				? (window_parent.value?.offsetHeight - height) / 2
@@ -507,7 +512,7 @@ const onAppClick = async (click: AppClickInfo) => {
 				max_width: window_parent.value?.offsetWidth || 600,
 				min_width: 400,
 				min_height: 200,
-				left: left + screenWidth.value,
+				left: left,
 				top: top,
 				id: app.id,
 				url: '//' + url,
@@ -599,6 +604,21 @@ const onDragEnd = async (e: any) => {
 const changeSearchDialog = (value: boolean) => {
 	showSearchDialog.value = value;
 };
+
+const onLogout = async () => {
+	Loading.show();
+	try {
+		await tokenStore.logout();
+		window.location.href = '/';
+	} catch (err) {
+		Notify.create({
+			type: 'negative',
+			message: (err as Error).message
+		});
+	} finally {
+		Loading.hide();
+	}
+};
 </script>
 <style lang="scss" scoped>
 .bg-container {
@@ -614,6 +634,12 @@ const changeSearchDialog = (value: boolean) => {
 	justify-content: center;
 	align-items: center;
 	overflow: hidden;
+}
+.desktop-avator {
+	position: fixed;
+	right: 20px;
+	top: 20px;
+	z-index: -1;
 }
 .desktop-box {
 	width: 100%;

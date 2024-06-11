@@ -1,36 +1,6 @@
 <template>
 	<div class="Launch_pad_page in-center-page" @click="dismiss">
 		<div class="launch_pad_box in-center" ref="launchpadPage">
-			<div class="launch_pad_search" ref="searchBox">
-				<q-input
-					dense
-					stack-label
-					class="search_itme"
-					v-model="searchVal"
-					@focus="focusSearch"
-					@blur="blurSearch"
-					@click.stop
-					debounce="500"
-					@update:model-value="updateSearch"
-					input-style="color: #ffffff; height: 32px;"
-				>
-					<template v-slot:prepend>
-						<q-icon class="search_icon" name="search" size="16px" />
-					</template>
-					<template v-slot:append>
-						<div class="search_input" v-if="searchVal.length <= 0 && isFocus">
-							{{ t('launch_input_placehoder') }}
-						</div>
-						<q-icon
-							class="search_clean cursor-pointer"
-							v-if="searchVal.length > 0"
-							name="sym_r_cancel"
-							size="16px"
-							@click.stop="cleanSearchVal"
-						/>
-					</template>
-				</q-input>
-			</div>
 			<template
 				v-if="appStore.launchpadapps && appStore.launchpadapps.length > 0"
 			>
@@ -50,27 +20,24 @@
 						class="column_launchpadapps column no-wrap column_none"
 					>
 						<div
+							class="row items-center justify-center"
 							v-for="(element, index) in appStore.launchpadapps[Indexlist]"
 							:key="'adod+index' + index"
-							:style="`
-									border-radius: 16px;
-									position:absolute;
-									top:${appStore.desktopApps[element].top}px;
-									left:${appStore.desktopApps[element].left}px;
-									width:${appStore.DESKTOP_APP_SIZE}px;`"
+							style="
+								border-radius: 16px;
+								-webkit-touch-callout: none;
+								-webkit-user-select: none;
+								-khtml-user-select: none;
+								-moz-user-select: none;
+								-ms-user-select: none;
+								user-select: none;
+							"
 							v-touch-hold:1200.mouse="handleHold"
-							:capture="!isInDrag"
-							:mouse="!isInDrag"
-							:mouseCapture="!isInDrag"
 							:id="appStore.desktopApps[element].id"
 							@click="openWindow(appStore.desktopApps[element])"
-							@dragstart="onDragStart"
-							:draggable="true"
-							@dragenter="onDragEnter(appStore.desktopApps[element].id, $event)"
-							@dragleave="onDragLeave"
-							@dragend="onDragEnd"
+							@contextmenu.prevent
 						>
-							<div class="dragMask"></div>
+							<!-- <div class="dragMask"></div> -->
 							<div
 								:style="
 									isDisplay && !isSystemApp(appStore.desktopApps[element].id)
@@ -91,8 +58,8 @@
 							<div
 								class="install_loading_status"
 								:style="`
-										width:${appStore.DESKTOP_APP_SIZE}px;
-										height:${appStore.DESKTOP_APP_SIZE}px;
+										width:58px;
+										height:58px;
 										`"
 								v-if="appStore.desktopApps[element].state == 'installing'"
 							>
@@ -102,11 +69,9 @@
 							</div>
 							<img
 								:src="appStore.desktopApps[element].icon"
-								:style="`width:${appStore.DESKTOP_APP_SIZE}px;height:${
-									appStore.DESKTOP_APP_SIZE
-								}px;border-radius: ${borderRadiusFormat(
-									appStore.DESKTOP_APP_SIZE,
-									appStore.DESKTOP_APP_SIZE
+								:style="`width:58px;height:58px;border-radius: ${borderRadiusFormat(
+									58,
+									58
 								)}px;`"
 							/>
 							<div
@@ -120,12 +85,16 @@
 				</q-carousel>
 			</template>
 			<div class="noresult" v-else>{{ t('launch_no_result') }}</div>
+
+			<div class="close row items-center justify-center" @click="dismiss">
+				<img src="../../assets/close-icon.svg" />
+			</div>
 		</div>
 	</div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import {
 	DesktopAppInfo,
@@ -148,33 +117,6 @@ const emits = defineEmits(['appClick', 'dismiss', 'drag_launch_app']);
 
 const { t } = useI18n();
 const launchpadPage = ref<HTMLElement>();
-const searchBox = ref<HTMLElement>();
-onMounted(() => {
-	let grid_x: number = Math.floor(launchpadPage.value!.offsetWidth / 20);
-	const grid_y: number = Math.floor(launchpadPage.value!.offsetHeight / 11.5);
-	grid_x = grid_x < grid_y ? grid_x : grid_y;
-
-	appStore.DESKTOP_APP_SIZE = grid_x;
-	appStore.DESKTOP_APP_X_GAP = grid_x * 1.2;
-	appStore.DESKTOP_APP_Y_GAP = grid_x * 1 + 16; // maybe have some issue
-
-	appStore.DOCKER_APP_START_Y_GAP =
-		Math.floor(
-			launchpadPage.value!.offsetHeight -
-				appStore.DESKTOP_APP_Y_NUM * grid_x -
-				(appStore.DESKTOP_APP_Y_NUM - 1) * appStore.DESKTOP_APP_Y_GAP
-		) * 0.15;
-
-	appStore.DOCKER_APP_START_X_GAP =
-		Math.floor(
-			launchpadPage.value!.offsetWidth -
-				appStore.DESKTOP_APP_X_NUM * grid_x -
-				(appStore.DESKTOP_APP_X_NUM - 1) * appStore.DESKTOP_APP_X_GAP
-		) * 0.5;
-	appStore.DOCKER_APP_END_X_GAP = appStore.DOCKER_APP_START_X_GAP;
-
-	appStore.resize();
-});
 
 const $q = useQuasar();
 const appStore = useAppStore();
@@ -185,14 +127,10 @@ const isDisplay = ref<boolean>(false);
 
 let slide = ref(0);
 let isDelete = false;
-let isInDrag = ref(false);
-let chooseInUse = ref(-1);
-let drag_launch_app: string | null = null;
-let choose = -1;
-let isAnimation = false;
 let lastDragFinishTime = 0;
 
 const openWindow = async (item: DesktopAppInfo) => {
+	console.log('openWindow', item);
 	emits('appClick', {
 		appid: item.id,
 		data: {}
@@ -221,14 +159,6 @@ const dismiss = () => {
 };
 
 const handleHold = () => {
-	if (isInDrag.value) {
-		return;
-	}
-
-	if (isAnimation) {
-		return;
-	}
-
 	let now = new Date().getTime();
 	let diff = now - lastDragFinishTime;
 	if (diff < 1000) {
@@ -244,14 +174,6 @@ const handleHold = () => {
 		isDisplay.value = true;
 	}
 };
-
-function focusSearch() {
-	isFocus.value = false;
-}
-
-function blurSearch() {
-	isFocus.value = true;
-}
 
 function deleteLaunch(
 	launchlogo: string,
@@ -276,215 +198,6 @@ function deleteLaunch(
 		await appStore.get_my_apps_info();
 	});
 }
-
-const getAppIndexInDesktop = (id: string) => {
-	for (var i = 0; i < appStore.desktopApps.length; i++) {
-		const draggedEl: any = document.getElementById(appStore.desktopApps[i].id);
-		if (draggedEl?.id == id) {
-			return i;
-		}
-	}
-	return -1;
-};
-
-const onDragStart = async (e: any) => {
-	if (isDelete) {
-		return;
-	}
-
-	e.dataTransfer.setData('text', e.target.id);
-	e.dataTransfer.dropEffect = 'move';
-
-	isInDrag.value = true;
-	choose = getAppIndexInDesktop(e.target.id);
-	chooseInUse.value = choose;
-
-	e.dataTransfer.effectAllowed = 'move';
-	window.setTimeout(() => {
-		e.target.classList.add('drag-start');
-	}, 10);
-
-	drag_launch_app = e.target.id;
-	emits('drag_launch_app', e.target.id);
-};
-
-function animate(sources: number[], targets: DesktopPosition[]) {
-	if (sources.length != targets.length) return;
-	if (sources.length == 0) return;
-
-	isAnimation = true;
-	let p = [];
-	for (var i = 0; i < targets.length - 1; ++i) {
-		p.push(
-			new Promise((resolve) => {
-				let source = sources[i];
-				let target = targets[i];
-
-				function finish() {
-					clearInterval(moveY);
-
-					appStore.desktopApps[source].index = target.index;
-					appStore.desktopApps[source].page = target.page;
-					appStore.desktopApps[source].page_num = target.page_num;
-					appStore.desktopApps[source].left = target.left;
-					appStore.desktopApps[source].top = target.top;
-
-					resolve(true);
-				}
-
-				let moveY = setInterval(function () {
-					if (isAnimation == false) {
-						finish();
-						return;
-					}
-
-					if (target.left > appStore.desktopApps[source].left) {
-						appStore.desktopApps[source].left += 160;
-						if (target.left <= appStore.desktopApps[source].left) {
-							finish();
-						}
-					} else if (target.left < appStore.desktopApps[source].left) {
-						appStore.desktopApps[source].left -= 160;
-						if (target.left >= appStore.desktopApps[source].left) {
-							finish();
-						}
-					} else {
-						finish();
-					}
-				}, 4);
-			})
-		);
-	}
-
-	Promise.all(p).then(() => {
-		appStore.desktopApps[sources[targets.length - 1]].index =
-			targets[targets.length - 1].index;
-		appStore.desktopApps[sources[targets.length - 1]].page =
-			targets[targets.length - 1].page;
-		appStore.desktopApps[sources[targets.length - 1]].page_num =
-			targets[targets.length - 1].page_num;
-		appStore.desktopApps[sources[targets.length - 1]].left =
-			targets[targets.length - 1].left;
-		appStore.desktopApps[sources[targets.length - 1]].top =
-			targets[targets.length - 1].top;
-
-		isAnimation = false;
-	});
-}
-
-const checkMove = (id: string) => {
-	if (isAnimation) {
-		return;
-	}
-
-	let dragIndex = getAppIndexInDesktop(id);
-
-	if (choose == dragIndex || dragIndex == -1) {
-		return;
-	}
-
-	let sources: number[] = [];
-	let targets: DesktopPosition[] = [];
-
-	if (
-		appStore.desktopApps[choose].page != appStore.desktopApps[dragIndex].page
-	) {
-		return;
-	}
-
-	if (
-		appStore.desktopApps[choose].index < appStore.desktopApps[dragIndex].index
-	) {
-		for (var i = 0; i < appStore.desktopApps.length; i++) {
-			if (i == choose) {
-				continue;
-			}
-
-			if (appStore.desktopApps[i].page != appStore.desktopApps[choose].page) {
-				continue;
-			}
-
-			if (
-				appStore.desktopApps[i].page_num >
-					appStore.desktopApps[choose].page_num &&
-				appStore.desktopApps[i].page_num <=
-					appStore.desktopApps[dragIndex].page_num
-			) {
-				sources.push(i);
-				targets.push(
-					appStore.get_desktop_position(appStore.desktopApps[i].index - 1)
-				);
-			}
-		}
-	} else {
-		for (let i = 0; i < appStore.desktopApps.length; i++) {
-			if (i == choose) {
-				continue;
-			}
-
-			if (appStore.desktopApps[i].page != appStore.desktopApps[choose].page) {
-				continue;
-			}
-
-			if (
-				appStore.desktopApps[i].page_num <
-					appStore.desktopApps[choose].page_num &&
-				appStore.desktopApps[i].page_num >=
-					appStore.desktopApps[dragIndex].page_num
-			) {
-				sources.push(i);
-				targets.push(
-					appStore.get_desktop_position(appStore.desktopApps[i].index + 1)
-				);
-			}
-		}
-	}
-
-	sources.push(choose);
-	targets.push(
-		appStore.get_desktop_position(appStore.desktopApps[dragIndex].index)
-	);
-
-	if (targets.length > 0) {
-		animate(sources, targets);
-	}
-};
-
-const onDragEnter = async (id: string, e: any) => {
-	e.preventDefault();
-
-	if (!drag_launch_app) {
-		return;
-	}
-
-	checkMove(id);
-};
-
-const onDragLeave = async (e: any) => {
-	e.target.classList.remove('drag-enter');
-};
-
-const onDragEnd = async () => {
-	isInDrag.value = false;
-	lastDragFinishTime = new Date().getTime();
-	chooseInUse.value = -1;
-
-	emits('drag_launch_app', null);
-
-	if (drag_launch_app) {
-		const draggedEl: any = document.getElementById(drag_launch_app);
-		draggedEl?.classList.remove('drag-start');
-		drag_launch_app = null;
-	}
-};
-
-const updateSearch = (val: string) => {
-	appStore.update_search_result(val);
-};
-
-const cleanSearchVal = () => {
-	searchVal.value = '';
-};
 </script>
 
 <style lang="scss" scoped>
@@ -526,11 +239,12 @@ const cleanSearchVal = () => {
 .dragMask {
 	width: 140%;
 	height: 120%;
-	transform: translate(-13%, -10%);
+	transform: translate(-14%, -10%);
 	position: absolute;
 	top: 0;
 	left: 0;
 	z-index: 2;
+	border-radius: 10px;
 	overflow: hidden;
 	cursor: pointer;
 }
@@ -539,13 +253,19 @@ const cleanSearchVal = () => {
 	overflow: hidden !important;
 }
 .column_launchpadapps {
+	display: grid;
+	grid-template-rows: 80px 80px 80px 80px;
+	grid-template-columns: repeat(4, 25%);
+	grid-row-gap: 30px;
+	padding-top: 60px;
 	.launchpadapps_name {
-		width: 140%;
-		transform: translateX(-13%);
+		width: 100%;
 		text-align: center;
-		font-size: 14px;
 		font-family: Roboto-Medium, Roboto;
-		font-weight: 500;
+		font-size: 12px;
+		font-style: normal;
+		font-weight: 400;
+		line-height: 16px;
 		color: #ffffff;
 		overflow: hidden;
 		white-space: nowrap;
@@ -555,7 +275,7 @@ const cleanSearchVal = () => {
 	.delete_launch {
 		width: 36px;
 		height: 36px;
-		background-image: url('./../assets/delete_iocn.png');
+		background-image: url('./../../assets/delete_iocn.png');
 		background-repeat: no-repeat;
 		background-position: center;
 		background-size: contain;
@@ -570,7 +290,7 @@ const cleanSearchVal = () => {
 		top: 0px;
 		left: 0px;
 		z-index: 99;
-		background-image: url('./../assets/installing.svg');
+		background-image: url('./../../assets/installing.svg');
 		background-position: center;
 		background-size: 100% 100%;
 		background-repeat: no-repeat;
@@ -607,55 +327,13 @@ const cleanSearchVal = () => {
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	.search_itme {
-		width: 240px;
-		height: 32px !important;
-		line-height: 32px !important;
-		border-radius: 8px;
-		position: relative;
-		font-size: 12px !important;
-		padding-left: 8px;
-
-		border: 1px solid rgba(255, 255, 255, 0.2);
-		background: rgba(246, 246, 246, 0.1);
-		box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.2),
-			0px 0px 2px 0px rgba(0, 0, 0, 0.4);
-		.search_icon {
-			margin-bottom: 8px;
-			color: rgba(255, 255, 255, 0.8);
-		}
-		.search_clean {
-			margin-bottom: 10px;
-			color: rgba(255, 255, 255, 0.8);
-		}
-		.search_input {
-			position: absolute;
-			top: 0px;
-			left: 24px;
-			color: rgba(255, 255, 255, 0.8);
-			width: 100%;
-			height: 32px;
-			margin-bottom: 2px;
-			font-size: 14px;
-			font-weight: 500;
-			z-index: -999;
-		}
-	}
+	touch-action: none;
 }
 .launch_pad_box {
-	width: calc(100% - 108px);
+	width: 100%;
 	height: 100%;
 	box-shadow: none;
-	margin-left: 108px;
-	padding-top: 36px;
 	overflow: hidden;
-	.launch_pad_search {
-		width: 100%;
-		height: 44px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
 	.launch_pad_APPs {
 		width: 100%;
 		display: flex;
@@ -710,6 +388,18 @@ const cleanSearchVal = () => {
 		font-size: 20px;
 		margin-top: calc(50% - 180px);
 		text-align: center;
+	}
+
+	.close {
+		position: absolute;
+		top: calc(100vh - 188px);
+		left: 0;
+		right: 0;
+		margin: auto;
+		width: 56px;
+		height: 56px;
+		border-radius: 56px;
+		background-color: #ffffff;
 	}
 }
 .in-center-page {

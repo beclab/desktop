@@ -11,6 +11,7 @@
 			name="viewport"
 			content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width<% if (ctx.mode.cordova || ctx.mode.capacitor) { %>, viewport-fit=cover<% } %>"
 		/>
+		<meta name="apple-mobile-web-app-capable" content="yes" />
 
 		<link rel="icon" type="image/ico" href="icons/favicon.ico" />
 	</head>
@@ -26,9 +27,19 @@
 	</body>
 </html>
 
+<script>
+	function inMobile() {
+		document.getElementsByTagName('html')[0].style.fontSize =
+			(document.documentElement.clientWidth / 450) * 100 + 'px';
+	}
+	document.addEventListener('DOMContentLoaded', inMobile);
+	window.onresize = inMobile;
+</script>
+
 <style>
 	body {
 		overflow: hidden;
+		touch-action: none;
 	}
 
 	#Loading {

@@ -8,8 +8,6 @@ on:
             - "main"
         tags:
           - 'v*'
-
-          
 jobs:
     update_dockerhub:
         runs-on: ubuntu-latest
