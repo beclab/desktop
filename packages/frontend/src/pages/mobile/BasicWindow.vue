@@ -331,7 +331,7 @@ export default defineComponent({
 <style lang="scss">
 .animationClass {
 	top: 0 !important;
-	left: 100vw !important;
+	left: 0vw !important;
 	transition: all 0.3s;
 	width: 100vw !important;
 	height: 100vh !important;

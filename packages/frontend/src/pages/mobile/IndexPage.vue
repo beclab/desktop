@@ -39,7 +39,7 @@
 
 		<div style="width: 100%; height: 100vh" ref="window_parent">
 			<div
-				:style="`position: relative;width: 300%;height: 200%; left: -100%; top: 0;`"
+				:style="`position: relative;width: 100%;height: 100%; left: 0; top: 0;`"
 			>
 				<template v-for="window_info in window_infos" :key="window_info.id">
 					<BasicWindow
@@ -512,7 +512,7 @@ const onAppClick = async (click: AppClickInfo) => {
 				max_width: window_parent.value?.offsetWidth || 600,
 				min_width: 400,
 				min_height: 200,
-				left: left + screenWidth.value,
+				left: left,
 				top: top,
 				id: app.id,
 				url: '//' + url,
