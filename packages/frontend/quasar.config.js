@@ -91,8 +91,7 @@ module.exports = configure(function (ctx) {
 				description: 'Terminus OS Launcher',
 				display: 'standalone',
 				orientation: 'portrait',
-				background_color: '#ffffff',
-				theme_color: '#027be3',
+				theme_color: 'transparent',
 				icons: [
 					{
 						src: 'icons/icon-128x128.png',
