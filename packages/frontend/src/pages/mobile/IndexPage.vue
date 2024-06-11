@@ -639,7 +639,7 @@ const onLogout = async () => {
 	position: fixed;
 	right: 20px;
 	top: 20px;
-	z-index: -1;
+	z-index: 1;
 }
 .desktop-box {
 	width: 100%;
