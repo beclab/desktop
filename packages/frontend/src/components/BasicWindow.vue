@@ -35,7 +35,7 @@
 		<div class="title" style="width: 100%; height: 40px; padding: 0 12px">
 			<q-img class="app_icon" :src="value.icon" />
 
-			<span class="app_title">
+			<span class="app_title ink-1">
 				{{ value.title }}
 			</span>
 
@@ -50,8 +50,8 @@
 				@mouseover="h_min = true"
 				@mouseleave="h_min = false"
 			>
-				<q-img v-show="h_min" src="../assets/window_min_h.svg" />
-				<q-img v-show="!h_min" src="../assets/window_min_n.svg" />
+				<img v-show="h_min" src="../assets/window_min_h.svg" />
+				<img v-show="!h_min" src="../assets/window_min_n.svg" />
 			</q-btn>
 
 			<q-btn
@@ -63,8 +63,8 @@
 				@mouseover="h_full = true"
 				@mouseleave="h_full = false"
 			>
-				<q-img v-show="h_full" src="../assets/window_full_h.svg" />
-				<q-img v-show="!h_full" src="../assets/window_full_n.svg" />
+				<img v-show="h_full" src="../assets/window_full_h.svg" />
+				<img v-show="!h_full" src="../assets/window_full_n.svg" />
 			</q-btn>
 
 			<q-btn
@@ -76,12 +76,12 @@
 				@mouseover="h_new = true"
 				@mouseleave="h_new = false"
 			>
-				<q-img
+				<img
 					v-show="h_new"
 					style="width: 13px; height: 13px"
 					src="../assets/window_new_h.svg"
 				/>
-				<q-img
+				<img
 					v-show="!h_new"
 					style="width: 13px; height: 13px"
 					src="../assets/window_new_n.svg"
@@ -97,8 +97,8 @@
 				@mouseover="h_close = true"
 				@mouseleave="h_close = false"
 			>
-				<q-img v-show="h_close" src="../assets/window_close_h.svg" />
-				<q-img v-show="!h_close" src="../assets/window_close_n.svg" />
+				<img v-show="h_close" src="../assets/window_close_h.svg" />
+				<img v-show="!h_close" src="../assets/window_close_n.svg" />
 			</q-btn>
 		</div>
 
@@ -364,18 +364,16 @@ export default defineComponent({
 		display: flex;
 		align-items: center;
 		justify-content: space-around;
-		border-bottom: 1px solid #e0e0e0;
+		border-bottom: 1px solid $separator;
+		background-color: $background-1;
 
 		.app_title {
-			font-family: 'Source Han Sans CN';
+			font-family: 'Inter';
 			font-style: normal;
-			font-weight: 500;
+			font-weight: 600;
 			font-size: 16px;
 			line-height: 20px;
-			/* identical to box height, or 100% */
-
-			color: #414141;
-			margin-left: 15px;
+			margin-left: 12px;
 		}
 
 		.app_icon {
@@ -386,12 +384,7 @@ export default defineComponent({
 		}
 
 		.window_btn {
-			width: 16px;
-			height: 16px;
-			min-width: 16px;
-			min-height: 16px;
-			margin-left: 20px;
-			padding: 2px;
+			margin-left: 8px;
 			// margin-top: 4px;
 			.q-focus-helper {
 				display: none;
