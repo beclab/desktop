@@ -108,7 +108,7 @@
 			textColor="#4999ff"
 			color="#4999ff"
 			text=""
-			backgroundColor="#ffffff"
+			:backgroundColor="$q.dark.isActive ? 'rgba(31, 31, 31, 1)' : '#ffffff'"
 		>
 		</BtLoading>
 	</VueDragResize>
@@ -116,6 +116,7 @@
 
 <script lang="ts">
 import { ref, defineComponent, onMounted, nextTick } from 'vue';
+import { useQuasar } from 'quasar';
 
 interface WindowRect {
 	left: number;
@@ -163,6 +164,7 @@ export default defineComponent({
 		const dragRef = ref();
 		const isFull = ref(false);
 		const clickNew = ref(false);
+		const $q = useQuasar();
 
 		const app_icon: string = value.value.icon;
 
@@ -287,6 +289,7 @@ export default defineComponent({
 		});
 
 		return {
+			$q,
 			value,
 			isActive,
 			isDrag,
@@ -340,7 +343,7 @@ export default defineComponent({
 }
 </style>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .iframe-box {
 	box-shadow: 0 1px 5px rgb(0 0 0 / 20%), 0 2px 2px rgb(0 0 0 / 14%),
 		0 3px 1px -2px rgb(0 0 0 / 12%);
