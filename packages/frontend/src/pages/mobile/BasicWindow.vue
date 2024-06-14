@@ -25,8 +25,8 @@
 		ref="dragRef"
 	> -->
 	<div
-		class="iframe-box"
-		:class="isFull ? 'animationClass' : ''"
+		class="iframe-box-mobile"
+		:class="isFull ? 'animationClass-mobile' : ''"
 		:style="{
 			width: `${value.width}px`,
 			height: `${value.height}px`,
@@ -36,7 +36,10 @@
 		}"
 		@click="onTop"
 	>
-		<div class="iframeDiv" v-if="!value.active || isDrag || isResize"></div>
+		<div
+			class="iframeDiv-mobile"
+			v-if="!value.active || isDrag || isResize"
+		></div>
 		<iframe
 			class="iframe-window"
 			allow="web-share; clipboard-read; clipboard-write"
@@ -329,7 +332,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.animationClass {
+.animationClass-mobile {
 	top: 0 !important;
 	left: 0vw !important;
 	transition: all 0.3s;
@@ -337,20 +340,10 @@ export default defineComponent({
 	height: 100vh !important;
 	z-index: 10 !important;
 }
-
-.animationClass2 {
-	top: 0 !important;
-	transition: all 0.3s;
-
-	.content-container {
-		height: 100vh !important;
-		transition: all 0.3s;
-	}
-}
 </style>
 
-<style lang="scss" scoped>
-.iframe-box {
+<style lang="scss">
+.iframe-box-mobile {
 	box-shadow: 0 1px 5px rgb(0 0 0 / 20%), 0 2px 2px rgb(0 0 0 / 14%),
 		0 3px 1px -2px rgb(0 0 0 / 12%);
 	background: white;
@@ -414,7 +407,7 @@ export default defineComponent({
 	}
 }
 
-.iframeDiv {
+.iframeDiv-mobile {
 	width: 100%;
 	height: 100%;
 	position: absolute;
