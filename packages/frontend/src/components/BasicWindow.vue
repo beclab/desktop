@@ -252,10 +252,6 @@ export default defineComponent({
 		};
 
 		const message = (event: any) => {
-			console.log('message==>');
-			console.log(event);
-			console.log(event.data);
-			console.log($q.dark.isActive);
 			if (event.data.message === 'theme_update') {
 				if (event.data.info.theme.toString() === '1') {
 					$q.dark.set(false);
@@ -263,7 +259,6 @@ export default defineComponent({
 					$q.dark.set(true);
 				}
 			}
-			console.log($q.dark.isActive);
 		};
 
 		onMounted(() => {
