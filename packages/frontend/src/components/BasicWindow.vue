@@ -115,7 +115,7 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, onMounted, nextTick } from 'vue';
+import { ref, defineComponent, onMounted, nextTick, onUnmounted } from 'vue';
 import { useQuasar } from 'quasar';
 
 interface WindowRect {
@@ -251,7 +251,19 @@ export default defineComponent({
 			}
 		};
 
+		const message = (event: any) => {
+			if (event.data.message === 'theme_update') {
+				if (event.data.info.theme.toString() === '1') {
+					$q.dark.set(false);
+				} else {
+					$q.dark.set(true);
+				}
+			}
+		};
+
 		onMounted(() => {
+			window.addEventListener('message', message);
+
 			nextTick(() => {
 				new MutationObserver(function (mutations) {
 					mutations.some(function (mutation) {
@@ -286,6 +298,10 @@ export default defineComponent({
 					};
 				}
 			});
+		});
+
+		onUnmounted(() => {
+			window.removeEventListener('message', message);
 		});
 
 		return {
