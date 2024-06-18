@@ -23,13 +23,6 @@ jobs:
               with:
                 username: ${{ secrets.DOCKERHUB_USERNAME }}
                 password: ${{ secrets.DOCKERHUB_PASS }}
-            - name: Build and push Docker image 
-              uses: docker/build-push-action@v3
-              with:
-              push: true
-              tags: beclab/system-server:${{ github.event.inputs.tags }}
-              file: Dockerfile
-              platforms: linux/amd64,linux/arm64
             - name: get latest tag
               uses: "WyriHaximus/github-action-get-previous-tag@v1"
               id: get-latest-tag
@@ -59,3 +52,4 @@ jobs:
                 file: Dockerfile
                 push: true
                 tags: beclab/desktop:${{ steps.get-latest-tag.outputs.tag }}
+                platforms: linux/amd64,linux/arm64
