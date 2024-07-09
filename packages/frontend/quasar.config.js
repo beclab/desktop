@@ -36,7 +36,7 @@ module.exports = configure(function (ctx) {
 		build: {
 			vueRouterMode: 'history',
 			gzip: true,
-			analyze: true,
+			// analyze: true,
 			extractCSS: true,
 			sourceMap: true,
 			env: {
