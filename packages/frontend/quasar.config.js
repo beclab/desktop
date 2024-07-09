@@ -1,4 +1,6 @@
 const { configure } = require('quasar/wrappers');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = configure(function (ctx) {
 	return {
@@ -27,11 +29,83 @@ module.exports = configure(function (ctx) {
 			'material-symbols-rounded'
 		],
 
+		vendor: {
+			remove: ['@bytetrade/ui']
+		},
+
 		build: {
 			vueRouterMode: 'history',
+			gzip: true,
+			analyze: true,
+			extractCSS: true,
+			sourceMap: true,
 			env: {
 				URL: process.env.URL,
-				WS_URL: process.env.WS_URL
+				WS_URL: process.env.WS_URL,
+				CACHE_CONTROL: 'max-age=31536000, public',
+				EXPIRES: 'Wed, 01 Jan 2025 00:00:00 GMT'
+			},
+
+			chainWebpack(chain, { isClient, isServer }) {
+				if (isClient) {
+					chain.plugin('css-minimizer-webpack-plugin').use(CssMinimizerPlugin, [
+						{
+							parallel: true,
+							minimizerOptions: {
+								preset: [
+									'default',
+									{
+										mergeLonghand: true,
+										cssDeclarationSorter: 'concentric',
+										discardComments: { removeAll: true }
+									}
+								]
+							}
+						}
+					]);
+
+					chain.optimization.minimizer('terser').use(TerserPlugin, [
+						{
+							terserOptions: {
+								parallel: true,
+								sourceMap: true,
+								extractComments: false,
+								compress: {
+									drop_console: true,
+									drop_debugger: true,
+									pure_funcs: ['console.log']
+								},
+								output: {
+									comments: false,
+									ascii_only: true
+								}
+							}
+						}
+					]);
+
+					chain.optimization.splitChunks({
+						chunks: 'all', // The type of chunk that requires code segmentation
+						minSize: 20000, // Minimum split file size
+						minRemainingSize: 0, // Minimum remaining file size after segmentation
+						minChunks: 1, // The number of times it has been referenced before it is split
+						maxAsyncRequests: 30, // Maximum number of asynchronous requests
+						maxInitialRequests: 30, // Maximum number of initialization requests
+						enforceSizeThreshold: 50000,
+						cacheGroups: {
+							// Cache Group configuration
+							defaultVendors: {
+								test: /[\\/]node_modules[\\/]/,
+								priority: -10,
+								reuseExistingChunk: true
+							},
+							default: {
+								minChunks: 2,
+								priority: -20,
+								reuseExistingChunk: true //	Reuse the chunk that has been split
+							}
+						}
+					});
+				}
 			}
 		},
 
