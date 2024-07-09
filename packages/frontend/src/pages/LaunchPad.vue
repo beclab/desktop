@@ -21,11 +21,11 @@
 						<div class="search_input" v-if="searchVal.length <= 0 && isFocus">
 							{{ t('launch_input_placehoder') }}
 						</div>
-						<q-icon
-							class="search_clean cursor-pointer"
+						<img
 							v-if="searchVal.length > 0"
-							name="sym_r_cancel"
-							size="16px"
+							class="search_clean cursor-pointer"
+							src="../assets/cancel.svg"
+							style="width: 20px"
 							@click.stop="cleanSearchVal"
 						/>
 					</template>

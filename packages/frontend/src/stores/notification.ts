@@ -28,70 +28,60 @@ export const useNotificationStore = defineStore('notification', {
 				{
 					id: 1,
 					application: 'devBox',
-					icon: 'sym_r_cancel',
 					children: [
 						{
 							id: 1,
 							title: 'Trading information1',
 							message:
-								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.',
-							icon: 'sym_r_cancel'
+								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.'
 						},
 						{
 							id: 2,
 							title: 'Trading information2',
 							message:
-								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.',
-							icon: 'sym_r_cancel'
+								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.'
 						},
 						{
 							id: 3,
 							title: 'Trading information3',
 							message:
-								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.',
-							icon: 'sym_r_cancel'
+								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.'
 						}
 					]
 				},
 				{
 					id: 2,
 					application: 'Files',
-					icon: 'sym_r_cancel',
 					children: [
 						{
 							id: 1,
 							title: 'Trading information1',
 							message:
-								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.',
-							icon: 'sym_r_cancel'
+								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.'
 						},
 						{
 							id: 2,
 							title: 'Trading information2',
 							message:
-								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.',
-							icon: 'sym_r_cancel'
+								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.'
 						},
 						{
 							id: 3,
 							title: 'Trading information3',
 							message:
-								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.',
-							icon: 'sym_r_cancel'
+								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.'
 						}
 					]
 				},
 				{
 					id: 3,
 					application: 'Vault',
-					icon: 'sym_r_cancel',
 					children: [
 						{
 							id: 1,
 							title: 'Trading information1',
 							message:
-								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.',
-							icon: 'sym_r_cancel'
+								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.'
 						}
 					]
 				}
