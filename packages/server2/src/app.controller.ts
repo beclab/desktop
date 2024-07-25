@@ -21,20 +21,25 @@ import {
   FileSearchResponse,
   FileSearchAIQuestionMessage,
 } from '@bytetrade/core';
+import axios from 'axios';
 import { broadcastWebsocketMessage, WebSocketMessage } from './websocketClient';
-import {
-  bflUrl,
-  getAccessToken,
-  query,
-  // add_content,
-  // remove_content,
-} from './search';
+// import {
+//   bflUrl,
+//   getAccessToken,
+//   query,
+//   // add_content,
+//   // remove_content,
+// } from './search';
 export const appServiceUrl =
   'http://' +
   process.env.APP_SERVICE_SERVICE_HOST +
   ':' +
   process.env.APP_SERVICE_SERVICE_PORT;
-import { createInstance, getRequestToken } from './bfl/utils';
+import {
+  createInstance,
+  getRequestToken,
+  createSearchInstance,
+} from './bfl/utils';
 import { AppService } from './app.service';
 
 export interface Event<T> {
@@ -165,50 +170,91 @@ export class AppController {
     return returnSucceed(res);
   }
 
-  @Post('/server/query')
+  // @Post('/server/query')
+  // async query(
+  //   @Body() data: FileSearchQueryRequest,
+  // ): Promise<Result<FileSearchResponse>> {
+  //   this.logger.debug('query');
+  //   this.logger.debug(data);
+
+  //   const acessToken = await getAccessToken('service.files', 'files', 'Query');
+  //   this.logger.debug('get token acesstoken ' + acessToken);
+  //   if (!acessToken) {
+  //     return returnError(1, 'Generate AcessToken failed');
+  //   }
+  //   try {
+  //     const str = await query(acessToken, data);
+  //     this.logger.debug('res');
+  //     const result = JSON.parse(str);
+  //     this.logger.debug(str);
+
+  //     const r = returnSucceed({
+  //       count: result.count,
+  //       offset: result.offset,
+  //       limit: result.limit,
+  //       items: result.items,
+  //     });
+  //     this.logger.debug('result');
+  //     console.log(r);
+  //     return r;
+  //   } catch (err) {
+  //     return returnSucceed({
+  //       count: 0,
+  //       offset: data.offset ? data.offset : 0,
+  //       limit: data.limit ? data.limit : 0,
+  //       items: [],
+  //     });
+  //   }
+  // }
+
+  @Post('/server/search')
   async query(
-    @Body() data: FileSearchQueryRequest,
+    @Req() request: Request,
+    @Body()
+    {
+      query,
+      serviceType,
+      offset = 0,
+      limit = 20,
+    }: {
+      query: string;
+      serviceType: string;
+      offset: number;
+      limit: number;
+    },
   ): Promise<Result<FileSearchResponse>> {
-    this.logger.debug('query');
-    this.logger.debug(data);
+    this.logger.debug('search', query, serviceType, offset, limit);
 
-    const acessToken = await getAccessToken('service.files', 'files', 'Query');
-    this.logger.debug('get token acesstoken ' + acessToken);
-    if (!acessToken) {
-      return returnError(1, 'Generate AcessToken failed');
-    }
     try {
-      const str = await query(acessToken, data);
-      this.logger.debug('res');
-      const result = JSON.parse(str);
-      this.logger.debug(str);
+      const response = await createSearchInstance(request).get(
+        '/document/search?keywords=' +
+          encodeURIComponent(query) +
+          '&&service=' +
+          serviceType +
+          '&&rank=' +
+          limit,
+      );
 
-      const r = returnSucceed({
-        count: result.count,
-        offset: result.offset,
-        limit: result.limit,
-        items: result.items,
-      });
-      this.logger.debug('result');
-      console.log(r);
-      return r;
+      console.log(response);
+
+      if (response.data.status_code == 'SUCCESS') {
+        return returnSucceed(response.data.data);
+      } else {
+        return returnError(1, response.data.fail_reason);
+      }
     } catch (err) {
-      return returnSucceed({
-        count: 0,
-        offset: data.offset ? data.offset : 0,
-        limit: data.limit ? data.limit : 0,
-        items: [],
-      });
+      console.log(err);
+      return returnError(1, err);
     }
   }
 
-  @Post('/server/ai_message')
-  async ai_message(
-    @Body() token: ProviderRequest<Result<FileSearchAIQuestionMessage>>,
-  ): Promise<Result<null>> {
-    this.logger.log('ai_message');
-    this.logger.log(token.data);
+  // @Post('/server/ai_message')
+  // async ai_message(
+  //   @Body() token: ProviderRequest<Result<FileSearchAIQuestionMessage>>,
+  // ): Promise<Result<null>> {
+  //   this.logger.log('ai_message');
+  //   this.logger.log(token.data);
 
-    return returnSucceed(null);
-  }
+  //   return returnSucceed(null);
+  // }
 }

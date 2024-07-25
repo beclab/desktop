@@ -13,7 +13,7 @@ import {
   OnGatewayDisconnect,
   OnGatewayInit,
 } from '@nestjs/websockets';
-import { getAccessToken, question_ai } from './search';
+//import { getAccessToken, question_ai } from './search';
 import {
   FileSearchAIQuestionRequest,
   FileSearchAIQuestionResponse,
@@ -125,49 +125,49 @@ export class WsStartGateway
     };
   }
 
-  @SubscribeMessage('ai')
-  async hello(
-    @MessageBody() data: FileSearchAIQuestionRequest,
-    @ConnectedSocket() client: WebSocket,
-  ): Promise<any> {
-    console.log('ai');
-    console.log(data);
-    const acessToken = await getAccessToken(
-      'service.search',
-      'search',
-      'QuestionAI',
-    );
-    //console.log('get token acesstoken ' + acessToken);
-    if (!acessToken) {
-      return {
-        event: 'ai',
-        code: 1,
-        msg: 'get acessToken error',
-      };
-    }
-    try {
-      const str = await question_ai(acessToken, data);
-      console.log('res');
-      const result: FileSearchAIQuestionResponse = JSON.parse(str);
-      console.log(result);
+  // @SubscribeMessage('ai')
+  // async hello(
+  //   @MessageBody() data: FileSearchAIQuestionRequest,
+  //   @ConnectedSocket() client: WebSocket,
+  // ): Promise<any> {
+  //   console.log('ai');
+  //   console.log(data);
+  //   const acessToken = await getAccessToken(
+  //     'service.search',
+  //     'search',
+  //     'QuestionAI',
+  //   );
+  //   //console.log('get token acesstoken ' + acessToken);
+  //   if (!acessToken) {
+  //     return {
+  //       event: 'ai',
+  //       code: 1,
+  //       msg: 'get acessToken error',
+  //     };
+  //   }
+  //   try {
+  //     const str = await question_ai(acessToken, data);
+  //     console.log('res');
+  //     const result: FileSearchAIQuestionResponse = JSON.parse(str);
+  //     console.log(result);
 
-      this.setAIMap(result.conversationId, client);
+  //     this.setAIMap(result.conversationId, client);
 
-      return {
-        event: 'ai',
-        code: 0,
-        messageId: result.messageId,
-        conversationId: result.conversationId,
-      };
-    } catch (err) {
-      this.logger.error(err);
-      return {
-        event: 'ai',
-        code: 1,
-        text: 'Sorry something went wrong. Please try again.',
-        messageId: '',
-        conversationId: data.conversationId,
-      };
-    }
-  }
+  //     return {
+  //       event: 'ai',
+  //       code: 0,
+  //       messageId: result.messageId,
+  //       conversationId: result.conversationId,
+  //     };
+  //   } catch (err) {
+  //     this.logger.error(err);
+  //     return {
+  //       event: 'ai',
+  //       code: 1,
+  //       text: 'Sorry something went wrong. Please try again.',
+  //       messageId: '',
+  //       conversationId: data.conversationId,
+  //     };
+  //   }
+  // }
 }

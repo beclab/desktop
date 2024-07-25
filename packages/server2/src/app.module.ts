@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { IntentController } from './intent.controller';
 import { IntentService } from './intent.service';
-import { VideoController } from './video.controller';
 import { WebSocketController } from './websocket.controller';
 import { BFLModule } from './bfl/bfl.module';
 import { NotificationController } from './notification.controller';
@@ -16,7 +15,6 @@ import { AppService } from './app.service';
   controllers: [
     AppController,
     IntentController,
-    VideoController,
     NotificationController,
     WebSocketController,
     InitController,
