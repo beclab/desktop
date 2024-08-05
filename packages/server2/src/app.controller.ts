@@ -223,15 +223,15 @@ export class AppController {
       limit: number;
     },
   ): Promise<Result<FileSearchResponse>> {
-    this.logger.debug('search', query, serviceType, offset, limit);
+    this.logger.debug('search log', query, serviceType, offset, limit);
 
     try {
       const response = await createSearchInstance(request).get(
         '/document/search?keywords=' +
           encodeURIComponent(query) +
-          '&&service=' +
+          '&service=' +
           serviceType +
-          '&&rank=' +
+          '&rank=' +
           limit,
       );
 
