@@ -4,20 +4,28 @@
 		<input
 			class="input"
 			type="text"
+			dense
 			ref="searchRef"
 			v-model.trim="searchTxt"
 			placeholder="Search for apps and commands..."
 		/>
-		<span class="btn" @click="openCommand('')">Open Command</span>
+		<q-icon
+			v-if="searchTxt"
+			class="cursor-pointer"
+			name="sym_r_close"
+			size="24px"
+			style="color: #adadad"
+			@click="handleClear"
+		/>
+		<!-- <span class="btn" @click="openCommand('')">Open Command</span> -->
 	</div>
-	<div class="list" ref="listRef">
+	<div class="list q-pt-sm" ref="listRef">
 		<template v-for="items in appdata" :key="items.name">
-			<div class="category" v-if="items.category">
-				{{
-					items.category === 'Use'
-						? `${items.category} ${searchTxt} with...`
-						: items.category
-				}}
+			<div class="category" v-if="items.category === 'Use'">
+				{{ `${items.category} ${searchTxt} with...` }}
+			</div>
+			<div class="category" v-if="items.category === 'Result'">
+				{{ items.category }}
 			</div>
 			<template v-if="items.children">
 				<div
@@ -30,8 +38,12 @@
 				>
 					<div class="txt">
 						<img :src="item.icon" />
-						<span class="name">{{ item.title }}</span>
-						<span class="desc">{{ item.type }}</span>
+						<span class="name">{{ item.name }}</span>
+						<span class="name q-ml-sm text-ink-2">{{ item.title }}</span>
+						<!-- <span class="desc">{{ item.type }}</span> -->
+					</div>
+					<div class="desc q-mr-sm text-ink-2">
+						{{ item.type }}
 					</div>
 				</div>
 			</template>
@@ -118,6 +130,8 @@ const classifyData = (data: any, searchTxt?: string) => {
 	}
 
 	activeItem.value = newArr[0]?.children[0]?.name;
+
+	console.log('newArr', newArr);
 	return newArr;
 };
 
@@ -186,6 +200,10 @@ const refushScroll = (index: number) => {
 	});
 };
 
+const handleClear = () => {
+	searchTxt.value = '';
+};
+
 watch(
 	() => searchTxt.value,
 	(newVal) => {
@@ -211,7 +229,7 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .list {
-	height: calc(100% - 72px);
+	height: calc(100% - 48px);
 	border-top: 1px solid #d8d8d8;
 	overflow: scroll;
 	.category {
@@ -244,10 +262,6 @@ onUnmounted(() => {
 				border: 0.6px solid #e0e0e0;
 				border-radius: 4px;
 				margin: 0 8px;
-			}
-			.desc {
-				color: #857c77;
-				margin-left: 10px;
 			}
 		}
 		.icon {

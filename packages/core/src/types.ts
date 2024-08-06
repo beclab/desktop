@@ -195,4 +195,5 @@ export enum SearchType {
   FilesPage = "Files Search",
   AshiaPage = "Ashia",
   AshiaDocPage = "Ashia Doc",
+  TextSearch = "Text Search",
 }

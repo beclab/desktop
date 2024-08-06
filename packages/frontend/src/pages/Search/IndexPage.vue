@@ -3,7 +3,7 @@
 		:isActive="true"
 		:isResizable="false"
 		:w="800"
-		:h="500"
+		:h="556"
 		:x="screenWidth / 2 - 400"
 		:y="screenHeight / 2 - 250"
 		dragHandle=".drag"
@@ -19,30 +19,42 @@
 				style="height: 16px; width: 100%; cursor: pointer"
 			></div>
 
-			<home-component
-				v-if="searchType === SearchType.HomePage"
-				:commandList="commandList"
-				@openCommand="openCommand"
-			/>
+			<div class="content">
+				<home-component
+					v-if="searchType === SearchType.HomePage"
+					:commandList="commandList"
+					@openCommand="openCommand"
+				/>
 
-			<files-component
-				v-else-if="searchType === SearchType.FilesPage"
-				:handSearchFiles="handSearchFiles"
-				@handleAction="handleAction"
-				@goBack="goBack"
-			/>
+				<text-search
+					v-else-if="searchType === SearchType.TextSearch"
+					:item="filesItem"
+					:handSearchFiles="handSearchFiles"
+					@handleAction="handleAction"
+					@goBack="goBack"
+				/>
 
-			<terminus-component
-				v-else-if="
-					searchType === SearchType.AshiaPage ||
-					searchType === SearchType.AshiaDocPage
-				"
-				:filesItem="filesItem"
-				:isDoc="searchType === SearchType.AshiaDocPage"
-				@openCommand="openCommand"
-			/>
+				<files-component
+					v-else-if="searchType === SearchType.FilesPage"
+					:handSearchFiles="handSearchFiles"
+					@handleAction="handleAction"
+					@goBack="goBack"
+				/>
 
-			<empty-page v-else @openCommand="openCommand" />
+				<terminus-component
+					v-else-if="
+						searchType === SearchType.AshiaPage ||
+						searchType === SearchType.AshiaDocPage
+					"
+					:filesItem="filesItem"
+					:isDoc="searchType === SearchType.AshiaDocPage"
+					@openCommand="openCommand"
+				/>
+
+				<empty-page v-else @openCommand="openCommand" />
+			</div>
+
+			<footer-component />
 		</q-card>
 	</VueDragResize>
 </template>
@@ -52,8 +64,10 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useDialogPluginComponent } from 'quasar';
 import { AppClickInfo, SearchType } from '@desktop/core/src/types';
 import FilesComponent from './FilesComponent.vue';
+import TextSearch from './TextSearch.vue';
 import HomeComponent from './HomeComponent.vue';
 import TerminusComponent from './TerminusComponent.vue';
+import FooterComponent from './FooterComponent.vue';
 import EmptyPage from './EmptyPage.vue';
 import { useSearchStore } from 'stores/search';
 
@@ -81,20 +95,28 @@ const openCommand = (item?: any) => {
 		searchType.value = SearchType.HomePage;
 		return false;
 	}
-	if (
-		item &&
-		(item.name === SearchType.AshiaPage ||
-			item.name === SearchType.FilesPage ||
-			item.name === SearchType.AshiaDocPage)
-	) {
-		searchType.value = item.name;
-		filesItem.value = null;
-		if (item.name === 'Files Search' && item.searchFiles) {
-			handSearchFiles.value = item.searchFiles;
-		}
+
+	if (item && item.type === 'Command') {
+		searchType.value = SearchType.TextSearch;
+		filesItem.value = item;
 	} else {
 		openWindow(item);
 	}
+
+	// if (
+	// 	item &&
+	// 	(item.name === SearchType.AshiaPage ||
+	// 		item.name === SearchType.FilesPage ||
+	// 		item.name === SearchType.AshiaDocPage)
+	// ) {
+	// 	searchType.value = item.name;
+	// 	filesItem.value = null;
+	// 	if (item.name === 'Files Search' && item.searchFiles) {
+	// 		handSearchFiles.value = item.searchFiles;
+	// 	}
+	// } else {
+	// 	openWindow(item);
+	// }
 };
 
 const openWindow = async (item: any) => {
@@ -137,18 +159,19 @@ onBeforeUnmount(() => {
 <style lang="scss">
 .dialog_card {
 	width: 100%;
-	height: 500px;
+	height: 556px;
 	border-radius: 12px;
-	padding: 0px 0 16px;
-	background: rgba(255, 255, 255, 0.9);
+
+	.content {
+		height: 492px;
+	}
 
 	.searchCard {
 		width: calc(100% - 32px);
-		height: 56px;
-		line-height: 56px;
-		border: 1px solid #d8d8d8;
+		height: 40px;
+		line-height: 40px;
 		border-radius: 12px !important;
-		margin: 0 auto 16px;
+		margin: 0 auto 8px;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -199,16 +222,7 @@ onBeforeUnmount(() => {
 			justify-content: space-around;
 			background: rgba(26, 19, 15, 0.06);
 			border-radius: 4px;
-			padding: 0 12px;
-
-			span {
-				color: #1a130f;
-				margin: 0 16px 0 8px;
-			}
-
-			img {
-				cursor: pointer;
-			}
+			padding: 8px 12px;
 		}
 	}
 }
