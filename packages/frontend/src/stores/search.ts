@@ -5,7 +5,6 @@ import { useAppStore } from './app';
 import { useTokenStore } from './token';
 import { getFileType, sizeFormat } from './../utils/utils';
 import { useSocketStore } from './websocketStore';
-// import list from './mock/list.json';
 
 interface ChatMsg {
 	text: string;
@@ -15,12 +14,46 @@ interface ChatMsg {
 	name: string;
 }
 
+enum SearchCategory {
+	Command = 'Command',
+	Application = 'Application'
+}
+
+interface searchItemType {
+	name: string;
+	title: string;
+	icon: string;
+	type: SearchCategory;
+	id: string;
+	serviceType: ServiceType;
+}
+
 export type SearchState = {
 	can_input: boolean;
 	waitting: boolean;
 	conversationId: string | null;
 	chatList: ChatMsg[];
+	searchList: searchItemType[];
 };
+
+export enum SecondFactorMethod {
+	TOTP = 'totp',
+	Webauthn = 'webauthn',
+	MobilePush = 'mobilePush',
+	TerminusPass = 'terminus_pass'
+}
+
+enum ServiceType {
+	Files = 'files',
+	Knowledge = 'knowledge',
+	Sync = 'sync'
+}
+interface ServiceParmasType {
+	query: string;
+	serviceType: ServiceType;
+	limit: number;
+	offset: number;
+}
 
 const appStore = useAppStore();
 const tokenStore = useTokenStore();
@@ -31,7 +64,49 @@ export const useSearchStore = defineStore('search', {
 			can_input: true,
 			waitting: false,
 			conversationId: null,
-			chatList: []
+			chatList: [],
+			searchList: [
+				{
+					name: 'Drive',
+					title: 'Files Search',
+					icon: './app-icon/drive.svg',
+					type: 'Command',
+					id: 'drive',
+					serviceType: ServiceType.Files
+				},
+				{
+					name: 'Sync',
+					title: 'Files Search',
+					icon: './app-icon/sync.svg',
+					type: 'Command',
+					id: 'sync',
+					serviceType: ServiceType.Sync
+				},
+				{
+					name: 'Google Drive',
+					title: 'Files Search',
+					icon: './app-icon/gddrive.svg',
+					type: 'Command',
+					id: 'gddrive',
+					serviceType: ServiceType.Sync
+				},
+				{
+					name: 'Dropbox',
+					title: 'Files Search',
+					icon: './app-icon/dropbox.svg',
+					type: 'Command',
+					id: 'dropbox',
+					serviceType: ServiceType.Sync
+				},
+				{
+					name: 'Wise',
+					title: 'Wise Search',
+					icon: './app-icon/drive.svg',
+					type: 'Command',
+					id: 'wise',
+					serviceType: ServiceType.Knowledge
+				}
+			]
 		} as SearchState;
 	},
 	getters: {},
@@ -44,8 +119,8 @@ export const useSearchStore = defineStore('search', {
 					apps.push(item);
 				}
 			});
-			// const res = [...list, ...apps];
-			const res = [...apps];
+			const res = [...this.searchList, ...apps];
+			// const res = [...apps];
 			return res;
 		},
 
@@ -76,6 +151,21 @@ export const useSearchStore = defineStore('search', {
 				});
 				return items;
 			}
+		},
+
+		async getContent(query = '', serviceType: ServiceType) {
+			const parms: ServiceParmasType = {
+				query,
+				serviceType: serviceType,
+				limit: 50,
+				offset: 0
+			};
+			const res: any = await axios.post(
+				tokenStore.url + '/server/search',
+				parms
+			);
+			console.log('getContentgetContent', res);
+			return res;
 		},
 
 		async sendChat(
