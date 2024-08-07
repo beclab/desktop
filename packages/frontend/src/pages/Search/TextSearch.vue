@@ -30,38 +30,69 @@
 		<div class="fileDetails q-pa-md" v-if="filedata && filedata.length > 0">
 			<div
 				class="fileItem q-pa-sm q-mb-xs"
-				v-for="item in filedata"
-				:key="item.id"
+				:class="activeItem === file.id ? 'active' : ''"
+				v-for="file in filedata"
+				:key="file.id"
 			>
 				<div class="item-icon">
-					<img class="icon" src="/files/file-pdf.svg" alt="file" />
+					<img
+						class="icon"
+						:src="`/files/file-${file.fileType}.svg`"
+						alt="file"
+					/>
 				</div>
 				<div class="item-content q-mx-md">
 					<div
 						class="title"
-						v-if="item.highlight_field === 'title'"
-						v-html="item.highlight"
+						v-if="file.highlight_field === 'title'"
+						v-html="file.highlight"
 					></div>
-					<div class="title" v-else>{{ item.title }}</div>
-					<div class="desc q-my-xs">
-						<span>Owner: {{ item.owner_userid }}</span>
+					<div class="title" v-else>{{ file.title }}</div>
+
+					<div class="desc q-my-xs" v-if="item?.name === 'Wise'">
+						<span
+							>Published at:
+							{{
+								date.formatDate(file.created_at * 1000, 'MMM Do YYYY, HH:mm:ss')
+							}}</span
+						>
+						<span>{{ file.owner_userid }} </span>
+						<!-- <span>{{ file.path }}</span> -->
+					</div>
+
+					<div class="desc q-my-xs" v-else>
+						<span>Owner: {{ file.owner_userid }}</span>
 						<span
 							>Marvin modified:
 							{{
-								date.formatDate(item.created_at * 1000, 'MMM Do YYYY, HH:mm:ss')
+								date.formatDate(file.created_at * 1000, 'MMM Do YYYY, HH:mm:ss')
 							}}
 						</span>
-						<!-- <span>Drive/Documents/work</span> -->
+						<span>{{ file.path }}</span>
 					</div>
+
 					<div
 						class="context"
-						v-if="item.highlight_field === 'content'"
-						v-html="item.highlight"
+						v-if="file.highlight_field === 'content'"
+						v-html="file.highlight"
 					></div>
 					<!-- <div class="context" v-else>{{ item.content }}</div> -->
 				</div>
 				<div class="item-search">
-					<q-icon class="icon" name="sym_r_search" size="20px" />
+					<q-icon
+						v-if="item?.name === 'Wise'"
+						class="icon cursor-pointer"
+						name="sym_r_share_windows"
+						size="20px"
+						@click="open(item)"
+					/>
+					<q-icon
+						v-else
+						class="icon cursor-pointer"
+						name="sym_r_search"
+						size="20px"
+						@click="open(item)"
+					/>
 				</div>
 			</div>
 		</div>
@@ -77,13 +108,6 @@ import { ref, watch, onMounted, onUnmounted } from 'vue';
 import { debounce, date } from 'quasar';
 import { useSearchStore } from './../../stores/search';
 
-interface TerminusParmas {
-	from: string;
-	message: string;
-	path: string;
-	fileType: string;
-}
-
 const props = defineProps({
 	showSearchDialog: {
 		type: Boolean,
@@ -97,17 +121,18 @@ const props = defineProps({
 	item: {
 		type: Object,
 		require: false
+	},
+	commandList: {
+		type: Object,
+		require: false
 	}
 });
 
-const emits = defineEmits(['handleAction', 'goBack']);
-
-console.log('itememeem', props.item);
+const emits = defineEmits(['goBack', 'openCommand']);
 
 const searchFiles = ref('');
 const filesRef = ref();
 
-const fileDetail = ref();
 const filedata = ref();
 const activeItem = ref();
 const isActiveRef = ref();
@@ -115,15 +140,7 @@ const searchStore = useSearchStore();
 const pattern = new RegExp('[\u4E00-\u9FA5]+');
 
 const chooseFile = (index: number) => {
-	fileDetail.value = filedata.value[index];
-	activeItem.value = filedata.value[index].name;
-};
-
-const classifyData = (data: any) => {
-	const newArr = data;
-	activeItem.value = newArr[0]?.name;
-	fileDetail.value = newArr[0];
-	return newArr;
+	activeItem.value = filedata.value[index].id;
 };
 
 const refushScroll = (index: number) => {
@@ -143,8 +160,7 @@ watch(
 			return false;
 		}
 
-		const filesList = await getContent(newVal);
-		filedata.value = await classifyData(filesList);
+		filedata.value = await getContent(newVal);
 	}, 600)
 );
 
@@ -152,42 +168,28 @@ const getContent = (query?: string) => {
 	return searchStore.getContent(query, props.item?.serviceType);
 };
 
-const handleAction = (from: string, item: any) => {
-	let terminusParmas: TerminusParmas | null = null;
-	let message = '';
-	if (from === 'summarize') {
-		message = 'Please help me summarize this document';
-	}
-	terminusParmas = {
-		from,
-		message,
-		path: item.where,
-		fileType: item.fileType
-	};
-
-	emits('handleAction', terminusParmas);
-};
-
 const goBack = () => {
 	emits('goBack');
 };
 
 const keydownEnter = (event: any) => {
+	console.log('eventkeyCode', event.keyCode);
 	if (event.keyCode === 8 && !searchFiles.value) {
 		return goBack();
 	}
 
 	if (!filedata.value) return false;
 	const index = filedata.value.findIndex(
-		(item: { name: any }) => item.name === activeItem.value
+		(item: { id: number }) => item.id === activeItem.value
 	);
+	const selectItem = filedata.value[index];
 	const upIndex = index - 1;
 	const downIndex = index + 1;
 
 	switch (event.keyCode) {
 		case 38:
 			if (upIndex >= 0) {
-				activeItem.value = filedata.value[upIndex].name;
+				activeItem.value = filedata.value[upIndex].id;
 				refushScroll(upIndex);
 				chooseFile(upIndex);
 			}
@@ -195,12 +197,35 @@ const keydownEnter = (event: any) => {
 
 		case 40:
 			if (downIndex <= filedata.value.length - 1) {
-				activeItem.value = filedata.value[downIndex].name;
+				activeItem.value = filedata.value[downIndex].id;
 				refushScroll(downIndex);
 				chooseFile(downIndex);
 			}
 			break;
+
+		case 13:
+			open(selectItem);
+			break;
 	}
+};
+
+const open = (item: any) => {
+	if (props.item?.name === 'Drive') {
+		const url = '/Files' + item.path;
+		const filesApp = props.commandList?.find(
+			(el: { appid: string }) => el.appid && el.appid === 'files'
+		);
+		filesApp.url = filesApp.url + url;
+
+		emits('openCommand', filesApp);
+	} else if (props.item?.name === 'Wise') {
+		const filesApp = props.commandList?.find(
+			(el: { appid: string }) => el.appid && el.appid === 'wise'
+		);
+		emits('openCommand', filesApp);
+	}
+
+	// emits('openCommand', resource_uri);
 };
 
 const handleClear = () => {
@@ -209,7 +234,6 @@ const handleClear = () => {
 
 onMounted(async () => {
 	filesRef.value && filesRef.value.focus();
-	if (props.handSearchFiles) searchFiles.value = props.handSearchFiles;
 	window.addEventListener('keydown', keydownEnter);
 });
 
@@ -239,6 +263,10 @@ hi {
 			width: 100%;
 			display: flex;
 			border-radius: 8px;
+
+			&.active {
+				background-color: rgba(0, 0, 0, 0.1);
+			}
 
 			&:hover {
 				background-color: rgba(0, 0, 0, 0.1);

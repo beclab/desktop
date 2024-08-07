@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ProviderClient } from './provider.client';
-import { AppInfo } from '@desktop/core/src/types';
+import { AppInfo } from './../../core/src/types';
 const appClient = new ProviderClient('app', 'service.bfl', 'app', ['UserApps']);
 const appStoreClient = new ProviderClient(
   'appstore',
