@@ -101,7 +101,7 @@ export const useSearchStore = defineStore('search', {
 				{
 					name: 'Wise',
 					title: 'Wise Search',
-					icon: './app-icon/drive.svg',
+					icon: './app-icon/wise.svg',
 					type: 'Command',
 					id: 'wise',
 					serviceType: ServiceType.Knowledge
@@ -164,8 +164,33 @@ export const useSearchStore = defineStore('search', {
 				tokenStore.url + '/server/search',
 				parms
 			);
-			console.log('getContentgetContent', res);
+			const newRes = [];
+
+			for (let i = 0; i < res.length; i++) {
+				const el = res[i];
+				el.fileType = getFileType(el.title);
+				el.path = await this.getPath(el.resource_uri);
+				newRes.push(el);
+			}
+
 			return res;
+		},
+
+		async getPath(resource_uri: string) {
+			if (resource_uri.startsWith('/data')) {
+				const splitUri = resource_uri.split('/');
+				const indexUri = splitUri.findIndex(
+					(item) => item.indexOf('pvc-') > -1
+				);
+				let res = '';
+				for (let i = indexUri + 1; i < splitUri.length - 1; i++) {
+					const el = splitUri[i];
+					res += '/' + el;
+				}
+				return res;
+			} else {
+				return resource_uri;
+			}
 		},
 
 		async sendChat(

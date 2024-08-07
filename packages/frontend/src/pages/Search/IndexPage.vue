@@ -29,9 +29,9 @@
 				<text-search
 					v-else-if="searchType === SearchType.TextSearch"
 					:item="filesItem"
-					:handSearchFiles="handSearchFiles"
-					@handleAction="handleAction"
+					:commandList="commandList"
 					@goBack="goBack"
+					@openCommand="openCommand"
 				/>
 
 				<files-component
@@ -120,6 +120,7 @@ const openCommand = (item?: any) => {
 };
 
 const openWindow = async (item: any) => {
+	console.log('itemitemitem', item);
 	emits('appClick', {
 		appid: item.id,
 		data: {}
