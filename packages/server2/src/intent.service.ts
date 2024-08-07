@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { IntentFilter, Intent, Action, Category } from '@bytetrade/core';
 import { v4 as uuidv4 } from 'uuid';
-import { AppInfo } from './../../core/src/types';
+import { AppInfo } from '@desktop/core/src/types';
 
 @Injectable()
 export class IntentService implements OnModuleInit {
