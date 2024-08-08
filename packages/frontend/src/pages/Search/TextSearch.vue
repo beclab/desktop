@@ -70,15 +70,14 @@
 					<div class="title" v-else>{{ file.title }}</div>
 
 					<div class="desc q-my-xs" v-if="item?.name === 'Wise'">
+						<span>Author: {{ file.author || '-' }}</span>
 						<span v-if="file.meta && file.meta.created_at">
 							Published at:
 							{{
 								date.formatDate(file.meta.created_at, 'MMM Do YYYY, HH:mm:ss')
 							}}
 						</span>
-						<span v-if="file.feed_title || file.author"
-							>{{ file.feed_title }} &nbsp;&nbsp; {{ file.author }}</span
-						>
+
 						<!-- <span>{{ file.path }}</span> -->
 					</div>
 
