@@ -17,7 +17,7 @@ module.exports = configure(function (ctx) {
 
 		boot: ['i18n', 'axios', 'smartEnginEntrance'],
 
-		css: ['app.scss'],
+		css: ['app.scss', 'fonts.scss'],
 
 		extras: [
 			'roboto-font', // optional, you are not bound to it
