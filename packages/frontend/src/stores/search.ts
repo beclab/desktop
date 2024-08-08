@@ -74,30 +74,30 @@ export const useSearchStore = defineStore('search', {
 					id: 'drive',
 					serviceType: ServiceType.Files
 				},
-				{
-					name: 'Sync',
-					title: 'Files Search',
-					icon: './app-icon/sync.svg',
-					type: 'Command',
-					id: 'sync',
-					serviceType: ServiceType.Sync
-				},
-				{
-					name: 'Google Drive',
-					title: 'Files Search',
-					icon: './app-icon/gddrive.svg',
-					type: 'Command',
-					id: 'gddrive',
-					serviceType: ServiceType.Sync
-				},
-				{
-					name: 'Dropbox',
-					title: 'Files Search',
-					icon: './app-icon/dropbox.svg',
-					type: 'Command',
-					id: 'dropbox',
-					serviceType: ServiceType.Sync
-				},
+				// {
+				// 	name: 'Sync',
+				// 	title: 'Files Search',
+				// 	icon: './app-icon/sync.svg',
+				// 	type: 'Command',
+				// 	id: 'sync',
+				// 	serviceType: ServiceType.Sync
+				// },
+				// {
+				// 	name: 'Google Drive',
+				// 	title: 'Files Search',
+				// 	icon: './app-icon/gddrive.svg',
+				// 	type: 'Command',
+				// 	id: 'gddrive',
+				// 	serviceType: ServiceType.Sync
+				// },
+				// {
+				// 	name: 'Dropbox',
+				// 	title: 'Files Search',
+				// 	icon: './app-icon/dropbox.svg',
+				// 	type: 'Command',
+				// 	id: 'dropbox',
+				// 	serviceType: ServiceType.Sync
+				// },
 				{
 					name: 'Wise',
 					title: 'Wise Search',

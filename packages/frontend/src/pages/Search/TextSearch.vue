@@ -36,6 +36,26 @@
 			>
 				<div class="item-icon">
 					<img
+						v-if="item?.name === 'Wise' && file.meta?.image_url"
+						class="icon"
+						:src="
+							file.meta?.image_url
+								? file.meta?.image_url
+								: './../../assets/search-wise-default.png'
+						"
+						alt="file"
+					/>
+
+					<img
+						v-else-if="item?.name === 'Wise' && !file.meta?.image_url"
+						class="icon"
+						style="width: 48px; height: 48px"
+						src="./../../assets/search-wise-default.png"
+						alt="file"
+					/>
+
+					<img
+						v-else
 						class="icon"
 						:src="`/files/file-${file.fileType}.svg`"
 						alt="file"
@@ -50,22 +70,27 @@
 					<div class="title" v-else>{{ file.title }}</div>
 
 					<div class="desc q-my-xs" v-if="item?.name === 'Wise'">
-						<span
-							>Published at:
+						<span v-if="file.meta && file.meta.created_at">
+							Published at:
 							{{
-								date.formatDate(file.created_at * 1000, 'MMM Do YYYY, HH:mm:ss')
-							}}</span
+								date.formatDate(file.meta.created_at, 'MMM Do YYYY, HH:mm:ss')
+							}}
+						</span>
+						<span v-if="file.feed_title || file.author"
+							>{{ file.feed_title }} &nbsp;&nbsp; {{ file.author }}</span
 						>
-						<span>{{ file.owner_userid }} </span>
 						<!-- <span>{{ file.path }}</span> -->
 					</div>
 
 					<div class="desc q-my-xs" v-else>
 						<span>Owner: {{ file.owner_userid }}</span>
 						<span
-							>Marvin modified:
+							>Modified:
 							{{
-								date.formatDate(file.created_at * 1000, 'MMM Do YYYY, HH:mm:ss')
+								date.formatDate(
+									file.meta.updated * 1000,
+									'MMM Do YYYY, HH:mm:ss'
+								)
 							}}
 						</span>
 						<span>{{ file.path }}</span>
@@ -80,18 +105,18 @@
 				</div>
 				<div class="item-search">
 					<q-icon
-						v-if="item?.name === 'Wise'"
+						v-if="file?.name === 'Wise'"
 						class="icon cursor-pointer"
 						name="sym_r_share_windows"
 						size="20px"
-						@click="open(item)"
+						@click="open(file)"
 					/>
 					<q-icon
 						v-else
 						class="icon cursor-pointer"
 						name="sym_r_search"
 						size="20px"
-						@click="open(item)"
+						@click="open(file)"
 					/>
 				</div>
 			</div>
@@ -173,7 +198,6 @@ const goBack = () => {
 };
 
 const keydownEnter = (event: any) => {
-	console.log('eventkeyCode', event.keyCode);
 	if (event.keyCode === 8 && !searchFiles.value) {
 		return goBack();
 	}
@@ -212,9 +236,11 @@ const keydownEnter = (event: any) => {
 const open = (item: any) => {
 	if (props.item?.name === 'Drive') {
 		const url = '/Files' + item.path;
+
 		const filesApp = props.commandList?.find(
 			(el: { appid: string }) => el.appid && el.appid === 'files'
 		);
+
 		filesApp.url = filesApp.url + url;
 
 		emits('openCommand', filesApp);
