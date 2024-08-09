@@ -266,6 +266,7 @@ const handleClear = () => {
 
 onMounted(async () => {
 	filesRef.value && filesRef.value.focus();
+	if (props.handSearchFiles) searchFiles.value = props.handSearchFiles;
 	window.addEventListener('keydown', keydownEnter);
 });
 

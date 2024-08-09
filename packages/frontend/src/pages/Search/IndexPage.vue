@@ -29,9 +29,9 @@
 				<text-search
 					v-else-if="searchType === SearchType.TextSearch"
 					:item="filesItem"
+					:handSearchFiles="handSearchFiles"
 					:commandList="commandList"
 					@goBack="goBack"
-					@openCommand="openCommand"
 				/>
 
 				<files-component
@@ -99,24 +99,10 @@ const openCommand = (item?: any) => {
 	if (item && item.type === 'Command') {
 		searchType.value = SearchType.TextSearch;
 		filesItem.value = item;
+		handSearchFiles.value = item.searchFiles;
 	} else {
 		openWindow(item);
 	}
-
-	// if (
-	// 	item &&
-	// 	(item.name === SearchType.AshiaPage ||
-	// 		item.name === SearchType.FilesPage ||
-	// 		item.name === SearchType.AshiaDocPage)
-	// ) {
-	// 	searchType.value = item.name;
-	// 	filesItem.value = null;
-	// 	if (item.name === 'Files Search' && item.searchFiles) {
-	// 		handSearchFiles.value = item.searchFiles;
-	// 	}
-	// } else {
-	// 	openWindow(item);
-	// }
 };
 
 const openWindow = async (item: any) => {
