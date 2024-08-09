@@ -67,14 +67,16 @@
 						v-if="file.highlight_field === 'title'"
 						v-html="file.highlight"
 					></div>
-					<div class="title" v-else>{{ file.title }}</div>
+					<div class="title" v-else>
+						{{ file.title }}
+					</div>
 
 					<div class="desc q-my-xs" v-if="item?.name === 'Wise'">
 						<span>Author: {{ file.author || '-' }}</span>
-						<span v-if="file.meta && file.meta.created_at">
+						<span v-if="file.meta && file.meta.published_at">
 							Published at:
 							{{
-								date.formatDate(file.meta.created_at, 'MMM Do YYYY, HH:mm:ss')
+								date.formatDate(file.meta.published_at, 'MMM Do YYYY, HH:mm:ss')
 							}}
 						</span>
 
@@ -83,8 +85,8 @@
 
 					<div class="desc q-my-xs" v-else>
 						<span>Owner: {{ file.owner_userid }}</span>
-						<span
-							>Modified:
+						<span v-if="file.meta && file.meta.updated">
+							Modified:
 							{{
 								date.formatDate(
 									file.meta.updated * 1000,
@@ -152,7 +154,7 @@ const props = defineProps({
 	}
 });
 
-const emits = defineEmits(['goBack', 'openCommand']);
+const emits = defineEmits(['goBack']);
 
 const searchFiles = ref('');
 const filesRef = ref();
@@ -233,6 +235,7 @@ const keydownEnter = (event: any) => {
 };
 
 const open = (item: any) => {
+	console.log('itemitem', item);
 	if (props.item?.name === 'Drive') {
 		const url = '/Files' + item.path;
 
@@ -241,13 +244,17 @@ const open = (item: any) => {
 		);
 
 		filesApp.url = filesApp.url + url;
-
-		emits('openCommand', filesApp);
+		window.open(filesApp.url);
 	} else if (props.item?.name === 'Wise') {
 		const filesApp = props.commandList?.find(
 			(el: { appid: string }) => el.appid && el.appid === 'wise'
 		);
-		emits('openCommand', filesApp);
+		console.log('filesAppfilesApp', filesApp);
+
+		filesApp.url =
+			filesApp.url + '/' + item.meta.file_type + '/' + item.meta.id;
+
+		window.open(filesApp.url);
 	}
 
 	// emits('openCommand', resource_uri);
@@ -306,11 +313,15 @@ hi {
 			.item-content {
 				flex: 1;
 				.title {
+					width: 656px;
 					color: $ink-1;
 					font-size: 14px;
 					font-style: normal;
 					font-weight: 400;
 					line-height: 20px;
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
 				}
 				.desc {
 					color: $ink-3;
