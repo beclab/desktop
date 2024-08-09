@@ -235,26 +235,30 @@ const keydownEnter = (event: any) => {
 };
 
 const open = (item: any) => {
-	console.log('itemitem', item);
 	if (props.item?.name === 'Drive') {
 		const url = '/Files' + item.path;
 
 		const filesApp = props.commandList?.find(
 			(el: { appid: string }) => el.appid && el.appid === 'files'
 		);
-
 		filesApp.url = filesApp.url + url;
-		window.open(filesApp.url);
+		const openUrl = filesApp.url.startsWith('https')
+			? filesApp.url
+			: 'https://' + filesApp.url;
+		window.open(openUrl);
 	} else if (props.item?.name === 'Wise') {
 		const filesApp = props.commandList?.find(
 			(el: { appid: string }) => el.appid && el.appid === 'wise'
 		);
-		console.log('filesAppfilesApp', filesApp);
 
 		filesApp.url =
 			filesApp.url + '/' + item.meta.file_type + '/' + item.meta.id;
 
-		window.open(filesApp.url);
+		const openUrl = filesApp.url.startsWith('https')
+			? filesApp.url
+			: 'https://' + filesApp.url;
+
+		window.open(openUrl);
 	}
 
 	// emits('openCommand', resource_uri);
