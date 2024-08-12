@@ -238,13 +238,15 @@ const open = (item: any) => {
 	if (props.item?.name === 'Drive') {
 		const url = '/Files' + item.path;
 
-		const filesApp = props.commandList?.find(
+		const filesApp = JSON.parse(JSON.stringify(props.commandList)).find(
 			(el: { appid: string }) => el.appid && el.appid === 'files'
 		);
 		filesApp.url = filesApp.url + url;
+
 		const openUrl = filesApp.url.startsWith('https')
 			? filesApp.url
 			: 'https://' + filesApp.url;
+
 		window.open(openUrl);
 	} else if (props.item?.name === 'Wise') {
 		const filesApp = props.commandList?.find(
