@@ -31,8 +31,9 @@
 			<div
 				class="fileItem q-pa-sm q-mb-xs"
 				:class="activeItem === file.id ? 'active' : ''"
-				v-for="file in filedata"
+				v-for="(file, index) in filedata"
 				:key="file.id"
+				@click="clickItem(file, index)"
 			>
 				<div class="item-icon">
 					<img
@@ -76,7 +77,10 @@
 						<span v-if="file.meta && file.meta.published_at">
 							Published at:
 							{{
-								date.formatDate(file.meta.published_at, 'MMM Do YYYY, HH:mm:ss')
+								date.formatDate(
+									file.meta.published_at * 1000,
+									'MMM Do YYYY, HH:mm:ss'
+								)
 							}}
 						</span>
 
@@ -235,10 +239,11 @@ const keydownEnter = (event: any) => {
 };
 
 const open = (item: any) => {
+	const commandList = JSON.parse(JSON.stringify(props.commandList));
 	if (props.item?.name === 'Drive') {
 		const url = '/Files' + item.path;
 
-		const filesApp = JSON.parse(JSON.stringify(props.commandList)).find(
+		const filesApp = commandList.find(
 			(el: { appid: string }) => el.appid && el.appid === 'files'
 		);
 		filesApp.url = filesApp.url + url;
@@ -249,7 +254,7 @@ const open = (item: any) => {
 
 		window.open(openUrl);
 	} else if (props.item?.name === 'Wise') {
-		const filesApp = props.commandList?.find(
+		const filesApp = commandList.find(
 			(el: { appid: string }) => el.appid && el.appid === 'wise'
 		);
 
@@ -268,6 +273,27 @@ const open = (item: any) => {
 
 const handleClear = () => {
 	searchFiles.value = '';
+};
+
+const clickTimer: any = ref(null);
+const clickDelay = ref(300);
+
+const clickItem = (file: any, index: number) => {
+	if (clickTimer.value) {
+		clearTimeout(clickTimer.value);
+		clickTimer.value = null;
+		chooseFile(index);
+		open(file);
+	} else {
+		clickTimer.value = setTimeout(() => {
+			if (activeItem.value === file.id) {
+				open(file);
+			} else {
+				chooseFile(index);
+			}
+			clickTimer.value = null;
+		}, clickDelay.value);
+	}
 };
 
 onMounted(async () => {
@@ -316,6 +342,9 @@ hi {
 				display: flex;
 				align-items: flex-start;
 				justify-content: center;
+				img {
+					width: 40px;
+				}
 			}
 			.item-content {
 				flex: 1;
