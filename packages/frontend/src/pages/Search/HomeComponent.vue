@@ -38,8 +38,8 @@
 				>
 					<div class="txt">
 						<img :src="item.icon" />
-						<span class="name">{{ item.name }}</span>
-						<span class="name q-ml-sm text-ink-2">{{ item.title }}</span>
+						<span class="name">{{ item.title }}</span>
+						<!-- <span class="name q-ml-sm text-ink-2">{{ item.title }}</span> -->
 						<!-- <span class="desc">{{ item.type }}</span> -->
 					</div>
 					<div class="desc q-mr-sm text-ink-2">
@@ -232,6 +232,8 @@ onUnmounted(() => {
 	height: calc(100% - 48px);
 	border-top: 1px solid #d8d8d8;
 	overflow: scroll;
+	scrollbar-width: none;
+
 	.category {
 		width: calc(100% - 32px);
 		margin: 0 16px;
@@ -278,10 +280,10 @@ onUnmounted(() => {
 		}
 
 		&:hover {
-			background: rgba(26, 19, 15, 0.06);
+			background: $background-hover;
 		}
 		&.isActive {
-			background: rgba(26, 19, 15, 0.06);
+			background: $background-selected;
 		}
 	}
 }
