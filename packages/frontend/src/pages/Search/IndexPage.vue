@@ -106,7 +106,6 @@ const openCommand = (item?: any) => {
 };
 
 const openWindow = async (item: any) => {
-	console.log('itemitemitem', item);
 	emits('appClick', {
 		appid: item.id,
 		data: {}

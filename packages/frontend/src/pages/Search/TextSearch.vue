@@ -27,11 +27,11 @@
 		/>
 	</div>
 	<div class="files">
-		<div class="fileDetails q-pa-md" v-if="filedata && filedata.length > 0">
+		<div class="fileDetails q-pa-md" v-if="fileData && fileData.length > 0">
 			<div
 				class="fileItem q-pa-sm q-mb-xs"
 				:class="activeItem === file.id ? 'active' : ''"
-				v-for="(file, index) in filedata"
+				v-for="(file, index) in fileData"
 				:key="file.id"
 				@click="clickItem(file, index)"
 			>
@@ -126,8 +126,8 @@
 				</div>
 			</div>
 		</div>
-		<div v-else class="nodata column items-center justify-center">
-			<img class="icon" src="./../../assets/nodata.svg" alt="nodata" />
+		<div v-else class="no_data column items-center justify-center">
+			<img class="icon" src="./../../assets/nodata.svg" alt="no_data" />
 			<div class="text-grey-8">No Matching Result Found</div>
 		</div>
 	</div>
@@ -163,17 +163,17 @@ const emits = defineEmits(['goBack']);
 const searchFiles = ref('');
 const filesRef = ref();
 
-const filedata = ref();
+const fileData = ref();
 const activeItem = ref();
 const isActiveRef = ref();
 const searchStore = useSearchStore();
 const pattern = new RegExp('[\u4E00-\u9FA5]+');
 
 const chooseFile = (index: number) => {
-	activeItem.value = filedata.value[index].id;
+	activeItem.value = fileData.value[index].id;
 };
 
-const refushScroll = (index: number) => {
+const refreshScroll = (index: number) => {
 	isActiveRef.value[index].scrollIntoView({
 		behavior: 'auto',
 		block: 'nearest'
@@ -184,13 +184,13 @@ watch(
 	() => searchFiles.value,
 	debounce(async (newVal: string | undefined) => {
 		if (!newVal) {
-			return (filedata.value = []);
+			return (fileData.value = []);
 		}
 		if (!pattern.test(newVal) && newVal.length <= 2) {
 			return false;
 		}
 
-		filedata.value = await getContent(newVal);
+		fileData.value = await getContent(newVal);
 	}, 600)
 );
 
@@ -207,27 +207,27 @@ const keydownEnter = (event: any) => {
 		return goBack();
 	}
 
-	if (!filedata.value) return false;
-	const index = filedata.value.findIndex(
+	if (!fileData.value) return false;
+	const index = fileData.value.findIndex(
 		(item: { id: number }) => item.id === activeItem.value
 	);
-	const selectItem = filedata.value[index];
+	const selectItem = fileData.value[index];
 	const upIndex = index - 1;
 	const downIndex = index + 1;
 
 	switch (event.keyCode) {
 		case 38:
 			if (upIndex >= 0) {
-				activeItem.value = filedata.value[upIndex].id;
-				refushScroll(upIndex);
+				activeItem.value = fileData.value[upIndex].id;
+				refreshScroll(upIndex);
 				chooseFile(upIndex);
 			}
 			break;
 
 		case 40:
-			if (downIndex <= filedata.value.length - 1) {
-				activeItem.value = filedata.value[downIndex].id;
-				refushScroll(downIndex);
+			if (downIndex <= fileData.value.length - 1) {
+				activeItem.value = fileData.value[downIndex].id;
+				refreshScroll(downIndex);
 				chooseFile(downIndex);
 			}
 			break;
@@ -395,7 +395,7 @@ hi {
 		}
 	}
 
-	.nodata {
+	.no_data {
 		width: 100%;
 	}
 }

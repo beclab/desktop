@@ -37,9 +37,9 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, onUnmounted, nextTick } from 'vue';
 
-import { useMoniterStore } from 'stores/moniter';
+import { useMonitorStore } from 'stores/monitor';
 
-const moniterStore = useMoniterStore();
+const moniterStore = useMonitorStore();
 const watchTimeTask = ref();
 const state = reactive({
 	date: '',
@@ -98,7 +98,7 @@ const watchTime = () => {
 
 onMounted(() => {
 	watchTime();
-	moniterStore.loadMoniter();
+	moniterStore.loadMonitor();
 });
 
 onUnmounted(() => {
@@ -186,3 +186,4 @@ onUnmounted(() => {
 	}
 }
 </style>
+src/stores/monitor

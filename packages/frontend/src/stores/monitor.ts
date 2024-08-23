@@ -1,27 +1,24 @@
 import { defineStore } from 'pinia';
-import { Moniter, Usage } from '@bytetrade/core';
+import { Moniter as Monitor, Usage } from '@bytetrade/core';
 import axios from 'axios';
 import { useTokenStore } from './token';
 
-export type MoniterStoreState = {
+export type MonitorStoreState = {
 	usages: Usage[];
 };
 
-export const useMoniterStore = defineStore('moniter', {
+export const useMonitorStore = defineStore('monitor', {
 	state: () => {
 		return {
 			usages: []
-		} as MoniterStoreState;
+		} as MonitorStoreState;
 	},
 	getters: {},
 	actions: {
-		async loadMoniter() {
+		async loadMonitor() {
 			const tokenStore = useTokenStore();
-			// if (!tokenStore.token) {
-			// 	return;
-			// }
 
-			const data: Moniter = await axios.get(
+			const data: Monitor = await axios.get(
 				tokenStore.url + '/api/monitor/cluster',
 				{}
 			);

@@ -2,10 +2,10 @@
 	<div class="desktop-box">
 		<div
 			class="desktop_app_box"
-			:class="{ dockAni: appStore.dockerapps.length > 0 }"
+			:class="{ dockAni: appStore.dockerApps.length > 0 }"
 		>
 			<template
-				v-for="(element, index) in appStore.dockerapps"
+				v-for="(element, index) in appStore.dockerApps"
 				:key="'aood+index' + index"
 			>
 				<div class="launchapp column items-center">
@@ -42,7 +42,7 @@ const emits = defineEmits([]);
 
 const appStore = useAppStore();
 
-console.log('appStore.dockerapps', appStore.dockerapps);
+console.log('appStore.dockerApps', appStore.dockerApps);
 
 const openWindow = async (item: DockerAppInfo) => {
 	emits('appClick', {
@@ -53,8 +53,8 @@ const openWindow = async (item: DockerAppInfo) => {
 
 const getAppIndexInDock = (id: string) => {
 	let index = -1;
-	for (var i = 0; i < appStore.dockerapps.length; i++) {
-		const draggedEl: any = document.getElementById(appStore.dockerapps[i].id);
+	for (var i = 0; i < appStore.dockerApps.length; i++) {
+		const draggedEl: any = document.getElementById(appStore.dockerApps[i].id);
 		if (draggedEl.id == id) {
 			index = i;
 		}
@@ -72,7 +72,7 @@ const handleOpenApp = (appid: string) => {
 	if (cc < 0) {
 		appStore.add_app_on_docker_bottom(rid);
 	} else {
-		appStore.dockerapps[cc].show_dot = true;
+		appStore.dockerApps[cc].show_dot = true;
 	}
 };
 

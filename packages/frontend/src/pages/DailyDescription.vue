@@ -1,11 +1,11 @@
 <template>
 	<div class="description_box">
 		<div class="description_weather">
-			<div class="description_ature">{{ state.time }}</div>
-			<div class="description_time">
+			<div class="description_time">{{ state.time }}</div>
+			<div class="description_daily">
 				<div class="description_singapore">
-					<p class="description_singapor_text">{{ state.week }}</p>
-					<p class="description_singapor_itme">
+					<p class="description_week">{{ state.week }}</p>
+					<p class="description_day">
 						{{ state.date }}
 					</p>
 				</div>
@@ -14,7 +14,7 @@
 		<div class="description_thickness">
 			<div
 				class="description_track"
-				v-for="(item, index) in moniterStore.usages"
+				v-for="(item, index) in monitorStore.usages"
 				:key="`d` + index"
 			>
 				<q-knob
@@ -37,9 +37,9 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, onUnmounted, nextTick } from 'vue';
 
-import { useMoniterStore } from 'stores/moniter';
+import { useMonitorStore } from 'stores/monitor';
 
-const moniterStore = useMoniterStore();
+const monitorStore = useMonitorStore();
 const watchTimeTask = ref();
 const state = reactive({
 	date: '',
@@ -92,7 +92,7 @@ const watchTime = () => {
 
 onMounted(() => {
 	watchTime();
-	moniterStore.loadMoniter();
+	monitorStore.loadMonitor();
 });
 
 onUnmounted(() => {
@@ -108,7 +108,7 @@ onUnmounted(() => {
 	.description_weather {
 		height: 72px;
 		display: flex;
-		.description_ature {
+		.description_time {
 			font-size: 70px;
 			font-family: Roboto-Bold, Roboto;
 			font-weight: bold;
@@ -116,7 +116,7 @@ onUnmounted(() => {
 			line-height: 72px;
 			text-shadow: 0px 2px 6px rgba(0, 0, 0, 0.16);
 		}
-		.description_time {
+		.description_daily {
 			display: flex;
 			padding-top: 14px;
 			margin-left: 14px;
@@ -124,14 +124,14 @@ onUnmounted(() => {
 				margin: 0;
 			}
 			.description_singapore {
-				.description_singapor_text {
+				.description_week {
 					font-size: 20px;
 					font-family: Roboto-Bold, Roboto;
 					font-weight: bold;
 					color: #ffffff;
 					text-shadow: 0px 2px 6px rgba(0, 0, 0, 0.16);
 				}
-				.description_singapor_itme {
+				.description_day {
 					font-size: 12px;
 					font-family: Roboto-Regular, Roboto;
 					font-weight: 400;

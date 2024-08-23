@@ -30,7 +30,7 @@ interface searchItemType {
 
 export type SearchState = {
 	can_input: boolean;
-	waitting: boolean;
+	waiting: boolean;
 	conversationId: string | null;
 	chatList: ChatMsg[];
 	searchList: searchItemType[];
@@ -48,7 +48,7 @@ enum ServiceType {
 	Knowledge = 'knowledge',
 	Sync = 'sync'
 }
-interface ServiceParmasType {
+interface ServiceParamsType {
 	query: string;
 	serviceType: ServiceType;
 	limit: number;
@@ -62,7 +62,7 @@ export const useSearchStore = defineStore('search', {
 	state: () => {
 		return {
 			can_input: true,
-			waitting: false,
+			waiting: false,
 			conversationId: null,
 			chatList: [],
 			searchList: [
@@ -112,9 +112,9 @@ export const useSearchStore = defineStore('search', {
 	getters: {},
 	actions: {
 		getCommand() {
-			const myapps = appStore.myapps;
+			const myApps = appStore.myApps;
 			const apps: any[] = [];
-			myapps.map((item) => {
+			myApps.map((item) => {
 				if (item.id !== 'launchpad') {
 					apps.push(item);
 				}
@@ -124,7 +124,7 @@ export const useSearchStore = defineStore('search', {
 			return res;
 		},
 
-		async getfiles(query = '') {
+		async getFiles(query = '') {
 			// if (!tokenStore.token) {
 			// 	return;
 			// }
@@ -154,7 +154,7 @@ export const useSearchStore = defineStore('search', {
 		},
 
 		async getContent(query = '', serviceType: ServiceType) {
-			const parms: ServiceParmasType = {
+			const params: ServiceParamsType = {
 				query,
 				serviceType: serviceType,
 				limit: 50,
@@ -162,7 +162,7 @@ export const useSearchStore = defineStore('search', {
 			};
 			const res: any = await axios.post(
 				tokenStore.url + '/server/search',
-				parms
+				params
 			);
 			const newRes = [];
 
@@ -208,7 +208,7 @@ export const useSearchStore = defineStore('search', {
 			};
 			this.chatList.push(qMessage);
 			this.can_input = false;
-			this.waitting = true;
+			this.waiting = true;
 			this.conversationId = null;
 
 			const store = useSocketStore();
@@ -226,7 +226,7 @@ export const useSearchStore = defineStore('search', {
 		initChat() {
 			this.chatList = [];
 			this.can_input = true;
-			this.waitting = false;
+			this.waiting = false;
 		}
 	}
 });

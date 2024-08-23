@@ -20,7 +20,7 @@
 		<!-- <span class="btn" @click="openCommand('')">Open Command</span> -->
 	</div>
 	<div class="list q-pt-sm" ref="listRef">
-		<template v-for="items in appdata" :key="items.name">
+		<template v-for="items in appData" :key="items.name">
 			<div class="category" v-if="items.category === 'Use'">
 				{{ `${items.category} ${searchTxt} with...` }}
 			</div>
@@ -75,7 +75,7 @@ const searchRef = ref();
 const activeItem = ref();
 const isActiveRef = ref();
 const listRef = ref<null | HTMLElement>(null);
-const appdata = ref();
+const appData = ref();
 const timer = ref();
 
 const classifyData = (data: any, searchTxt?: string) => {
@@ -155,17 +155,17 @@ const handleActive = (name: string) => {
 };
 
 const keydownEnter = (event: any) => {
-	if (!appdata.value) {
+	if (!appData.value) {
 		return false;
 	}
-	const keydownData = concatData(appdata.value);
+	const keydownData = concatData(appData.value);
 
 	const index = keydownData.findIndex((item) => item.name === activeItem.value);
 	if (event.keyCode === 38) {
 		const upIndex = index - 1;
 		if (upIndex >= 0) {
 			activeItem.value = keydownData[upIndex].name;
-			refushScroll(upIndex);
+			refreshScroll(upIndex);
 		}
 	}
 
@@ -173,7 +173,7 @@ const keydownEnter = (event: any) => {
 		const downIndex = index + 1;
 		if (downIndex <= keydownData.length - 1) {
 			activeItem.value = keydownData[downIndex].name;
-			refushScroll(downIndex);
+			refreshScroll(downIndex);
 		}
 	}
 
@@ -193,7 +193,7 @@ const concatData = (data: any) => {
 	return newArr;
 };
 
-const refushScroll = (index: number) => {
+const refreshScroll = (index: number) => {
 	isActiveRef.value[index].scrollIntoView({
 		behavior: 'auto',
 		block: 'nearest'
@@ -207,13 +207,13 @@ const handleClear = () => {
 watch(
 	() => searchTxt.value,
 	(newVal) => {
-		appdata.value = classifyData(props.commandList, newVal);
+		appData.value = classifyData(props.commandList, newVal);
 	}
 );
 
 onMounted(() => {
 	nextTick(() => {
-		appdata.value = props.commandList && classifyData(props.commandList);
+		appData.value = props.commandList && classifyData(props.commandList);
 		setTimeout(() => {
 			searchRef.value && searchRef.value.focus();
 		}, 0);

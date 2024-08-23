@@ -1,11 +1,11 @@
 <template>
-	<div class="Launch_pad_page in-center-page" @click="dismiss">
+	<div class="launch_pad_page in_center_page" @click="dismiss">
 		<div class="launch_pad_box in-center" ref="launchpadPage">
 			<div class="launch_pad_search" ref="searchBox">
 				<q-input
 					dense
 					stack-label
-					class="search_itme"
+					class="launch_search"
 					v-model="searchVal"
 					@focus="focusSearch"
 					@blur="blurSearch"
@@ -19,7 +19,7 @@
 					</template>
 					<template v-slot:append>
 						<div class="search_input" v-if="searchVal.length <= 0 && isFocus">
-							{{ t('launch_input_placehoder') }}
+							{{ t('launch_input_placeholder') }}
 						</div>
 						<img
 							v-if="searchVal.length > 0"
@@ -32,7 +32,7 @@
 				</q-input>
 			</div>
 			<template
-				v-if="appStore.launchpadapps && appStore.launchpadapps.length > 0"
+				v-if="appStore.launchPadApps && appStore.launchPadApps.length > 0"
 			>
 				<q-carousel
 					v-model="slide"
@@ -40,18 +40,18 @@
 					transition-next="slide-left"
 					swipeable
 					animated
-					navigation
-					class="bg-grey-1 shadow-2 rounded-borders q_vackgr_carousel"
+					class="bg-grey-1 shadow-2 rounded-borders pad_carousel"
+					ref="carousel"
 				>
 					<q-carousel-slide
-						v-for="(appList, Indexlist) in appStore.launchpadapps"
-						:key="'deskp0' + Indexlist"
-						:name="Indexlist"
-						class="column_launchpadapps column no-wrap column_none"
+						v-for="(appList, indexList) in appStore.launchPadApps"
+						:key="'desk_' + indexList"
+						:name="indexList"
+						class="column_launch_pad_apps column no-wrap column_none"
 					>
 						<div
-							v-for="(element, index) in appStore.launchpadapps[Indexlist]"
-							:key="'adod+index' + index"
+							v-for="(element, index) in appStore.launchPadApps[indexList]"
+							:key="'app_' + index"
 							:style="`
 									border-radius: 16px;
 									position:absolute;
@@ -83,7 +83,7 @@
 										appStore.desktopApps[element].icon,
 										appStore.desktopApps[element].title,
 										element,
-										Indexlist
+										indexList
 									)
 								"
 							></div>
@@ -110,16 +110,30 @@
 								)}px;`"
 							/>
 							<div
-								class="launchpadapps_name"
+								class="launch_pad_apps_name"
 								:data-index="appStore.desktopApps[element].id"
 							>
 								{{ appStore.desktopApps[element].title }}
 							</div>
 						</div>
 					</q-carousel-slide>
+
+					<template v-slot:control>
+						<q-carousel-control
+							class="row items-center justify-center full-width"
+						>
+							<span
+								class="carousel_dot q-mx-sm"
+								:class="slide === index ? 'active' : ''"
+								v-for="(dot, index) in appStore.launchPadApps"
+								:key="index"
+								@click.stop="goto(index)"
+							></span>
+						</q-carousel-control>
+					</template>
 				</q-carousel>
 			</template>
-			<div class="noresult" v-else>{{ t('launch_no_result') }}</div>
+			<div class="data_empty" v-else>{{ t('launch_no_result') }}</div>
 		</div>
 	</div>
 </template>
@@ -138,7 +152,7 @@ import DeleteAppDialog from 'components/ConfirmDeleteAppDialog.vue';
 import { borderRadiusFormat } from 'src/utils/utils';
 
 defineProps({
-	isShowLaunc: {
+	isShowLaunch: {
 		type: Boolean,
 		required: false
 	}
@@ -191,6 +205,7 @@ let drag_launch_app: string | null = null;
 let choose = -1;
 let isAnimation = false;
 let lastDragFinishTime = 0;
+const carousel = ref();
 
 const openWindow = async (item: DesktopAppInfo) => {
 	emits('appClick', {
@@ -254,22 +269,22 @@ function blurSearch() {
 }
 
 function deleteLaunch(
-	launchlogo: string,
+	icon: string,
 	launchTitle: string,
 	index: number,
-	Indexlist: number
+	indexList: number
 ) {
 	$q.dialog({
 		component: DeleteAppDialog,
 		componentProps: {
-			launchlogoIocn: launchlogo,
+			launchLogoIcon: icon,
 			launchTitle: launchTitle
 		}
 	}).onOk(async () => {
 		const fatherName = appStore.desktopApps[index].fatherName;
-		let categoryLaunchpadapps = appStore.launchpadapps[Indexlist];
-		appStore.launchpadapps[Indexlist] = categoryLaunchpadapps.filter(
-			(itme, indexs) => indexs !== index
+		let categoryLaunchPadApps = appStore.launchPadApps[indexList];
+		appStore.launchPadApps[indexList] = categoryLaunchPadApps.filter(
+			(item, itemIndex) => itemIndex !== index
 		);
 
 		await appStore.uninstall_application(fatherName);
@@ -485,6 +500,10 @@ const updateSearch = (val: string) => {
 const cleanSearchVal = () => {
 	searchVal.value = '';
 };
+
+const goto = (value: number) => {
+	carousel.value.goTo(value);
+};
 </script>
 
 <style lang="scss" scoped>
@@ -516,7 +535,7 @@ const cleanSearchVal = () => {
 		border-radius: 16px;
 	}
 }
-.q_vackgr_carousel {
+.pad_carousel {
 	background: transparent !important;
 	box-shadow: none !important;
 	height: 90% !important;
@@ -538,8 +557,8 @@ const cleanSearchVal = () => {
 .column_none {
 	overflow: hidden !important;
 }
-.column_launchpadapps {
-	.launchpadapps_name {
+.column_launch_pad_apps {
+	.launch_pad_apps_name {
 		width: 140%;
 		transform: translateX(-13%);
 		text-align: center;
@@ -598,7 +617,7 @@ const cleanSearchVal = () => {
 		}
 	}
 }
-.Launch_pad_page {
+.launch_pad_page {
 	width: 100%;
 	height: 100%;
 	background: rgba(0, 0, 0, 0.5);
@@ -607,7 +626,7 @@ const cleanSearchVal = () => {
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	.search_itme {
+	.launch_search {
 		width: 240px;
 		height: 32px !important;
 		line-height: 32px !important;
@@ -656,67 +675,31 @@ const cleanSearchVal = () => {
 		justify-content: center;
 		align-items: center;
 	}
-	.launch_pad_APPs {
-		width: 100%;
-		display: flex;
-		flex-wrap: wrap;
-		.launch_pad_Dragg {
-			width: 100%;
-			display: flex;
-			flex-wrap: wrap;
-			align-content: flex-start;
-			.launch_pad_drag {
-				width: calc(100% / 7);
-				margin-bottom: 48px;
-				cursor: pointer;
-			}
-		}
 
-		.launch_myapps_box {
-			width: 70%;
-			.contain_img {
-				display: flex;
-				justify-content: center;
-				align-items: center;
-
-				.animation_delete {
-					width: 70px;
-					position: relative;
-				}
-			}
-
-			.launch_pad_myapps_logo {
-				display: flex;
-				width: 70px;
-				height: 70px;
-				background: #ffffff;
-				box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.2);
-				border-radius: 16px;
-			}
-			.launch_myapps_text {
-				width: 100%;
-				font-size: 14px;
-				font-family: Roboto-Medium, Roboto;
-				font-weight: 500;
-				color: #ffffff;
-				margin-top: 12px;
-				text-align: center;
-			}
-		}
-	}
-
-	.noresult {
+	.data_empty {
 		color: #e5e5e5;
 		font-size: 20px;
 		margin-top: calc(50% - 180px);
 		text-align: center;
 	}
 }
-.in-center-page {
-	-webkit-animation: puff-in-center-page 0.6s;
-	animation: puff-in-center-page 0.6s;
+
+.carousel_dot {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	background-color: rgba(255, 255, 255, 0.3);
+	border-radius: 4px;
+	cursor: pointer;
+	&.active {
+		background-color: rgba(255, 255, 255, 1);
+	}
 }
-@-webkit-keyframes puff-in-center-page {
+.in_center_page {
+	-webkit-animation: puff_in_center_page 0.6s;
+	animation: puff_in_center_page 0.6s;
+}
+@-webkit-keyframes puff_in_center_page {
 	0% {
 		opacity: 0;
 	}
@@ -724,7 +707,7 @@ const cleanSearchVal = () => {
 		opacity: 1;
 	}
 }
-@keyframes puff-in-center-page {
+@keyframes puff_in_center_page {
 	0% {
 		opacity: 0;
 	}

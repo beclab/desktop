@@ -23,8 +23,8 @@
 					<TerminusAvatar :info="tokenStore.terminus" :size="24" />
 				</div>
 				<div class="askTxt" v-if="filesItem && index === 0">
-					<div class="askfiles">
-						<span class="askai">Ask AI</span>
+					<div class="ask_files">
+						<span class="as_kai">Ask AI</span>
 						<span class="content">
 							<img
 								:src="
@@ -38,7 +38,7 @@
 							</span>
 						</span>
 					</div>
-					<div class="qtxt">{{ item.text }}</div>
+					<div class="message">{{ item.text }}</div>
 				</div>
 				<div class="txt" v-else>{{ item.text }}</div>
 			</div>
@@ -55,7 +55,7 @@
 					"
 				/>
 				<span class="content">{{ getFileName(filesItemActive.path) }}</span>
-				<span class="colse" @click="closeFilesSearch">
+				<span class="close" @click="closeFilesSearch">
 					<img src="../../assets/close.svg" />
 				</span>
 			</div>
@@ -321,10 +321,10 @@ export default {
 				padding: 12px;
 				min-width: 37px;
 				box-sizing: border-box;
-				.askfiles {
+				.ask_files {
 					display: flex;
 					align-items: center;
-					.askai {
+					.as_kai {
 						font-size: 12px;
 						line-height: 14px;
 						color: #857c77;
@@ -349,7 +349,7 @@ export default {
 						}
 					}
 				}
-				.qtxt {
+				.message {
 					margin-top: 8px;
 				}
 			}
@@ -396,7 +396,7 @@ export default {
 				text-overflow: ellipsis;
 				flex: 1;
 			}
-			.colse {
+			.close {
 				width: 15px;
 				height: 15px;
 				line-height: 15px;

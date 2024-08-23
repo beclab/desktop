@@ -57,8 +57,8 @@ export function getFileType(fileName: string) {
 	let suffix = '';
 	let result: string | undefined = '';
 	if (fileName) {
-		const flieArr = fileName.split('.');
-		suffix = flieArr[flieArr.length - 1];
+		const fileArr = fileName.split('.');
+		suffix = fileArr[fileArr.length - 1];
 	}
 	if (!suffix) return false;
 	suffix = suffix.toLocaleLowerCase();
@@ -127,13 +127,13 @@ export function sizeFormat(size: number) {
 		//	GB
 		data = (size / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
 	}
-	const sizestr = data + '';
-	const len = sizestr.indexOf('.');
-	const dec = sizestr.substr(len + 1, 2);
+	const sizeStr = data + '';
+	const len = sizeStr.indexOf('.');
+	const dec = sizeStr.substr(len + 1, 2);
 	if (dec == '00') {
-		return sizestr.substring(0, len) + sizestr.substr(len + 3, 2);
+		return sizeStr.substring(0, len) + sizeStr.substr(len + 3, 2);
 	}
-	return sizestr;
+	return sizeStr;
 }
 
 export function borderRadiusFormat(width: number, height: number) {

@@ -18,7 +18,7 @@
 						</span>
 					</span>
 
-					<span class="less" @click="toggleNotiyItem(item.application)"
+					<span class="less" @click="toggleNotifyItem(item.application)"
 						>Show less</span
 					>
 					<span class="less-icon">
@@ -32,7 +32,7 @@
 					<div
 						class="notiy-item"
 						v-if="inx === item.children.length - 1"
-						@click="toggleNotiyItem(item.application)"
+						@click="toggleNotifyItem(item.application)"
 					>
 						<div class="avator" v-if="cell.icon">
 							<q-img
@@ -78,47 +78,33 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { ref, defineComponent, watch } from 'vue';
+<script lang="ts" setup>
+import { ref, watch } from 'vue';
 import { useNotificationStore } from '../stores/notification';
 
-export default defineComponent({
-	name: 'NotiFication',
-	components: {},
-	props: {},
-	setup() {
-		const notificationStore = useNotificationStore();
-		const notificationData = ref(notificationStore.data);
+const notificationStore = useNotificationStore();
+const notificationData = ref(notificationStore.data);
 
-		const toggleNotiyItem = (appName: string) => {
-			for (let index = 0; index < notificationData.value.length; index++) {
-				const element = notificationData.value[index];
-				if (element.application === appName) {
-					element.open = !element.open;
-				}
-			}
-		};
-
-		const deleteItem = (appName: string, itemId?: number) => {
-			notificationStore.delete(appName, itemId);
-			notificationData.value = notificationStore.data;
-		};
-
-		watch(
-			() => notificationStore.showNotification,
-			(newVal) => {
-				console.log('showNotification', newVal);
-			}
-		);
-
-		return {
-			notificationData,
-			notificationStore,
-			toggleNotiyItem,
-			deleteItem
-		};
+const toggleNotifyItem = (appName: string) => {
+	for (let index = 0; index < notificationData.value.length; index++) {
+		const element = notificationData.value[index];
+		if (element.application === appName) {
+			element.open = !element.open;
+		}
 	}
-});
+};
+
+const deleteItem = (appName: string, itemId?: number) => {
+	notificationStore.delete(appName, itemId);
+	notificationData.value = notificationStore.data;
+};
+
+watch(
+	() => notificationStore.showNotification,
+	(newVal) => {
+		console.log('showNotification', newVal);
+	}
+);
 </script>
 
 <style lang="scss" scoped>

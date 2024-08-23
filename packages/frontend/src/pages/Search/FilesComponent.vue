@@ -15,7 +15,7 @@
 	</div>
 	<div class="files">
 		<div class="fileList">
-			<template v-for="(item, index) in filedata" :key="item.name">
+			<template v-for="(item, index) in fileData" :key="item.name">
 				<div
 					ref="isActiveRef"
 					:class="[activeItem === item.name ? 'isActive' : '', 'txt']"
@@ -32,7 +32,7 @@
 				</div>
 			</template>
 		</div>
-		<div class="fileDetails" v-if="filedata && filedata.length > 0">
+		<div class="fileDetails" v-if="fileData && fileData.length > 0">
 			<div class="header">
 				<div class="desc">
 					<img
@@ -89,7 +89,7 @@ import { ref, watch, onMounted, onUnmounted } from 'vue';
 import { debounce } from 'quasar';
 import { useSearchStore } from './../../stores/search';
 
-interface TerminusParmas {
+interface TerminusParams {
 	from: string;
 	message: string;
 	path: string;
@@ -117,15 +117,15 @@ export default {
 		const filesRef = ref();
 
 		const fileDetail = ref();
-		const filedata = ref();
+		const fileData = ref();
 		const activeItem = ref();
 		const isActiveRef = ref();
 		const searchStore = useSearchStore();
 		const pattern = new RegExp('[\u4E00-\u9FA5]+');
 
 		const chooseFile = (index: number) => {
-			fileDetail.value = filedata.value[index];
-			activeItem.value = filedata.value[index].name;
+			fileDetail.value = fileData.value[index];
+			activeItem.value = fileData.value[index].name;
 		};
 
 		const classifyData = (data: any) => {
@@ -135,7 +135,7 @@ export default {
 			return newArr;
 		};
 
-		const refushScroll = (index: number) => {
+		const refreshScroll = (index: number) => {
 			isActiveRef.value[index].scrollIntoView({
 				behavior: 'auto',
 				block: 'nearest'
@@ -146,35 +146,35 @@ export default {
 			() => searchFiles.value,
 			debounce(async (newVal: string | undefined) => {
 				if (!newVal) {
-					return (filedata.value = []);
+					return (fileData.value = []);
 				}
 				if (!pattern.test(newVal) && newVal.length <= 2) {
 					return false;
 				}
 
-				const filesList = await getfiles(newVal);
-				filedata.value = await classifyData(filesList);
+				const filesList = await getFiles(newVal);
+				fileData.value = await classifyData(filesList);
 			}, 600)
 		);
 
-		const getfiles = (query?: string) => {
-			return searchStore.getfiles(query);
+		const getFiles = (query?: string) => {
+			return searchStore.getFiles(query);
 		};
 
 		const handleAction = (from: string, item: any) => {
-			let terminusParmas: TerminusParmas | null = null;
+			let terminusParams: TerminusParams | null = null;
 			let message = '';
 			if (from === 'summarize') {
 				message = 'Please help me summarize this document';
 			}
-			terminusParmas = {
+			terminusParams = {
 				from,
 				message,
 				path: item.where,
 				fileType: item.fileType
 			};
 
-			context.emit('handleAction', terminusParmas);
+			context.emit('handleAction', terminusParams);
 		};
 
 		const goBack = () => {
@@ -186,8 +186,8 @@ export default {
 				return goBack();
 			}
 
-			if (!filedata.value) return false;
-			const index = filedata.value.findIndex(
+			if (!fileData.value) return false;
+			const index = fileData.value.findIndex(
 				(item: { name: any }) => item.name === activeItem.value
 			);
 			const upIndex = index - 1;
@@ -196,16 +196,16 @@ export default {
 			switch (event.keyCode) {
 				case 38:
 					if (upIndex >= 0) {
-						activeItem.value = filedata.value[upIndex].name;
-						refushScroll(upIndex);
+						activeItem.value = fileData.value[upIndex].name;
+						refreshScroll(upIndex);
 						chooseFile(upIndex);
 					}
 					break;
 
 				case 40:
-					if (downIndex <= filedata.value.length - 1) {
-						activeItem.value = filedata.value[downIndex].name;
-						refushScroll(downIndex);
+					if (downIndex <= fileData.value.length - 1) {
+						activeItem.value = fileData.value[downIndex].name;
+						refreshScroll(downIndex);
 						chooseFile(downIndex);
 					}
 					break;
@@ -224,7 +224,7 @@ export default {
 
 		return {
 			fileDetail,
-			filedata,
+			fileData,
 			activeItem,
 			isActiveRef,
 			searchFiles,

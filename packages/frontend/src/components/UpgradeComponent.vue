@@ -2,12 +2,12 @@
 	<div class="upgrade">
 		<div class="logo-wrap">
 			<img
-				src="../assets/upgrad-success.svg"
+				src="../assets/upgrade-success.svg"
 				v-if="['completed', 'not_running'].includes(upgradeStore.state)"
 				alt="success"
 			/>
 			<img
-				src="../assets/upgrad-fail.svg"
+				src="../assets/upgrade-fail.svg"
 				v-else-if="upgradeStore.state === 'failed'"
 				alt="fail"
 			/>
@@ -22,7 +22,7 @@
 			v-if="['completed', 'not_running'].includes(upgradeStore.state)"
 		>
 			<div>Congratulations</div>
-			<div>Update successed</div>
+			<div>Update successful</div>
 		</div>
 
 		<div class="content" v-else-if="upgradeStore.state === 'failed'">

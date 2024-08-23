@@ -1,22 +1,22 @@
 import { defineStore } from 'pinia';
 
-interface NotiType {
+interface NotifyType {
 	id: number;
 	title: string;
 	message: string;
 	icon: string;
 }
 
-interface NotiAppType {
+interface NotifyAppType {
 	id: number;
 	application: string;
 	icon: string;
 	open?: boolean;
-	children: NotiType[];
+	children: NotifyType[];
 }
 
 export type DataState = {
-	data: NotiAppType[];
+	data: NotifyAppType[];
 	showNotification: boolean;
 };
 
@@ -33,19 +33,19 @@ export const useNotificationStore = defineStore('notification', {
 							id: 1,
 							title: 'Trading information1',
 							message:
-								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.'
+								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction details.'
 						},
 						{
 							id: 2,
 							title: 'Trading information2',
 							message:
-								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.'
+								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction details.'
 						},
 						{
 							id: 3,
 							title: 'Trading information3',
 							message:
-								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.'
+								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction details.'
 						}
 					]
 				},
@@ -57,19 +57,19 @@ export const useNotificationStore = defineStore('notification', {
 							id: 1,
 							title: 'Trading information1',
 							message:
-								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.'
+								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction details.'
 						},
 						{
 							id: 2,
 							title: 'Trading information2',
 							message:
-								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.'
+								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction details.'
 						},
 						{
 							id: 3,
 							title: 'Trading information3',
 							message:
-								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.'
+								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction details.'
 						}
 					]
 				},
@@ -81,7 +81,7 @@ export const useNotificationStore = defineStore('notification', {
 							id: 1,
 							title: 'Trading information1',
 							message:
-								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.'
+								'Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction details.'
 						}
 					]
 				}

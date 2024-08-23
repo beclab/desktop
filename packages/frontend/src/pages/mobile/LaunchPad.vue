@@ -2,7 +2,7 @@
 	<div class="Launch_pad_page in-center-page" @click="dismiss">
 		<div class="launch_pad_box in-center" ref="launchpadPage">
 			<template
-				v-if="appStore.launchpadapps && appStore.launchpadapps.length > 0"
+				v-if="appStore.launchPadApps && appStore.launchPadApps.length > 0"
 			>
 				<q-carousel
 					v-model="slide"
@@ -14,14 +14,14 @@
 					class="bg-grey-1 shadow-2 rounded-borders q_vackgr_carousel"
 				>
 					<q-carousel-slide
-						v-for="(appList, Indexlist) in appStore.launchpadapps"
+						v-for="(appList, Indexlist) in appStore.launchPadApps"
 						:key="'deskp0' + Indexlist"
 						:name="Indexlist"
 						class="column_launchpadapps column no-wrap column_none"
 					>
 						<div
 							class="row items-center justify-center"
-							v-for="(element, index) in appStore.launchpadapps[Indexlist]"
+							v-for="(element, index) in appStore.launchPadApps[Indexlist]"
 							:key="'adod+index' + index"
 							style="
 								border-radius: 16px;
@@ -96,11 +96,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
-import {
-	DesktopAppInfo,
-	DesktopPosition,
-	AppClickInfo
-} from '@desktop/core/src/types';
+import { DesktopAppInfo, AppClickInfo } from '@desktop/core/src/types';
 import { useI18n } from 'vue-i18n';
 import { useAppStore, isSystemApp } from 'stores/app';
 import DeleteAppDialog from 'components/ConfirmDeleteAppDialog.vue';
@@ -189,8 +185,8 @@ function deleteLaunch(
 		}
 	}).onOk(async () => {
 		const fatherName = appStore.desktopApps[index].fatherName;
-		let categoryLaunchpadapps = appStore.launchpadapps[Indexlist];
-		appStore.launchpadapps[Indexlist] = categoryLaunchpadapps.filter(
+		let categoryLaunchPadApps = appStore.launchPadApps[Indexlist];
+		appStore.launchPadApps[Indexlist] = categoryLaunchPadApps.filter(
 			(itme, indexs) => indexs !== index
 		);
 
