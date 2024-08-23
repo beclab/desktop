@@ -22,7 +22,7 @@
     "crypto": "npm:crypto-browserify",
     "fetch": "1.1.0",
     "pinia": "^2.0.11",
-    "quasar": "^2.6.0",
+    "quasar": "^2.16.9",
     "request": "^2.88.2",
     "sortablejs": "^1.15.0",
     "stream": "npm:stream-browserify",
@@ -33,7 +33,7 @@
     "vue3-otp-input": "^0.3.6"
   },
   "devDependencies": {
-    "@quasar/app-webpack": "^3.0.0",
+    "@quasar/app-webpack": "^3.13.4",
     "@types/node": "^12.20.21",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
@@ -47,7 +47,7 @@
     "node-polyfill-webpack-plugin": "^1.1.4",
     "prettier": "^2.5.1",
     "qrcode.vue": "^3.3.3",
-    "sass": "1.32.12",
+    "sass": "^1.77.8",
     "terser-webpack-plugin": "^5.3.10",
     "workbox-webpack-plugin": "^7.1.0"
   },

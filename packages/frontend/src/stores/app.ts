@@ -4,10 +4,10 @@ import {
 	AppInfo,
 	DockerAppInfo,
 	DesktopAppInfo,
-	DesktopPosition
+	DesktopPosition,
+	SearchCategory
 } from '@desktop/core/src/types';
 import { TerminusApp } from '@bytetrade/core';
-import { SearchCategory } from '@desktop/core/src/types';
 import { useTokenStore } from './token';
 import '../assets/icon/iconfont.css';
 
@@ -35,10 +35,10 @@ export type AppState = {
 
 	profile_id: string | undefined;
 
-	dockerapps: DockerAppInfo[];
-	launchpadapps: number[][];
+	dockerApps: DockerAppInfo[];
+	launchPadApps: number[][];
 
-	myapps: AppInfo[];
+	myApps: AppInfo[];
 	desktopApps: DesktopAppInfo[];
 
 	axiosAppInfo: TerminusApp[];
@@ -88,10 +88,10 @@ export const useAppStore = defineStore('app', {
 
 			profile_id: undefined,
 
-			dockerapps: [],
-			launchpadapps: [[]],
+			dockerApps: [],
+			launchPadApps: [[]],
 			desktopApps: [],
-			myapps: [],
+			myApps: [],
 			axiosAppInfo: []
 		} as AppState;
 	},
@@ -99,21 +99,21 @@ export const useAppStore = defineStore('app', {
 		async get_my_apps_info() {
 			await this.update_my_apps_info();
 
-			const files = this.myapps.find((app) => app.id.startsWith('files'));
-			const appstore = this.myapps.find((app) => app.id.startsWith('market'));
-			const settings = this.myapps.find((app) => app.id.startsWith('settings'));
-			const profile = this.myapps.find((app) => app.id.startsWith('profile'));
+			const files = this.myApps.find((app) => app.id.startsWith('files'));
+			const appStore = this.myApps.find((app) => app.id.startsWith('market'));
+			const settings = this.myApps.find((app) => app.id.startsWith('settings'));
+			const profile = this.myApps.find((app) => app.id.startsWith('profile'));
 			this.profile_id = profile?.id;
 
-			const docker_list = [files?.id, 'launchpad', appstore?.id, settings?.id];
+			const docker_list = [files?.id, 'launchpad', appStore?.id, settings?.id];
 
-			this.dockerapps = [];
+			this.dockerApps = [];
 			let index = 0;
 			for (let j = 0; j < docker_list.length; ++j) {
-				let fapp = this.myapps.find((app) => app.id == docker_list[j]);
+				let curApp = this.myApps.find((app) => app.id == docker_list[j]);
 
 				if (docker_list[j] == 'launchpad') {
-					fapp = {
+					curApp = {
 						id: 'launchpad',
 						appid: 'launchpad',
 						icon: 'https://file.bttcdn.com/appstore/launchpad/icon.png',
@@ -127,9 +127,9 @@ export const useAppStore = defineStore('app', {
 					};
 				}
 
-				if (fapp) {
+				if (curApp) {
 					const d: DockerAppInfo = {
-						id: 'bdock:' + fapp.id,
+						id: 'bdock:' + curApp.id,
 						left: 0,
 						top:
 							index == 0
@@ -138,16 +138,16 @@ export const useAppStore = defineStore('app', {
 								  this.DOCKER_APP_SIZE * index +
 								  this.DOCKER_APP_GAP * index,
 						size: this.DOCKER_APP_SIZE,
-						icon: fapp.icon,
-						name: fapp.name,
-						title: fapp.title,
-						namespace: fapp.namespace!,
-						owner: fapp.owner!,
-						url: fapp.url!,
+						icon: curApp.icon,
+						name: curApp.name,
+						title: curApp.title,
+						namespace: curApp.namespace!,
+						owner: curApp.owner!,
+						url: curApp.url!,
 						is_temp: false,
 						show_dot: false
 					};
-					this.dockerapps.push(d);
+					this.dockerApps.push(d);
 					index = index + 1;
 				}
 			}
@@ -156,11 +156,11 @@ export const useAppStore = defineStore('app', {
 		async get_mobile_apps_info() {
 			await this.update_my_apps_info();
 
-			const files = this.myapps.find((app) => app.id.startsWith('files'));
-			const settings = this.myapps.find((app) => app.id.startsWith('settings'));
-			const profile = this.myapps.find((app) => app.id.startsWith('profile'));
-			const wise = this.myapps.find((app) => app.id.startsWith('wise'));
-			const vault = this.myapps.find((app) => app.id.startsWith('vault'));
+			const files = this.myApps.find((app) => app.id.startsWith('files'));
+			const settings = this.myApps.find((app) => app.id.startsWith('settings'));
+			const profile = this.myApps.find((app) => app.id.startsWith('profile'));
+			const wise = this.myApps.find((app) => app.id.startsWith('wise'));
+			const vault = this.myApps.find((app) => app.id.startsWith('vault'));
 
 			this.profile_id = profile?.id;
 
@@ -172,13 +172,13 @@ export const useAppStore = defineStore('app', {
 				vault?.id
 			];
 
-			this.dockerapps = [];
+			this.dockerApps = [];
 			let index = 0;
 			for (let j = 0; j < docker_list.length; ++j) {
-				let fapp = this.myapps.find((app) => app.id == docker_list[j]);
+				let curApp = this.myApps.find((app) => app.id == docker_list[j]);
 
 				if (docker_list[j] == 'launchpad') {
-					fapp = {
+					curApp = {
 						id: 'launchpad',
 						appid: 'launchpad',
 						icon: './app-icon/launch-icon.png',
@@ -192,9 +192,9 @@ export const useAppStore = defineStore('app', {
 					};
 				}
 
-				if (fapp) {
+				if (curApp) {
 					const d: DockerAppInfo = {
-						id: 'bdock:' + fapp.id,
+						id: 'bdock:' + curApp.id,
 						left: 0,
 						top:
 							index == 0
@@ -203,16 +203,16 @@ export const useAppStore = defineStore('app', {
 								  this.DOCKER_APP_SIZE * index +
 								  this.DOCKER_APP_GAP * index,
 						size: this.DOCKER_APP_SIZE,
-						icon: fapp.icon,
-						name: fapp.name,
-						title: fapp.title,
-						namespace: fapp.namespace!,
-						owner: fapp.owner!,
-						url: fapp.url!,
+						icon: curApp.icon,
+						name: curApp.name,
+						title: curApp.title,
+						namespace: curApp.namespace!,
+						owner: curApp.owner!,
+						url: curApp.url!,
 						is_temp: false,
 						show_dot: false
 					};
-					this.dockerapps.push(d);
+					this.dockerApps.push(d);
 					index = index + 1;
 				}
 			}
@@ -238,7 +238,7 @@ export const useAppStore = defineStore('app', {
 		},
 
 		async dismiss_search_result() {
-			this.relocate_application_place(this.myapps);
+			this.relocate_application_place(this.myApps);
 		},
 
 		async update_my_apps_info() {
@@ -246,16 +246,16 @@ export const useAppStore = defineStore('app', {
 			// 	return;
 			// }
 			const data: TerminusApp[] = await axios.post(
-				tokenStore.url + '/server/myapps',
+				tokenStore.url + '/server/myApps',
 				{}
 			);
 			this.axiosAppInfo = data;
 
-			this.myapps = [];
+			this.myApps = [];
 
 			for (let i = 0; i < data.length; ++i) {
 				if (!data[i].entrances || data[i].entrances.length == 0) {
-					this.myapps.push({
+					this.myApps.push({
 						...data[i],
 						id: data[i].id,
 						appid: data[i].id,
@@ -268,7 +268,7 @@ export const useAppStore = defineStore('app', {
 						if (data[i].entrances[j].invisible) {
 							// do nothing
 						} else {
-							this.myapps.push({
+							this.myApps.push({
 								...data[i],
 								type: SearchCategory.Application,
 								id: data[i].entrances[j].id,
@@ -285,9 +285,9 @@ export const useAppStore = defineStore('app', {
 				}
 			}
 
-			this.relocate_application_place(this.myapps);
+			this.relocate_application_place(this.myApps);
 
-			const fapp = {
+			const curApp = {
 				id: 'launchpad',
 				appid: 'launchpad',
 				icon: 'https://file.bttcdn.com/appstore/launchpad/icon.png',
@@ -300,11 +300,11 @@ export const useAppStore = defineStore('app', {
 				fatherName: null,
 				openMethod: 'default'
 			};
-			this.myapps.push(fapp);
+			this.myApps.push(curApp);
 		},
 
 		relocate_application_place(relocate_apps: AppInfo[]) {
-			this.launchpadapps = [];
+			this.launchPadApps = [];
 			this.desktopApps = [];
 
 			const t: any = {};
@@ -315,7 +315,7 @@ export const useAppStore = defineStore('app', {
 				t[relocate_apps[i].id] = '1';
 
 				if (i % (this.DESKTOP_APP_X_NUM * this.DESKTOP_APP_Y_NUM) == 0) {
-					this.launchpadapps.push([]);
+					this.launchPadApps.push([]);
 				}
 
 				const page_num = i % (this.DESKTOP_APP_X_NUM * this.DESKTOP_APP_Y_NUM);
@@ -326,7 +326,7 @@ export const useAppStore = defineStore('app', {
 					id: 'bdesk:' + relocate_apps[i].id,
 					appid: 'bdesk:' + relocate_apps[i].appid,
 					index: i,
-					page: this.launchpadapps.length - 1,
+					page: this.launchPadApps.length - 1,
 					page_num: page_num,
 					left:
 						x == 0
@@ -351,7 +351,8 @@ export const useAppStore = defineStore('app', {
 					fatherName: relocate_apps[i].fatherName
 				};
 
-				this.launchpadapps[this.launchpadapps.length - 1].push(i);
+				this.launchPadApps[this.launchPadApps.length - 1].push(i);
+
 				this.desktopApps.push(d);
 			}
 		},
@@ -406,14 +407,14 @@ export const useAppStore = defineStore('app', {
 		},
 
 		find_app(id: string) {
-			return this.dockerapps.find((app) => app.id == id);
+			return this.dockerApps.find((app) => app.id == id);
 		},
 
 		async remove_app_on_docker(id: string) {
-			const index: number = this.dockerapps.findIndex((app) => app.id == id);
+			const index: number = this.dockerApps.findIndex((app) => app.id == id);
 
 			if (index >= 0) {
-				this.dockerapps.splice(index, 1);
+				this.dockerApps.splice(index, 1);
 			}
 		},
 
@@ -425,12 +426,12 @@ export const useAppStore = defineStore('app', {
 			} else if (rid.startsWith('bdock:') == false) {
 				rid = 'bdock:' + id;
 			}
-			const t = this.dockerapps.find((app) => app.id == rid);
+			const t = this.dockerApps.find((app) => app.id == rid);
 			return t != undefined;
 		},
 
 		async add_app_on_docker_bottom(id: string) {
-			const index = this.dockerapps.length;
+			const index = this.dockerApps.length;
 			const top =
 				index == 0
 					? this.DOCKER_APP_START_GAP
@@ -453,7 +454,7 @@ export const useAppStore = defineStore('app', {
 				rid = rid.substring(6);
 			}
 
-			const a: any = this.myapps.find((app) => app.id == rid);
+			const a: any = this.myApps.find((app) => app.id == rid);
 
 			if (a) {
 				const d: DockerAppInfo = {
@@ -470,7 +471,7 @@ export const useAppStore = defineStore('app', {
 					is_temp,
 					show_dot
 				};
-				this.dockerapps.push(d);
+				this.dockerApps.push(d);
 			} else {
 				const d: DockerAppInfo = {
 					id: 'bdock:' + a.id,
@@ -486,7 +487,7 @@ export const useAppStore = defineStore('app', {
 					is_temp,
 					show_dot
 				};
-				this.dockerapps.push(d);
+				this.dockerApps.push(d);
 			}
 		},
 

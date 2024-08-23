@@ -2,7 +2,7 @@
 	<q-dialog ref="dialogRef" @hide="onDialogHide" persistent class="dialog_box">
 		<q-card class="dialog_card">
 			<q-card-section class="row items-center">
-				<q-img fit="contain" class="launch_pad_dialog" :src="launchlogoIocn" />
+				<q-img fit="contain" class="launch_pad_dialog" :src="launchLogoIcon" />
 				<span class="q-ml-sm launch_dialog_span"
 					>Are you sure you want to delete the application "{{
 						launchTitle
@@ -31,7 +31,7 @@ import { useDialogPluginComponent } from 'quasar';
 export default {
 	name: 'DeleteAppDialog',
 	props: {
-		launchlogoIocn: {
+		launchLogoIcon: {
 			type: String,
 			required: false
 		},

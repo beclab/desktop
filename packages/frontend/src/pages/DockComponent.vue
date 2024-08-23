@@ -18,7 +18,7 @@
 					:style="`height:${DOCKER_APP_TOTAL_HEIGHT}px;`"
 				>
 					<template
-						v-for="(element, index) in appStore.dockerapps"
+						v-for="(element, index) in appStore.dockerApps"
 						:key="'aood+index' + index"
 					>
 						<img
@@ -143,8 +143,8 @@ const app_height_delta = ref(0);
 const DOCKER_APP_TOTAL_HEIGHT = computed(() => {
 	let t =
 		appStore.DOCKER_APP_START_GAP +
-		appStore.dockerapps.length * appStore.DOCKER_APP_SIZE +
-		(appStore.dockerapps.length - 1) * appStore.DOCKER_APP_GAP +
+		appStore.dockerApps.length * appStore.DOCKER_APP_SIZE +
+		(appStore.dockerApps.length - 1) * appStore.DOCKER_APP_GAP +
 		appStore.DOCKER_APP_END_GAP;
 
 	return t + app_height_delta.value;
@@ -170,8 +170,8 @@ const onContextmenu = (element: DockerAppInfo) => {
 
 const getAppIndexInDock = (id: string) => {
 	let index = -1;
-	for (var i = 0; i < appStore.dockerapps.length; i++) {
-		const draggedEl: any = document.getElementById(appStore.dockerapps[i].id);
+	for (var i = 0; i < appStore.dockerApps.length; i++) {
+		const draggedEl: any = document.getElementById(appStore.dockerApps[i].id);
 		if (draggedEl.id == id) {
 			index = i;
 		}
@@ -182,7 +182,7 @@ const getAppIndexInDock = (id: string) => {
 const onDragStart = async (e: any) => {
 	e.dataTransfer.setData('text', e.target.id);
 
-	origin_app = appStore.dockerapps[getAppIndexInDock(e.target.id)];
+	origin_app = appStore.dockerApps[getAppIndexInDock(e.target.id)];
 	choose = getAppIndexInDock(e.target.id);
 
 	remove_top = -1;
@@ -203,7 +203,7 @@ function animate(
 ) {
 	isAnimation = true;
 	if (type == 0) {
-		appStore.dockerapps[source_index].top = sooure_target_y;
+		appStore.dockerApps[source_index].top = sooure_target_y;
 	}
 
 	let p = [];
@@ -215,7 +215,7 @@ function animate(
 
 				function finish() {
 					clearInterval(moveY);
-					appStore.dockerapps[index].top = targetY;
+					appStore.dockerApps[index].top = targetY;
 					resolve(true);
 				}
 
@@ -225,14 +225,14 @@ function animate(
 						return;
 					}
 
-					if (targetY > appStore.dockerapps[index].top) {
-						appStore.dockerapps[index].top += 2;
-						if (targetY <= appStore.dockerapps[index].top) {
+					if (targetY > appStore.dockerApps[index].top) {
+						appStore.dockerApps[index].top += 2;
+						if (targetY <= appStore.dockerApps[index].top) {
 							finish();
 						}
-					} else if (targetY < appStore.dockerapps[index].top) {
-						appStore.dockerapps[index].top -= 2;
-						if (targetY >= appStore.dockerapps[index].top) {
+					} else if (targetY < appStore.dockerApps[index].top) {
+						appStore.dockerApps[index].top -= 2;
+						if (targetY >= appStore.dockerApps[index].top) {
 							finish();
 						}
 					} else {
@@ -277,9 +277,9 @@ function animate(
 
 	Promise.all(p).then(() => {
 		if (type == 1) {
-			for (var i = 0; i < appStore.dockerapps.length; i++) {
+			for (var i = 0; i < appStore.dockerApps.length; i++) {
 				const draggedEl: any = document.getElementById(
-					appStore.dockerapps[i].id
+					appStore.dockerApps[i].id
 				);
 				draggedEl.classList.remove('drag-start');
 			}
@@ -295,8 +295,8 @@ function animate(
 			appStore.add_app_on_docker(source_index, target_top, false, false);
 			app_height_delta.value = 0;
 
-			origin_app = appStore.dockerapps[appStore.dockerapps.length - 1];
-			choose = appStore.dockerapps.length - 1;
+			origin_app = appStore.dockerApps[appStore.dockerApps.length - 1];
+			choose = appStore.dockerApps.length - 1;
 
 			remove_top = -1;
 			remove_id = null;
@@ -321,7 +321,7 @@ const checkMove = (e: any) => {
 	let source_top = 0;
 	if (remove_top >= 0 || !origin_app) {
 		const draggedEl: any = document.getElementById(
-			appStore.dockerapps[dragIndex].id
+			appStore.dockerApps[dragIndex].id
 		);
 		if (draggedEl) {
 			let target_id = null;
@@ -332,10 +332,10 @@ const checkMove = (e: any) => {
 			}
 			if (!appStore.is_app_in_docker(target_id)) {
 				if (e.clientY * 2 > draggedEl.y) {
-					checkAdd(appStore.dockerapps[dragIndex].top, 3, target_id);
+					checkAdd(appStore.dockerApps[dragIndex].top, 3, target_id);
 				} else {
 					checkAdd(
-						appStore.dockerapps[dragIndex].top +
+						appStore.dockerApps[dragIndex].top +
 							appStore.DOCKER_APP_SIZE +
 							appStore.DOCKER_APP_GAP,
 						3,
@@ -345,43 +345,43 @@ const checkMove = (e: any) => {
 			}
 		}
 	} else {
-		source_top = appStore.dockerapps[choose].top;
+		source_top = appStore.dockerApps[choose].top;
 
 		let targets = [];
 
-		if (source_top < appStore.dockerapps[dragIndex].top) {
-			for (var i = 0; i < appStore.dockerapps.length; i++) {
+		if (source_top < appStore.dockerApps[dragIndex].top) {
+			for (var i = 0; i < appStore.dockerApps.length; i++) {
 				if (i == choose) {
 					continue;
 				}
 
 				if (
-					appStore.dockerapps[i].top > source_top &&
-					appStore.dockerapps[i].top <= appStore.dockerapps[dragIndex].top
+					appStore.dockerApps[i].top > source_top &&
+					appStore.dockerApps[i].top <= appStore.dockerApps[dragIndex].top
 				) {
 					targets.push({
 						index: i,
 						targetY:
-							appStore.dockerapps[i].top -
+							appStore.dockerApps[i].top -
 							appStore.DOCKER_APP_SIZE -
 							appStore.DOCKER_APP_GAP
 					});
 				}
 			}
-		} else if (source_top > appStore.dockerapps[dragIndex].top) {
-			for (let i = 0; i < appStore.dockerapps.length; i++) {
+		} else if (source_top > appStore.dockerApps[dragIndex].top) {
+			for (let i = 0; i < appStore.dockerApps.length; i++) {
 				if (i == choose) {
 					continue;
 				}
 
 				if (
-					appStore.dockerapps[i].top >= appStore.dockerapps[dragIndex].top &&
-					appStore.dockerapps[i].top < source_top
+					appStore.dockerApps[i].top >= appStore.dockerApps[dragIndex].top &&
+					appStore.dockerApps[i].top < source_top
 				) {
 					targets.push({
 						index: i,
 						targetY:
-							appStore.dockerapps[i].top +
+							appStore.dockerApps[i].top +
 							appStore.DOCKER_APP_SIZE +
 							appStore.DOCKER_APP_GAP
 					});
@@ -390,7 +390,7 @@ const checkMove = (e: any) => {
 		}
 
 		if (targets.length > 0) {
-			animate(targets, 0, choose, appStore.dockerapps[dragIndex].top, 0);
+			animate(targets, 0, choose, appStore.dockerApps[dragIndex].top, 0);
 		}
 	}
 };
@@ -409,26 +409,26 @@ const onDragLeave = async (e: any) => {
 const removeAppInIndex = (app_remove_index: number, rid: string) => {
 	let targets = [];
 
-	for (var i = 0; i < appStore.dockerapps.length; i++) {
+	for (var i = 0; i < appStore.dockerApps.length; i++) {
 		if (i == app_remove_index) {
 			continue;
 		}
 
 		if (
-			appStore.dockerapps[i].top > appStore.dockerapps[app_remove_index].top
+			appStore.dockerApps[i].top > appStore.dockerApps[app_remove_index].top
 		) {
 			targets.push({
 				index: i,
 				targetY:
-					appStore.dockerapps[i].top -
+					appStore.dockerApps[i].top -
 					appStore.DOCKER_APP_SIZE -
 					appStore.DOCKER_APP_GAP
 			});
 		}
 	}
 
-	remove_top = appStore.dockerapps[app_remove_index].top;
-	remove_id = appStore.dockerapps[app_remove_index].id;
+	remove_top = appStore.dockerApps[app_remove_index].top;
+	remove_id = appStore.dockerApps[app_remove_index].id;
 
 	animate(
 		targets,
@@ -458,10 +458,10 @@ const handleRemoveApp = (appid: string) => {
 
 	let cc = getAppIndexInDock(rid);
 	if (cc < 0) return;
-	if (appStore.dockerapps[cc].is_temp) {
+	if (appStore.dockerApps[cc].is_temp) {
 		removeAppInIndex(cc, rid);
 	}
-	appStore.dockerapps[cc].show_dot = false;
+	appStore.dockerApps[cc].show_dot = false;
 };
 
 const handleOpenApp = (appid: string) => {
@@ -474,7 +474,7 @@ const handleOpenApp = (appid: string) => {
 	if (cc < 0) {
 		appStore.add_app_on_docker_bottom(rid);
 	} else {
-		appStore.dockerapps[cc].show_dot = true;
+		appStore.dockerApps[cc].show_dot = true;
 	}
 };
 
@@ -484,12 +484,12 @@ const checkAdd = (target_top: number, type: number, app_id: string) => {
 	}
 
 	let targets = [];
-	for (var i = 0; i < appStore.dockerapps.length; i++) {
-		if (appStore.dockerapps[i].top >= target_top) {
+	for (var i = 0; i < appStore.dockerApps.length; i++) {
+		if (appStore.dockerApps[i].top >= target_top) {
 			targets.push({
 				index: i,
 				targetY:
-					appStore.dockerapps[i].top +
+					appStore.dockerApps[i].top +
 					appStore.DOCKER_APP_SIZE +
 					appStore.DOCKER_APP_GAP
 			});
@@ -517,10 +517,10 @@ const onDragOver = async (e: any) => {
 	e.preventDefault();
 
 	if (origin_app) {
-		for (var i = 0; i < appStore.dockerapps.length; i++) {
-			if (appStore.dockerapps[i].id == origin_app.id) {
+		for (var i = 0; i < appStore.dockerApps.length; i++) {
+			if (appStore.dockerApps[i].id == origin_app.id) {
 				const draggedEl: any = document.getElementById(
-					appStore.dockerapps[i].id
+					appStore.dockerApps[i].id
 				);
 				draggedEl.classList.add('drag-start');
 			}

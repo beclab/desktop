@@ -23,14 +23,14 @@
 			/>
 
 			<launch-pad
-				v-if="isShowLauncchPad"
-				:isShowLaunc="isShowLauncchPad"
-				@appClick="onLaunhPadAppClick"
+				v-if="isShowLaunchPad"
+				:isShowLaunch="isShowLaunchPad"
+				@appClick="onLaunchPadAppClick"
 				@dismiss="onLaunchPadDismiss"
 				@drag_launch_app="onDragLaunchApp"
 			/>
 
-			<Notification />
+			<NotificationPopup />
 		</div>
 
 		<div style="width: 100%; height: 100vh" ref="window_parent">
@@ -44,7 +44,7 @@
 						@update:modelValue="onWindowUpdate"
 						@close="onWindowClose"
 						@mini="onWindowMiniSize"
-						@ontop="onWindowRequestOnTop"
+						@onTop="onWindowRequestOnTop"
 						@full="onWindowFullSize"
 						:style="`z-index:${window_info.z};`"
 					/>
@@ -65,7 +65,7 @@
 					class="search"
 					v-if="showSearchDialog"
 					@hide="changeSearchDialog"
-					@appClick="onLaunhPadAppClick"
+					@appClick="onLaunchPadAppClick"
 				/>
 			</div>
 		</transition>
@@ -92,7 +92,7 @@ import { useUpgradeStore } from 'stores/upgrade';
 import { expiresStorage } from 'src/utils/location';
 import DockComponent from './DockComponent.vue';
 import LaunchPad from './LaunchPad.vue';
-import Notification from './Notification.vue';
+import NotificationPopup from './NotificationPopup.vue';
 import Search from './Search/IndexPage.vue';
 import DailyDescription from './DailyDescription.vue';
 import BasicWindow from 'components/BasicWindow.vue';
@@ -104,7 +104,7 @@ const tokenStore = useTokenStore();
 const upgradeStore = useUpgradeStore();
 const window_parent = ref<HTMLElement>();
 const dockRef = ref<any>();
-const isShowLauncchPad = ref(false);
+const isShowLaunchPad = ref(false);
 const upgradeFlag = ref(false);
 const messageSavePath = ref<MessageData[]>([]);
 const window_infos = ref<WindowInfo[]>([]);
@@ -404,11 +404,11 @@ const keydownEnter = (event: any) => {
 	}
 };
 
-const launchPadclick = async () => {
-	if (isShowLauncchPad.value) {
-		isShowLauncchPad.value = false;
+const launchPadClick = async () => {
+	if (isShowLaunchPad.value) {
+		isShowLaunchPad.value = false;
 	} else {
-		isShowLauncchPad.value = true;
+		isShowLaunchPad.value = true;
 	}
 };
 
@@ -421,15 +421,15 @@ const onAppClick = async (click: AppClickInfo) => {
 	}
 
 	if (rid == 'launchpad') {
-		launchPadclick();
+		launchPadClick();
 		return;
 	}
 
-	if (isShowLauncchPad.value) {
-		isShowLauncchPad.value = false;
+	if (isShowLaunchPad.value) {
+		isShowLaunchPad.value = false;
 	}
 
-	let app = appStore.myapps.find((app: any) => app.id == rid);
+	let app = appStore.myApps.find((app: any) => app.id == rid);
 	if (rid == 'home') {
 		app = {
 			id: rid,
@@ -446,9 +446,9 @@ const onAppClick = async (click: AppClickInfo) => {
 		};
 		if (click.path) {
 			app.url = tokenStore.url + click.path;
-			if (app.url.startsWith('http://')) {
+			if (app.url?.startsWith('http://')) {
 				app.url = app.url.substring(7);
-			} else if (app.url.startsWith('https://')) {
+			} else if (app.url?.startsWith('https://')) {
 				app.url = app.url.substring(8);
 			}
 		}
@@ -555,14 +555,14 @@ const onDockerClick = async (click: AppClickInfo) => {
 	onAppClick(click);
 };
 
-const onLaunhPadAppClick = async (click: AppClickInfo) => {
-	isShowLauncchPad.value = false;
+const onLaunchPadAppClick = async (click: AppClickInfo) => {
+	isShowLaunchPad.value = false;
 	showSearchDialog.value = false;
 	onAppClick(click);
 };
 
 const onLaunchPadDismiss = async () => {
-	isShowLauncchPad.value = false;
+	isShowLaunchPad.value = false;
 };
 
 const onDragLaunchApp = async (id: string) => {

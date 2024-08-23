@@ -56,7 +56,7 @@ bus.on('system_upgrade_event', (data: any) => {
 bus.on('ai', (data: any) => {
 	if (data.code == 0) {
 		searchState.conversationId = data!.conversationId;
-		searchState.waitting = true;
+		searchState.waiting = true;
 
 		let text = '···';
 		timer.value = setInterval(() => {
@@ -89,17 +89,17 @@ bus.on('ai', (data: any) => {
 			model: 'chat_model',
 			name: 'Terminus'
 		});
-		searchState.waitting = false;
+		searchState.waiting = false;
 		searchState.can_input = true;
 		clearInterval(timer.value);
 	}
 });
 
-bus.on('ai_message', (tdata: any) => {
+bus.on('ai_message', (cdata: any) => {
 	clearInterval(timer.value);
-	searchState.waitting = false;
+	searchState.waiting = false;
 
-	const data: Result<FileSearchAIQuestionMessage> = tdata.data;
+	const data: Result<FileSearchAIQuestionMessage> = cdata.data;
 	if (data.code == 0) {
 		if (data.data && !data.data.text) {
 			data.data.text =

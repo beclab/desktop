@@ -34,7 +34,7 @@
 				@drag_launch_app="onDragLaunchApp"
 			/>
 
-			<Notification />
+			<NotificationPopup />
 		</div>
 
 		<div style="width: 100%; height: 100vh" ref="window_parent">
@@ -93,7 +93,7 @@ import { useAppStore } from 'stores/app';
 import { useTokenStore } from 'stores/token';
 import { useUpgradeStore } from 'stores/upgrade';
 import { expiresStorage } from 'src/utils/location';
-import Notification from '../Notification.vue';
+import NotificationPopup from '../NotificationPopup.vue';
 import Search from '../Search/IndexPage.vue';
 import AvatorComponent from 'components/AvatorComponent.vue';
 import BasicWindow from './BasicWindow.vue';
@@ -434,7 +434,7 @@ const onAppClick = async (click: AppClickInfo) => {
 		isShowLauncchPad.value = false;
 	}
 
-	let app = appStore.myapps.find((app: any) => app.id == rid);
+	let app = appStore.myApps.find((app: any) => app.id == rid);
 	if (rid == 'home') {
 		app = {
 			id: rid,

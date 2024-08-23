@@ -12,9 +12,9 @@
 		:y="value.top"
 		:isResizable="value.isResizable"
 		v-on:dragging="dragging"
-		v-on:dragstop="dragstop"
+		v-on:dragstop="dragStop"
 		v-on:resizing="resizing"
-		v-on:resizestop="resizestop"
+		v-on:resizestop="resizeStop"
 		@click="onTop"
 		:stickSize="24"
 		class="iframe-box"
@@ -170,7 +170,7 @@ export default defineComponent({
 
 		let dragging = (rect: WindowRect) => {
 			if (!value.value.active) {
-				context.emit('ontop', value.value);
+				context.emit('onTop', value.value);
 			}
 			isDrag.value = true;
 			let callback_obj = {};
@@ -178,13 +178,13 @@ export default defineComponent({
 			context.emit('update:modelValue', callback_obj);
 		};
 
-		let dragstop = () => {
+		let dragStop = () => {
 			isDrag.value = false;
 		};
 
 		let resizing = (rect: WindowRect) => {
 			if (!value.value.active) {
-				context.emit('ontop', value.value);
+				context.emit('onTop', value.value);
 			}
 			isResize.value = true;
 			let callback_obj = {};
@@ -192,7 +192,7 @@ export default defineComponent({
 			context.emit('update:modelValue', callback_obj);
 		};
 
-		let resizestop = () => {
+		let resizeStop = () => {
 			isResize.value = false;
 		};
 
@@ -221,7 +221,10 @@ export default defineComponent({
 			setTimeout(() => {
 				clickNew.value = false;
 			}, 500);
-			window.open(value.value.url);
+
+			console.log('onNewonNewonNew', value.value.url);
+			console.log(iframeRef.value.contentWindow.location.href);
+			window.open(iframeRef.value.contentWindow.location.href);
 		};
 
 		let onTop = () => {
@@ -231,7 +234,7 @@ export default defineComponent({
 			if (checkDoubleClick()) {
 				isFull.value = !isFull.value;
 			}
-			context.emit('ontop', value.value);
+			context.emit('onTop', value.value);
 		};
 
 		let lastTapTimeFunc: NodeJS.Timeout;
@@ -320,9 +323,9 @@ export default defineComponent({
 			dragRef,
 			isFull,
 			dragging,
-			dragstop,
+			dragStop,
 			resizing,
-			resizestop,
+			resizeStop,
 			activated,
 			deactivated,
 			onClose,
