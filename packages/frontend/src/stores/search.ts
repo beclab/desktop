@@ -36,6 +36,19 @@ export type SearchState = {
 	searchList: searchItemType[];
 };
 
+export interface TextSearchItem {
+	id: number | string;
+	author?: string;
+	content?: string;
+	meta: any;
+	highlight?: string;
+	highlight_field: string;
+	owner_userid?: string;
+	title: string;
+	resource_uri?: string;
+	fileType: string;
+}
+
 export enum SecondFactorMethod {
 	TOTP = 'totp',
 	Webauthn = 'webauthn',
@@ -53,6 +66,7 @@ interface ServiceParamsType {
 	serviceType: ServiceType;
 	limit: number;
 	offset: number;
+	repo_id?: string;
 }
 
 const appStore = useAppStore();
@@ -67,21 +81,21 @@ export const useSearchStore = defineStore('search', {
 			chatList: [],
 			searchList: [
 				{
-					name: 'Drive',
-					title: 'Files Search',
+					name: 'Files Search',
+					title: 'Drive',
 					icon: './app-icon/drive.svg',
 					type: 'Command',
 					id: 'drive',
 					serviceType: ServiceType.Files
 				},
-				// {
-				// 	name: 'Sync',
-				// 	title: 'Files Search',
-				// 	icon: './app-icon/sync.svg',
-				// 	type: 'Command',
-				// 	id: 'sync',
-				// 	serviceType: ServiceType.Sync
-				// },
+				{
+					name: 'Files Search',
+					title: 'Sync',
+					icon: './app-icon/sync.svg',
+					type: 'Command',
+					id: 'sync',
+					serviceType: ServiceType.Sync
+				},
 				// {
 				// 	name: 'Google Drive',
 				// 	title: 'Files Search',
@@ -99,8 +113,8 @@ export const useSearchStore = defineStore('search', {
 				// 	serviceType: ServiceType.Sync
 				// },
 				{
-					name: 'Wise',
-					title: 'Wise Search',
+					name: 'Wise Search',
+					title: 'Wise',
 					icon: './app-icon/wise.svg',
 					type: 'Command',
 					id: 'wise',
@@ -160,10 +174,24 @@ export const useSearchStore = defineStore('search', {
 				limit: 50,
 				offset: 0
 			};
+
+			if (serviceType === ServiceType.Sync) {
+				const repo_list = await this.getSyncRepoList();
+				console.log('repo_list', repo_list);
+				const res = await this.fetchSyncData(params, repo_list);
+				console.log('getContent res', res);
+				return res;
+			} else {
+				return await this.fetchData(params);
+			}
+		},
+
+		async fetchData(params: ServiceParamsType) {
 			const res: any = await axios.post(
 				tokenStore.url + '/server/search',
 				params
 			);
+			console.log('fetchData res', res);
 			const newRes = [];
 
 			for (let i = 0; i < res.length; i++) {
@@ -174,6 +202,59 @@ export const useSearchStore = defineStore('search', {
 			}
 
 			return res;
+		},
+
+		async fetchSyncData(params: ServiceParamsType, repo_list: any[]) {
+			const results: TextSearchItem[] = [];
+			for (let j = 0; j < repo_list.length; j++) {
+				const repo_item = repo_list[j];
+				try {
+					params.repo_id = repo_item.repo_id;
+					const res: any = await axios.post(
+						tokenStore.url + '/server/search',
+						params
+					);
+
+					console.log('resres', res);
+					if (res && res.length > 0) {
+						const resArr: TextSearchItem[] = [];
+						for (let i = 0; i < res.length; i++) {
+							const el = res[i];
+							const id = `id_${j}_${i}`;
+							resArr.push(this.formatSyncToSearch(id, el));
+						}
+
+						results.push(...resArr);
+					}
+				} catch (error) {
+					console.log('error', error);
+				}
+			}
+			return results;
+		},
+
+		formatSyncToSearch(id: string, data: any) {
+			const name = data.path.startsWith('/') ? data.path.slice(1) : data.path;
+			const fileType = getFileType(name);
+
+			const searchRes: TextSearchItem = {
+				id: id,
+				highlight: name,
+				highlight_field: 'title',
+				title: name,
+				fileType: fileType || 'other',
+				meta: {
+					updated: new Date(data.mtime).getTime() / 1000
+				}
+			};
+			return searchRes;
+		},
+
+		async getSyncRepoList() {
+			const res: any = await axios.get(
+				tokenStore.url + '/seahub/api/v2.1/repos/?type=mine'
+			);
+			return res.repos;
 		},
 
 		async getPath(resource_uri: string) {

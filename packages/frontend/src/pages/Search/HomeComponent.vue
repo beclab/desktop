@@ -20,7 +20,7 @@
 		<!-- <span class="btn" @click="openCommand('')">Open Command</span> -->
 	</div>
 	<div class="list q-pt-sm" ref="listRef">
-		<template v-for="items in appData" :key="items.name">
+		<template v-for="items in appData" :key="items.title">
 			<div class="category" v-if="items.category === 'Use'">
 				{{ `${items.category} ${searchTxt} with...` }}
 			</div>
@@ -29,11 +29,11 @@
 			</div>
 			<template v-if="items.children">
 				<div
-					:class="[activeItem === item.name ? 'isActive' : '', 'item']"
+					:class="[activeItem === item.title ? 'isActive' : '', 'item']"
 					ref="isActiveRef"
 					v-for="item in items.children"
-					:key="item.name"
-					@click="handleActive(item.name)"
+					:key="item.title"
+					@click="handleActive(item.title)"
 					@dblclick="openCommand(item)"
 				>
 					<div class="txt">
@@ -129,7 +129,7 @@ const classifyData = (data: any, searchTxt?: string) => {
 		}
 	}
 
-	activeItem.value = newArr[0]?.children[0]?.name;
+	activeItem.value = newArr[0]?.children[0]?.title;
 
 	console.log('newArr', newArr);
 	return newArr;
@@ -140,17 +140,17 @@ const openCommand = (item: any) => {
 		clearTimeout(timer.value);
 	}
 	const searchFiles =
-		searchTxt.value.toLowerCase() !== 'files search' ? searchTxt.value : '';
+		searchTxt.value.toLowerCase() !== 'drive' ? searchTxt.value : '';
 	item.searchFiles = searchFiles;
 	emits('openCommand', item);
 };
 
-const handleActive = (name: string) => {
+const handleActive = (title: string) => {
 	if (timer.value) {
 		clearTimeout(timer.value);
 	}
 	timer.value = setTimeout(() => {
-		activeItem.value = name;
+		activeItem.value = title;
 	}, 300);
 };
 
@@ -160,11 +160,13 @@ const keydownEnter = (event: any) => {
 	}
 	const keydownData = concatData(appData.value);
 
-	const index = keydownData.findIndex((item) => item.name === activeItem.value);
+	const index = keydownData.findIndex(
+		(item) => item.title === activeItem.value
+	);
 	if (event.keyCode === 38) {
 		const upIndex = index - 1;
 		if (upIndex >= 0) {
-			activeItem.value = keydownData[upIndex].name;
+			activeItem.value = keydownData[upIndex].title;
 			refreshScroll(upIndex);
 		}
 	}
@@ -172,13 +174,13 @@ const keydownEnter = (event: any) => {
 	if (event.keyCode === 40) {
 		const downIndex = index + 1;
 		if (downIndex <= keydownData.length - 1) {
-			activeItem.value = keydownData[downIndex].name;
+			activeItem.value = keydownData[downIndex].title;
 			refreshScroll(downIndex);
 		}
 	}
 
 	if (event.keyCode === 13) {
-		const aItem = keydownData.find((item) => item.name === activeItem.value);
+		const aItem = keydownData.find((item) => item.title === activeItem.value);
 		openCommand(aItem);
 	}
 };

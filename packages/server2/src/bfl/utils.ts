@@ -99,3 +99,29 @@ export function createSearchInstance(request: Request): AxiosInstance {
     },
   });
 }
+
+export function createSeafileInstance(request: Request): AxiosInstance {
+  console.log(request.headers);
+  const bflUser = request.headers['x-bfl-user'];
+  if (!bflUser) {
+    throw Error('bflUser error');
+  }
+  console.log('x-bfl-user: ' + bflUser);
+  const host = request.headers['host'];
+  if (!host) {
+    throw Error('host error');
+  }
+
+  return axios.create({
+    baseURL: process.env.SEARCH_URL || 'http://search3.os-system:80',
+    timeout: 5000,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'X-Requested-With,Content-Type',
+      'Access-Control-Allow-Methods': 'PUT,POST,GET,DELETE,OPTIONS',
+      'Content-Type': 'application/json',
+      'x-bfl-user': bflUser,
+      'Client-Host': host,
+    },
+  });
+}
