@@ -223,6 +223,9 @@ export default defineComponent({
 			}, 500);
 
 			console.log('onNewonNewonNew', value.value.url);
+			console.log(iframeRef.value);
+			console.log(iframeRef.value.contentWindow);
+			console.log(iframeRef.value.contentWindow.location);
 			console.log(iframeRef.value.contentWindow.location.href);
 			window.open(iframeRef.value.contentWindow.location.href);
 		};
