@@ -17,12 +17,9 @@ import {
   returnSucceed,
   ProviderRequest,
   returnError,
-  FileSearchQueryRequest,
   FileSearchResponse,
-  FileSearchAIQuestionMessage,
 } from '@bytetrade/core';
-import axios from 'axios';
-import { broadcastWebsocketMessage, WebSocketMessage } from './websocketClient';
+import { broadcastWebsocketMessage } from './websocketClient';
 // import {
 //   bflUrl,
 //   getAccessToken,
@@ -39,6 +36,7 @@ import {
   createInstance,
   getRequestToken,
   createSearchInstance,
+  createSeafileInstance,
 } from './bfl/utils';
 import { AppService } from './app.service';
 
@@ -216,31 +214,51 @@ export class AppController {
       serviceType,
       offset = 0,
       limit = 20,
+      repo_id,
     }: {
       query: string;
       serviceType: string;
       offset: number;
       limit: number;
+      repo_id?: string;
     },
   ): Promise<Result<FileSearchResponse>> {
     this.logger.debug('search log', query, serviceType, offset, limit);
 
     try {
-      const response = await createSearchInstance(request).get(
-        '/document/search?keywords=' +
-          encodeURIComponent(query) +
-          '&service=' +
-          serviceType +
-          '&rank=' +
-          limit,
-      );
+      if (serviceType.toLowerCase() == 'sync') {
+        const response = await createSearchInstance(request).get(
+          'http://files-service.os-system/seahub/api/v2.1/search-file/?q=' +
+            encodeURIComponent(query) +
+            '&repo_id=' +
+            repo_id,
+        );
 
-      console.log(response);
+        console.log(response);
+        console.log('returnSucceed' + JSON.stringify(response.data));
 
-      if (response.data.status_code == 'SUCCESS') {
-        return returnSucceed(response.data.data);
+        if (response.data.data) {
+          return returnSucceed(response.data.data);
+        } else {
+          return returnError(1, 'Search repo ' + repo_id + ' failed.');
+        }
       } else {
-        return returnError(1, response.data.fail_reason);
+        const response = await createSeafileInstance(request).get(
+          '/document/search?keywords=' +
+            encodeURIComponent(query) +
+            '&service=' +
+            serviceType +
+            '&rank=' +
+            limit,
+        );
+
+        console.log(response);
+
+        if (response.data.status_code == 'SUCCESS') {
+          return returnSucceed(response.data.data);
+        } else {
+          return returnError(1, response.data.fail_reason);
+        }
       }
     } catch (err) {
       console.log(err);

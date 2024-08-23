@@ -30,6 +30,10 @@ export default boot(({ app }) => {
 		(response: AxiosResponse) => {
 			const data = response.data;
 
+			if (data.code === undefined) {
+				return data;
+			}
+
 			if (
 				!response ||
 				(response.status != 200 &&
