@@ -8,7 +8,7 @@
 		/>
 		<div class="appIcon q-ml-sm">
 			<img class="icon" :src="item?.icon" alt="search" />
-			<span class="q-ml-sm">{{ item?.name }}</span>
+			<span class="q-ml-sm">{{ item?.title }}</span>
 		</div>
 		<input
 			class="input text-ink-1"
@@ -88,7 +88,7 @@
 					</div>
 
 					<div class="desc q-my-xs" v-else>
-						<span>Owner: {{ file.owner_userid }}</span>
+						<span v-if="file.owner_userid">Owner: {{ file.owner_userid }}</span>
 						<span v-if="file.meta && file.meta.updated">
 							Modified:
 							{{
