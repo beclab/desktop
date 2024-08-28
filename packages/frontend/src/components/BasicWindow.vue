@@ -222,7 +222,9 @@ export default defineComponent({
 				clickNew.value = false;
 			}, 500);
 
-			window.open(value.value.url);
+			const href = value.value.redirectUrl || value.value.url;
+
+			window.open(href);
 		};
 
 		let onTop = () => {

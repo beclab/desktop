@@ -209,6 +209,11 @@ const listenerMessage = (e: any) => {
 		return false;
 	}
 	switch (data.type) {
+		case 'locationHref':
+			if (data.message) {
+				updateWindowUrl(data.message);
+			}
+			break;
 		case 'Files':
 			if (data.message) {
 				data.message = data.message.slice(6);
@@ -232,6 +237,16 @@ const listenerMessage = (e: any) => {
 		default:
 			break;
 	}
+};
+
+const updateWindowUrl = (message: string) => {
+	const href = new URL(message);
+
+	window_infos.value.map((item) => {
+		if (item.url.indexOf(href.host) >= 0) {
+			item.redirectUrl = message.slice(6);
+		}
+	});
 };
 
 watch(
