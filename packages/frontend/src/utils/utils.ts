@@ -53,65 +53,6 @@ export function isLocalHost(url: string): boolean {
 	return false;
 }
 
-export function getFileType(fileName: string) {
-	let suffix = '';
-	let result: string | undefined = '';
-	if (fileName) {
-		const fileArr = fileName.split('.');
-		suffix = fileArr[fileArr.length - 1];
-	}
-	if (!suffix) return false;
-	suffix = suffix.toLocaleLowerCase();
-
-	const imgList = ['png', 'jpg', 'jpeg', 'bmp', 'gif'];
-	result = imgList.find((item) => item === suffix);
-	if (result) return 'image';
-	// txt
-	const txtList = ['txt'];
-	result = txtList.find((item) => item === suffix);
-	if (result) return 'txt';
-	// excel
-	const excelList = ['xls', 'xlsx'];
-	result = excelList.find((item) => item === suffix);
-	if (result) return 'excel';
-	// word
-	const wordList = ['doc', 'docx'];
-	result = wordList.find((item) => item === suffix);
-	if (result) return 'word';
-	// pdf
-	const pdfList = ['pdf'];
-	result = pdfList.find((item) => item === suffix);
-	if (result) return 'pdf';
-	// ppt
-	const pptList = ['ppt', 'pptx'];
-	result = pptList.find((item) => item === suffix);
-	if (result) return 'ppt';
-	// zip
-	const zipList = ['rar', 'zip', '7z'];
-	result = zipList.find((item) => item === suffix);
-	if (result) return 'zip';
-	// video
-	const videoList = [
-		'mp4',
-		'm2v',
-		'mkv',
-		'rmvb',
-		'wmv',
-		'avi',
-		'flv',
-		'mov',
-		'm4v'
-	];
-	result = videoList.find((item) => item === suffix);
-	if (result) return 'video';
-	// audio
-	const audioList = ['mp3', 'wav', 'wmv'];
-	result = audioList.find((item) => item === suffix);
-	if (result) return 'audio';
-	// other
-	return 'other';
-}
-
 export function sizeFormat(size: number) {
 	let data = '';
 	if (size < 0.1 * 1024) {

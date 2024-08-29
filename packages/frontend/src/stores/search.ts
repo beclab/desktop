@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { date } from 'quasar';
+import { getFileType, getFileIcon } from '@bytetrade/core';
 import { useAppStore } from './app';
 import { useTokenStore } from './token';
-import { getFileType, sizeFormat } from './../utils/utils';
+import { sizeFormat } from './../utils/utils';
 import { useSocketStore } from './websocketStore';
 
 interface ChatMsg {
@@ -47,6 +48,7 @@ export interface TextSearchItem {
 	title: string;
 	resource_uri?: string;
 	fileType: string;
+	fileIcon: string;
 }
 
 export enum SecondFactorMethod {
@@ -153,6 +155,7 @@ export const useSearchStore = defineStore('search', {
 
 				items.map((item: any) => {
 					item.fileType = getFileType(item.name);
+					item.fileIcon = getFileIcon(item.name);
 					item.size = sizeFormat(item.size);
 					item.created = date.formatDate(
 						item.created * 1000,
@@ -197,6 +200,7 @@ export const useSearchStore = defineStore('search', {
 			for (let i = 0; i < res.length; i++) {
 				const el = res[i];
 				el.fileType = getFileType(el.title);
+				el.fileIcon = getFileIcon(el.title);
 				el.path = await this.getPath(el.resource_uri);
 				newRes.push(el);
 			}
@@ -236,13 +240,15 @@ export const useSearchStore = defineStore('search', {
 		formatSyncToSearch(id: string, data: any) {
 			const name = data.path.startsWith('/') ? data.path.slice(1) : data.path;
 			const fileType = getFileType(name);
+			const fileIcon = getFileIcon(name);
 
 			const searchRes: TextSearchItem = {
 				id: id,
 				highlight: name,
 				highlight_field: 'title',
 				title: name,
-				fileType: fileType || 'other',
+				fileType: fileType || 'blob',
+				fileIcon: fileIcon || 'other',
 				meta: {
 					updated: new Date(data.mtime).getTime() / 1000
 				}
