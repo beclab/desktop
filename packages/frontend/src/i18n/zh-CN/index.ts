@@ -1,7 +1,5 @@
-// This is just an example,
-// so you can safely delete all default props below
-
 export default {
-	failed: 'Action failed',
-	success: 'Action was successful'
+	launch_input_placeholder: '搜索',
+	launch_no_result: '没有结果',
+	page_404: '哎呀，什么都没有……'
 };
