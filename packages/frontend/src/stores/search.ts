@@ -49,6 +49,9 @@ export interface TextSearchItem {
 	resource_uri?: string;
 	fileType: string;
 	fileIcon: string;
+	repo_id?: string;
+	path: string;
+	isDir: boolean;
 }
 
 export enum SecondFactorMethod {
@@ -180,9 +183,7 @@ export const useSearchStore = defineStore('search', {
 
 			if (serviceType === ServiceType.Sync) {
 				const repo_list = await this.getSyncRepoList();
-				console.log('repo_list', repo_list);
-				const res = await this.fetchSyncData(params, repo_list);
-				console.log('getContent res', res);
+				const res = await this.fetchSyncData(params, repo_list, query);
 				return res;
 			} else {
 				return await this.fetchData(params);
@@ -194,7 +195,6 @@ export const useSearchStore = defineStore('search', {
 				tokenStore.url + '/server/search',
 				params
 			);
-			console.log('fetchData res', res);
 			const newRes = [];
 
 			for (let i = 0; i < res.length; i++) {
@@ -208,7 +208,11 @@ export const useSearchStore = defineStore('search', {
 			return res;
 		},
 
-		async fetchSyncData(params: ServiceParamsType, repo_list: any[]) {
+		async fetchSyncData(
+			params: ServiceParamsType,
+			repo_list: any[],
+			query: string
+		) {
 			const results: TextSearchItem[] = [];
 			for (let j = 0; j < repo_list.length; j++) {
 				const repo_item = repo_list[j];
@@ -219,13 +223,14 @@ export const useSearchStore = defineStore('search', {
 						params
 					);
 
-					console.log('resres', res);
 					if (res && res.length > 0) {
 						const resArr: TextSearchItem[] = [];
 						for (let i = 0; i < res.length; i++) {
 							const el = res[i];
+							el.repo_id = repo_item.repo_id;
+							el.repo_name = repo_item.repo_name;
 							const id = `id_${j}_${i}`;
-							resArr.push(this.formatSyncToSearch(id, el));
+							resArr.push(this.formatSyncToSearch(id, el, query));
 						}
 
 						results.push(...resArr);
@@ -237,21 +242,27 @@ export const useSearchStore = defineStore('search', {
 			return results;
 		},
 
-		formatSyncToSearch(id: string, data: any) {
-			const name = data.path.startsWith('/') ? data.path.slice(1) : data.path;
-			const fileType = getFileType(name);
+		formatSyncToSearch(id: string, data: any, query: string) {
+			const lastIndex = data.path.lastIndexOf('/');
+			const path = lastIndex !== -1 ? data.path.slice(0, lastIndex) : data.path;
+			const name =
+				lastIndex !== -1 ? data.path.slice(lastIndex + 1) : data.path;
+			const fileType = getFileType(name) || 'blob';
 			const fileIcon = getFileIcon(name);
 
 			const searchRes: TextSearchItem = {
 				id: id,
-				highlight: name,
+				highlight: name.replace(query, `<hi>${query}</hi>`),
 				highlight_field: 'title',
 				title: name,
-				fileType: fileType || 'blob',
+				fileType: fileType,
 				fileIcon: fileIcon || 'other',
+				repo_id: data.repo_id,
+				path: '/' + data.repo_name + path,
 				meta: {
 					updated: new Date(data.mtime).getTime() / 1000
-				}
+				},
+				isDir: data.type === 'file' ? false : true
 			};
 			return searchRes;
 		},
