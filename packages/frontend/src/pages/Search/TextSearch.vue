@@ -58,7 +58,11 @@
 					<img
 						v-else
 						class="icon"
-						:src="`/files/file-${file.fileType}.svg`"
+						:src="
+							!file.isDir
+								? `/files/file-${file.fileIcon}.svg`
+								: `/files/folder-default.svg`
+						"
 						alt="file"
 					/>
 				</div>
@@ -240,8 +244,8 @@ const keydownEnter = (event: any) => {
 
 const open = (item: any) => {
 	const commandList = JSON.parse(JSON.stringify(props.commandList));
-	if (props.item?.name === 'Drive') {
-		const url = '/Files' + item.path;
+	if (props.item?.title === 'Drive') {
+		const url = '/Files' + item.path + '/' + item.title;
 
 		const filesApp = commandList.find(
 			(el: { appid: string }) => el.appid && el.appid === 'files'
@@ -253,7 +257,23 @@ const open = (item: any) => {
 			: 'https://' + filesApp.url;
 
 		window.open(openUrl);
-	} else if (props.item?.name === 'Wise') {
+	} else if (props.item?.title === 'Sync') {
+		const url = `/Seahub${item.path}/${item.title}${item.isDir ? '/' : ''}?id=${
+			item.repo_id
+		}`;
+
+		const filesApp = commandList.find(
+			(el: { appid: string }) => el.appid && el.appid === 'files'
+		);
+
+		filesApp.url = filesApp.url + url;
+
+		const openUrl = filesApp.url.startsWith('https')
+			? filesApp.url
+			: 'https://' + filesApp.url;
+
+		window.open(openUrl);
+	} else if (props.item?.title === 'Wise') {
 		const filesApp = commandList.find(
 			(el: { appid: string }) => el.appid && el.appid === 'wise'
 		);
@@ -265,7 +285,10 @@ const open = (item: any) => {
 			? filesApp.url
 			: 'https://' + filesApp.url;
 
-		window.open(openUrl);
+		let enterUrl = new URL(openUrl);
+		enterUrl.searchParams.append('preview_name', item.title);
+
+		window.open(enterUrl);
 	}
 
 	// emits('openCommand', resource_uri);
