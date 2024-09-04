@@ -1,6 +1,7 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ProviderClient } from './provider.client';
 import { AppInfo } from '@desktop/core/src/types';
+import { IntentService } from './intent.service';
 const appClient = new ProviderClient('app', 'service.bfl', 'app', ['UserApps']);
 const appStoreClient = new ProviderClient(
   'appstore',
@@ -13,12 +14,23 @@ const appStoreClient = new ProviderClient(
 export class AppService implements OnModuleInit {
   private readonly logger = new Logger(AppService.name);
 
-  constructor() {
+  constructor(private readonly intentService: IntentService) {
     //
   }
 
   async onModuleInit(): Promise<void> {
-    //
+    //const apps = await this.GetMyApps(request);
+    const response = await appClient.execute('/UserApps', { isLocal: false });
+
+    if (response.data.code != 0) {
+      throw new Error('GetMyApps error');
+    }
+
+    const apps = response.data.data.items;
+    this.logger.log('onModuleInit GetMyApps');
+    this.logger.log(apps);
+
+    await this.intentService.initIntentFilter(apps);
   }
 
   async GetMyApps(request: Request): Promise<AppInfo[]> {

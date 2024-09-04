@@ -5,9 +5,10 @@ on:
 
     push:
         branches:
-            - "main"
+          - "main"
         tags:
           - 'v*'
+          
 
 jobs:
     update_server:

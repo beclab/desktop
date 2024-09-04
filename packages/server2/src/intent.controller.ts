@@ -59,20 +59,21 @@ export class IntentController {
   async sendIntent(
     @Body() intentParams: Partial<Intent>,
   ): Promise<Result<SendIntentResponse>> {
-    this.logger.debug('sendIntent ');
-    this.logger.debug(JSON.stringify(intentParams, null, 2));
+    this.logger.log('sendIntent ');
+    this.logger.log(JSON.stringify(intentParams, null, 2));
     const intent = new Intent(intentParams);
-    this.logger.debug(JSON.stringify(intent, null, 2));
+    this.logger.log(JSON.stringify(intent, null, 2));
     const filters = await this.intentService.queryFilters(intent);
-    this.logger.debug(JSON.stringify(filters, null, 2));
+    this.logger.log(JSON.stringify(filters, null, 2));
     if (intent.isImplicit()) {
-      console.log('isImplicit');
+      this.logger.log('isImplicit ');
       const f = await this.intentService.matchDefaultChoice(intent);
+      this.logger.log('filter.length ' + filters.length);
+      this.logger.log(f);
       if (f && filters.length > 0) {
-        console.log('f ' + filters.length);
         for (const fi of filters) {
-          console.log('fi');
-          console.log(JSON.stringify(fi));
+          this.logger.log('fi');
+          this.logger.log(JSON.stringify(fi));
           if (fi.equal(f)) {
             //this.ws.broadcast('intent', fi);
             broadcastWebsocketMessage({ event: 'intent', data: fi });
@@ -85,7 +86,7 @@ export class IntentController {
           }
         }
       }
-      console.log('path2');
+      this.logger.log('path2 ' + filters.length);
       if (filters.length > 1) {
         return returnSucceed(
           new SendIntentResponse({
@@ -98,6 +99,7 @@ export class IntentController {
         if (intent.data) {
           fi.data = intent.data;
         }
+        this.logger.log('snet intent');
         //this.ws.broadcast('intent', fi);
         broadcastWebsocketMessage({ event: 'intent', data: fi });
         return returnSucceed(

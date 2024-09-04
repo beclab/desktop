@@ -10,7 +10,7 @@ import {
   Put,
 } from '@nestjs/common';
 //import { WsStartGateway } from './ws.gateway';
-import { IntentService } from './intent.service';
+
 import { AppInfo, AppStoreInfo, UpgradeState } from '@desktop/core/src/types';
 import {
   Result,
@@ -50,10 +50,7 @@ export interface Event<T> {
 export class AppController {
   private readonly logger = new Logger(AppController.name);
 
-  constructor(
-    private readonly intentService: IntentService, //  private readonly ws: WsStartGateway,
-    private readonly appService: AppService,
-  ) {
+  constructor(private readonly appService: AppService) {
     //
   }
 
@@ -149,7 +146,7 @@ export class AppController {
 
     const apps = await this.appService.GetMyApps(request);
 
-    await this.intentService.initIntentFilter(apps);
+    //await this.intentService.initIntentFilter(apps);
 
     return returnSucceed(apps);
   }
