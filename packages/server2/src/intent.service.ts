@@ -22,21 +22,8 @@ export class IntentService implements OnModuleInit {
 
   async onModuleInit(): Promise<void> {
     this.logger.log(`The module start initialize`);
-    // this._db = level('./data');
-    // try {
-    //   const res = await this._db.get('filters');
-    //   this.filters = JSON.parse(res);
-    // } catch (err) {
-    //   this.filters = [];
-    // }
     this.filters = [];
 
-    // try {
-    //   const res = await this._db.get('intent_default_choice');
-    //   this.intent_default_choice = JSON.parse(res);
-    // } catch (err) {
-    //   this.intent_default_choice = [];
-    // }
     this.intent_default_choice = [];
 
     this.logger.log(
@@ -193,10 +180,12 @@ export class IntentService implements OnModuleInit {
   }
 
   async initIntentFilter(apps: AppInfo[]) {
+    this.logger.log('initIntentFilter start');
     if (this.filters.length != 0) {
       this.logger.debug('intentFilter alread inited');
       return;
     }
+    this.logger.log('initIntentFilter step1');
 
     let adminCosole = null;
     const video = 'home';
@@ -209,7 +198,7 @@ export class IntentService implements OnModuleInit {
       //   video = app.id;
       // }
     }
-    console.log('video ' + video);
+    this.logger.log('video ' + video);
 
     await this.registerIntenFilter(
       new IntentFilter({
