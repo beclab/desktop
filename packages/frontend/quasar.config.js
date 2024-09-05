@@ -131,6 +131,10 @@ module.exports = configure(function (ctx) {
 					pathRewrite: {
 						'^/api': 'api'
 					}
+				},
+				'/seahub': {
+					target: process.env.URL,
+					changeOrigin: true
 				}
 			},
 			port: 9000
