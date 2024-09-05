@@ -27,108 +27,112 @@
 		/>
 	</div>
 	<div class="files">
-		<div class="fileDetails q-pa-md" v-if="fileData && fileData.length > 0">
-			<div
-				class="fileItem q-pa-sm q-mb-xs"
-				:class="activeItem === file.id ? 'active' : ''"
-				v-for="(file, index) in fileData"
-				:key="file.id"
-				@click="clickItem(file, index)"
-			>
-				<div class="item-icon">
-					<img
-						v-if="item?.name === 'Wise' && file.meta?.image_url"
-						class="icon"
-						:src="
-							file.meta?.image_url
-								? file.meta?.image_url
-								: './../../assets/search-wise-default.png'
-						"
-						alt="file"
-					/>
+		<div class="fileDetails" v-if="fileData && fileData.length > 0">
+			<bt-scroll-area class="full-width full-height q-pa-md">
+				<div
+					class="fileItem q-pa-sm q-mb-xs"
+					:class="activeItem === file.id ? 'active' : ''"
+					v-for="(file, index) in fileData"
+					:key="file.id"
+					@click="clickItem(file, index)"
+				>
+					<div class="item-icon">
+						<img
+							v-if="item?.name === 'Wise' && file.meta?.image_url"
+							class="icon"
+							:src="
+								file.meta?.image_url
+									? file.meta?.image_url
+									: './../../assets/search-wise-default.png'
+							"
+							alt="file"
+						/>
 
-					<img
-						v-else-if="item?.name === 'Wise' && !file.meta?.image_url"
-						class="icon"
-						style="width: 48px; height: 48px"
-						src="./../../assets/search-wise-default.png"
-						alt="file"
-					/>
+						<img
+							v-else-if="item?.name === 'Wise' && !file.meta?.image_url"
+							class="icon"
+							style="width: 48px; height: 48px"
+							src="./../../assets/search-wise-default.png"
+							alt="file"
+						/>
 
-					<img
-						v-else
-						class="icon"
-						:src="
-							!file.isDir
-								? `/files/file-${file.fileIcon}.svg`
-								: `/files/folder-default.svg`
-						"
-						alt="file"
-					/>
-				</div>
-				<div class="item-content q-mx-md">
-					<div
-						class="title"
-						v-if="file.highlight_field === 'title'"
-						v-html="file.highlight"
-					></div>
-					<div class="title" v-else>
-						{{ file.title }}
+						<img
+							v-else
+							class="icon"
+							:src="
+								!file.isDir
+									? `/files/file-${file.fileIcon}.svg`
+									: `/files/folder-default.svg`
+							"
+							alt="file"
+						/>
 					</div>
+					<div class="item-content q-mx-md">
+						<div
+							class="title"
+							v-if="file.highlight_field === 'title'"
+							v-html="file.highlight"
+						></div>
+						<div class="title" v-else>
+							{{ file.title }}
+						</div>
 
-					<div class="desc q-my-xs" v-if="item?.name === 'Wise'">
-						<span>Author: {{ file.author || '-' }}</span>
-						<span v-if="file.meta && file.meta.published_at">
-							Published at:
-							{{
-								date.formatDate(
-									file.meta.published_at * 1000,
-									'MMM Do YYYY, HH:mm:ss'
-								)
-							}}
-						</span>
+						<div class="desc q-my-xs" v-if="item?.name === 'Wise'">
+							<span>Author: {{ file.author || '-' }}</span>
+							<span v-if="file.meta && file.meta.published_at">
+								Published at:
+								{{
+									date.formatDate(
+										file.meta.published_at * 1000,
+										'MMM Do YYYY, HH:mm:ss'
+									)
+								}}
+							</span>
 
-						<!-- <span>{{ file.path }}</span> -->
+							<!-- <span>{{ file.path }}</span> -->
+						</div>
+
+						<div class="desc q-my-xs" v-else>
+							<span v-if="file.owner_userid"
+								>Owner: {{ file.owner_userid }}</span
+							>
+							<span v-if="file.meta && file.meta.updated">
+								Modified:
+								{{
+									date.formatDate(
+										file.meta.updated * 1000,
+										'MMM Do YYYY, HH:mm:ss'
+									)
+								}}
+							</span>
+							<span>{{ file.path }}</span>
+						</div>
+
+						<div
+							class="context"
+							v-if="file.highlight_field === 'content'"
+							v-html="file.highlight"
+						></div>
+						<!-- <div class="context" v-else>{{ item.content }}</div> -->
 					</div>
-
-					<div class="desc q-my-xs" v-else>
-						<span v-if="file.owner_userid">Owner: {{ file.owner_userid }}</span>
-						<span v-if="file.meta && file.meta.updated">
-							Modified:
-							{{
-								date.formatDate(
-									file.meta.updated * 1000,
-									'MMM Do YYYY, HH:mm:ss'
-								)
-							}}
-						</span>
-						<span>{{ file.path }}</span>
+					<div class="item-search">
+						<q-icon
+							v-if="file?.name === 'Wise'"
+							class="icon cursor-pointer"
+							name="sym_r_share_windows"
+							size="20px"
+							@click="open(file)"
+						/>
+						<q-icon
+							v-else
+							class="icon cursor-pointer"
+							name="sym_r_search"
+							size="20px"
+							@click="open(file)"
+						/>
 					</div>
-
-					<div
-						class="context"
-						v-if="file.highlight_field === 'content'"
-						v-html="file.highlight"
-					></div>
-					<!-- <div class="context" v-else>{{ item.content }}</div> -->
 				</div>
-				<div class="item-search">
-					<q-icon
-						v-if="file?.name === 'Wise'"
-						class="icon cursor-pointer"
-						name="sym_r_share_windows"
-						size="20px"
-						@click="open(file)"
-					/>
-					<q-icon
-						v-else
-						class="icon cursor-pointer"
-						name="sym_r_search"
-						size="20px"
-						@click="open(file)"
-					/>
-				</div>
-			</div>
+			</bt-scroll-area>
 		</div>
 		<div v-else class="no_data column items-center justify-center">
 			<img class="icon" src="./../../assets/nodata.svg" alt="no_data" />
@@ -345,7 +349,6 @@ hi {
 
 	.fileDetails {
 		width: 100%;
-		overflow: scroll;
 
 		.fileItem {
 			width: 100%;
