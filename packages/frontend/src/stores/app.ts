@@ -60,7 +60,12 @@ export const isSystemApp = (id: string): boolean => {
 		rid.startsWith('vault') ||
 		rid.startsWith('settings') ||
 		rid.startsWith('appstore') ||
-		rid.startsWith('console')
+		rid.startsWith('console') ||
+		rid.startsWith('market') ||
+		rid.startsWith('profile') ||
+		rid.startsWith('dashboard') ||
+		rid.startsWith('wise') ||
+		rid.startsWith('control-hub')
 	) {
 		return true;
 	}
