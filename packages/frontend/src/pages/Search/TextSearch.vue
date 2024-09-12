@@ -15,7 +15,7 @@
 			type="text"
 			ref="filesRef"
 			v-model.trim="searchFiles"
-			placeholder="Search files..."
+			:placeholder="t('search_file_placeholder')"
 		/>
 		<q-icon
 			v-if="searchFiles"
@@ -78,9 +78,9 @@
 						</div>
 
 						<div class="desc q-my-xs" v-if="item?.name === 'Wise'">
-							<span>Author: {{ file.author || '-' }}</span>
+							<span>{{ t('file_author') }}: {{ file.author || '-' }}</span>
 							<span v-if="file.meta && file.meta.published_at">
-								Published at:
+								{{ t('file_published') }}:
 								{{
 									date.formatDate(
 										file.meta.published_at * 1000,
@@ -94,10 +94,10 @@
 
 						<div class="desc q-my-xs" v-else>
 							<span v-if="file.owner_userid"
-								>Owner: {{ file.owner_userid }}</span
+								>{{ t('file_owner') }}: {{ file.owner_userid }}</span
 							>
 							<span v-if="file.meta && file.meta.updated">
-								Modified:
+								{{ t('file_modified') }}:
 								{{
 									date.formatDate(
 										file.meta.updated * 1000,
@@ -136,7 +136,7 @@
 		</div>
 		<div v-else class="no_data column items-center justify-center">
 			<img class="icon" src="./../../assets/nodata.svg" alt="no_data" />
-			<div class="text-grey-8">No Matching Result Found</div>
+			<div class="text-grey-8">{{ t('file_no_data') }}</div>
 		</div>
 	</div>
 </template>
@@ -145,6 +145,7 @@
 import { ref, watch, onMounted, onUnmounted } from 'vue';
 import { debounce, date } from 'quasar';
 import { useSearchStore } from './../../stores/search';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
 	showSearchDialog: {
@@ -167,7 +168,7 @@ const props = defineProps({
 });
 
 const emits = defineEmits(['goBack']);
-
+const { t } = useI18n();
 const searchFiles = ref('');
 const filesRef = ref();
 
