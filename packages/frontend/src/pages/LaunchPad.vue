@@ -113,7 +113,13 @@
 								class="launch_pad_apps_name"
 								:data-index="appStore.desktopApps[element].id"
 							>
-								{{ appStore.desktopApps[element].title }}
+								{{
+									['Files', 'Market', 'Dashboard', 'Settings'].includes(
+										appStore.desktopApps[element].title
+									)
+										? t(`app.${appStore.desktopApps[element].title}`)
+										: appStore.desktopApps[element].title
+								}}
 							</div>
 						</div>
 					</q-carousel-slide>
