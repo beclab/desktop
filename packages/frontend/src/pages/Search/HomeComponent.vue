@@ -7,7 +7,7 @@
 			dense
 			ref="searchRef"
 			v-model.trim="searchTxt"
-			placeholder="Search for apps and commands..."
+			:placeholder="t('search_placeholder')"
 		/>
 		<q-icon
 			v-if="searchTxt"
@@ -20,30 +20,44 @@
 		<!-- <span class="btn" @click="openCommand('')">Open Command</span> -->
 	</div>
 	<div class="list q-pt-sm" ref="listRef">
-		<template v-for="items in appData" :key="items.title">
+		<template
+			v-for="(items, index) in appData"
+			:key="`${items.title}_${index}`"
+		>
 			<div class="category" v-if="items.category === 'Use'">
-				{{ `${items.category} ${searchTxt} with...` }}
+				{{ t('use_search', { content: searchTxt }) }}
 			</div>
 			<div class="category" v-if="items.category === 'Result'">
-				{{ items.category }}
+				{{ t('result') }}
 			</div>
 			<template v-if="items.children">
 				<div
-					:class="[activeItem === item.title ? 'isActive' : '', 'item']"
+					:class="[
+						activeItem === `${item.title}_${item.type}` ? 'isActive' : '',
+						'item'
+					]"
 					ref="isActiveRef"
 					v-for="item in items.children"
 					:key="item.title"
-					@click="handleActive(item.title)"
+					@click="handleActive(item.title, item.type)"
 					@dblclick="openCommand(item)"
 				>
 					<div class="txt">
 						<img :src="item.icon" />
 						<span class="name">{{ item.title }}</span>
-						<!-- <span class="name q-ml-sm text-ink-2">{{ item.title }}</span> -->
+						<span
+							v-if="item.type === SearchCategory.Command"
+							class="name q-ml-sm text-ink-2"
+							>{{ item.name }}</span
+						>
 						<!-- <span class="desc">{{ item.type }}</span> -->
 					</div>
 					<div class="desc q-mr-sm text-ink-2">
-						{{ item.type }}
+						{{
+							item.type === SearchCategory.Application ? t('application') : ''
+						}}
+						{{ item.type === SearchCategory.Command ? t('command') : '' }}
+						{{ item.type === SearchCategory.Result ? t('command') : '' }}
 					</div>
 				</div>
 			</template>
@@ -54,6 +68,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue';
 import { SearchCategory } from '@desktop/core/src/types';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
 	showSearchDialog: {
@@ -69,6 +84,7 @@ const props = defineProps({
 
 const emits = defineEmits(['openCommand']);
 
+const { t } = useI18n();
 const searchTxt = ref('');
 const searchRef = ref();
 
@@ -129,7 +145,8 @@ const classifyData = (data: any, searchTxt?: string) => {
 		}
 	}
 
-	activeItem.value = newArr[0]?.children[0]?.title;
+	activeItem.value =
+		newArr[0]?.children[0]?.title + '_' + newArr[0]?.children[0]?.type;
 
 	console.log('newArr', newArr);
 	return newArr;
@@ -145,12 +162,12 @@ const openCommand = (item: any) => {
 	emits('openCommand', item);
 };
 
-const handleActive = (title: string) => {
+const handleActive = (title: string, type: string) => {
 	if (timer.value) {
 		clearTimeout(timer.value);
 	}
 	timer.value = setTimeout(() => {
-		activeItem.value = title;
+		activeItem.value = `${title}_${type}`;
 	}, 300);
 };
 
@@ -161,12 +178,13 @@ const keydownEnter = (event: any) => {
 	const keydownData = concatData(appData.value);
 
 	const index = keydownData.findIndex(
-		(item) => item.title === activeItem.value
+		(item) => item.title + '_' + item.type === activeItem.value
 	);
 	if (event.keyCode === 38) {
 		const upIndex = index - 1;
 		if (upIndex >= 0) {
-			activeItem.value = keydownData[upIndex].title;
+			activeItem.value =
+				keydownData[upIndex].title + '_' + keydownData[upIndex].type;
 			refreshScroll(upIndex);
 		}
 	}
@@ -174,13 +192,16 @@ const keydownEnter = (event: any) => {
 	if (event.keyCode === 40) {
 		const downIndex = index + 1;
 		if (downIndex <= keydownData.length - 1) {
-			activeItem.value = keydownData[downIndex].title;
+			activeItem.value =
+				keydownData[downIndex].title + '_' + keydownData[downIndex].type;
 			refreshScroll(downIndex);
 		}
 	}
 
 	if (event.keyCode === 13) {
-		const aItem = keydownData.find((item) => item.title === activeItem.value);
+		const aItem = keydownData.find(
+			(item) => item.title + '_' + item.type === activeItem.value
+		);
 		openCommand(aItem);
 	}
 };

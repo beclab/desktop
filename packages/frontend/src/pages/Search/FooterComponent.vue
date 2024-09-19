@@ -7,7 +7,7 @@
 				text-color="ink-2"
 			>
 			</q-btn>
-			<span class="q-ml-md">Navigate</span>
+			<span class="q-ml-md">{{ t('navigate') }}</span>
 		</div>
 
 		<div class="separator"></div>
@@ -19,7 +19,7 @@
 				text-color="ink-2"
 			>
 			</q-btn>
-			<span class="q-ml-md">Select</span>
+			<span class="q-ml-md">{{ t('select') }}</span>
 		</div>
 
 		<div class="separator"></div>
@@ -28,12 +28,15 @@
 			<div class="esc">
 				<img src="./../../assets/esc.svg" alt="esc" />
 			</div>
-			<span class="q-ml-md">Quit</span>
+			<span class="q-ml-md">{{ t('quit') }}</span>
 		</div>
 	</div>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
+</script>
 
 <style lang="scss" scoped>
 .search-footer {
