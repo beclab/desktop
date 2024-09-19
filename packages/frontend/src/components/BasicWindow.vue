@@ -33,10 +33,18 @@
 		/>
 
 		<div class="title" style="width: 100%; height: 40px; padding: 0 12px">
-			<q-img class="app_icon" :src="value.icon" />
+			<q-img
+				class="app_icon"
+				:src="value.icon"
+				style="width: 20px; height: 20px"
+			/>
 
 			<span class="app_title ink-1">
-				{{ value.title }}
+				{{
+					['Files', 'Market', 'Dashboard', 'Settings'].includes(value.title)
+						? t(`app.${value.title}`)
+						: value.title
+				}}
 			</span>
 
 			<q-space />
@@ -117,6 +125,7 @@
 <script lang="ts">
 import { ref, defineComponent, onMounted, nextTick, onUnmounted } from 'vue';
 import { useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
 
 interface WindowRect {
 	left: number;
@@ -151,6 +160,7 @@ export default defineComponent({
 	},
 
 	setup(props, context) {
+		const { t } = useI18n();
 		const value = ref(props.modelValue);
 		const h_close = ref(false);
 		const h_min = ref(false);
@@ -332,7 +342,8 @@ export default defineComponent({
 			onMini,
 			onFull,
 			onTop,
-			onNew
+			onNew,
+			t
 		};
 	}
 });
