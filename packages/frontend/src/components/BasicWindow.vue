@@ -41,7 +41,9 @@
 
 			<span class="app_title ink-1">
 				{{
-					['Files', 'Market', 'Dashboard', 'Settings'].includes(value.title)
+					['Files', 'Market', 'Dashboard', 'Settings', 'Control Hub'].includes(
+						value.title
+					)
 						? t(`app.${value.title}`)
 						: value.title
 				}}

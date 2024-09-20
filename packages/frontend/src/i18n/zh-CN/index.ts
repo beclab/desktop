@@ -19,7 +19,8 @@ export default {
 	app: {
 		Files: '文件',
 		Market: '市场',
-		Dashboard: '面板',
-		Settings: '设置'
+		Dashboard: '仪表盘',
+		Settings: '设置',
+		'Control Hub': '控制面板'
 	}
 };
