@@ -90,11 +90,14 @@ export class AppController {
 
     const payload = event.data.data.payload;
 
-    broadcastWebsocketMessage({
+    const res = {
       event: 'app_installation_event',
       // data: event.data.data,
       data: payload,
-    });
+    };
+    this.logger.debug('app_installation_event2');
+    console.log(res);
+    broadcastWebsocketMessage(res);
 
     return returnSucceed(null);
   }
