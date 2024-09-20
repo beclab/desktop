@@ -20,6 +20,7 @@ export default {
 		Files: 'Files',
 		Market: 'Market',
 		Dashboard: 'Dashboard',
-		Settings: 'Settings'
+		Settings: 'Settings',
+		'Control Hub': 'Control Hub'
 	}
 };

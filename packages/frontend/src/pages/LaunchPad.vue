@@ -114,9 +114,13 @@
 								:data-index="appStore.desktopApps[element].id"
 							>
 								{{
-									['Files', 'Market', 'Dashboard', 'Settings'].includes(
-										appStore.desktopApps[element].title
-									)
+									[
+										'Files',
+										'Market',
+										'Dashboard',
+										'Settings',
+										'Control Hub'
+									].includes(appStore.desktopApps[element].title)
 										? t(`app.${appStore.desktopApps[element].title}`)
 										: appStore.desktopApps[element].title
 								}}
