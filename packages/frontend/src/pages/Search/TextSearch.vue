@@ -345,7 +345,7 @@ hi {
 .files {
 	height: calc(100% - 46px);
 	border-top: 1px solid #d8d8d8;
-	overflow: scroll;
+	overflow: hidden;
 	display: flex;
 
 	.fileDetails {
