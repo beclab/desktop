@@ -6,6 +6,8 @@ on:
     push:
         branches:
           - "main"
+          - "fix/download_loading"
+
         tags:
           - 'v*'
           

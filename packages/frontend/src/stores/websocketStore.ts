@@ -33,7 +33,10 @@ export const useSocketStore = defineStore('counter', {
 
 	actions: {
 		start() {
+			console.log('process ws_url', process.env.WS_URL);
+
 			let ws_url = process.env.WS_URL || window.location.origin + '/ws';
+			console.log('start ws_url', ws_url);
 
 			if (ws_url.startsWith('http://')) {
 				ws_url = ws_url.substring(7);
@@ -42,6 +45,8 @@ export const useSocketStore = defineStore('counter', {
 				ws_url = ws_url.substring(8);
 				ws_url = 'wss://' + ws_url;
 			}
+
+			console.log('ws_url', ws_url);
 
 			this.websocket = new WebSocketBean({
 				url: ws_url,
@@ -61,6 +66,7 @@ export const useSocketStore = defineStore('counter', {
 				onmessage: (ev) => {
 					try {
 						const message = JSON.parse(ev.data);
+						console.log('message', message);
 
 						if (message.topic == MessageTopic.Data) {
 							if (message.event == 'updateConfig') {

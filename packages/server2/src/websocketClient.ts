@@ -42,6 +42,7 @@ export async function broadcastWebsocketMessage(
 ): Promise<WebSocketSendResult | undefined> {
   try {
     const users = await getWSConnectionList();
+    console.log('ws user', users);
     console.log('ws user.lenght', users.length);
     if (users.length == 0) {
       return undefined;

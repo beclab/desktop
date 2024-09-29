@@ -90,6 +90,8 @@ export class AppController {
 
     const payload = event.data.data.payload;
 
+    this.logger.debug('payload', JSON.stringify(payload));
+
     broadcastWebsocketMessage({
       event: 'app_installation_event',
       // data: event.data.data,
