@@ -22,5 +22,18 @@ export default {
 		Dashboard: 'Dashboard',
 		Settings: 'Settings',
 		'Control Hub': 'Control Hub'
+	},
+	buttons: {
+		close: 'Close',
+		confirm: 'Confirm',
+		cancel: 'Cancel'
+	},
+	confirmation: 'Confirmation',
+	delete: 'Delete',
+	mseeage: {
+		suspended:
+			'This application has been suspended. You can resume it on the Application page in Settings.',
+		crashed: 'The application has crashed. Please wait while it restarts.',
+		delete_app: 'Are you sure you want to delete the application "{appName}"?'
 	}
 };

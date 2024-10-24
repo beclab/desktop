@@ -259,6 +259,9 @@ export const useAppStore = defineStore('app', {
 			this.myApps = [];
 
 			for (let i = 0; i < data.length; ++i) {
+				if (data[i].state === 'uninstalling') {
+					continue;
+				}
 				if (!data[i].entrances || data[i].entrances.length == 0) {
 					this.myApps.push({
 						...data[i],
@@ -273,8 +276,13 @@ export const useAppStore = defineStore('app', {
 						if (data[i].entrances[j].invisible) {
 							// do nothing
 						} else {
+							const state =
+								data[i].state === 'running'
+									? data[i].entrances[j].state
+									: data[i].state;
 							this.myApps.push({
 								...data[i],
+								state,
 								type: SearchCategory.Application,
 								id: data[i].entrances[j].id,
 								appid: data[i].id,
