@@ -80,6 +80,8 @@ export const useSocketStore = defineStore('counter', {
 								bus.emit('intent', message.data);
 							} else if (message.event == 'n') {
 								bus.emit('notification', message.data);
+							} else if (message.event == 'entrance-state-event') {
+								bus.emit('entrance_state_event', message);
 							}
 						}
 					} catch (e) {

@@ -83,7 +83,8 @@
 										appStore.desktopApps[element].icon,
 										appStore.desktopApps[element].title,
 										element,
-										indexList
+										indexList,
+										$event
 									)
 								"
 							></div>
@@ -94,7 +95,15 @@
 										width:${appStore.DESKTOP_APP_SIZE}px;
 										height:${appStore.DESKTOP_APP_SIZE}px;
 										`"
-								v-if="appStore.desktopApps[element].state == 'installing'"
+								v-if="
+									[
+										'resuming',
+										'upgrading',
+										'uninstalling',
+										'installing',
+										'initializing'
+									].includes(appStore.desktopApps[element].state)
+								"
 							>
 								<svg viewBox="0 0 32 32" id="install_loading_speed">
 									<circle r="16" cx="16" cy="16" />
@@ -110,9 +119,17 @@
 								)}px;`"
 							/>
 							<div
-								class="launch_pad_apps_name"
+								class="launch_pad_apps_name row items-center justify-center"
 								:data-index="appStore.desktopApps[element].id"
 							>
+								<span
+									class="app_state q-mr-sm suspend_color"
+									v-if="appStore.desktopApps[element].state == 'suspend'"
+								></span>
+								<span
+									class="app_state q-mr-sm crash_color"
+									v-if="appStore.desktopApps[element].state == 'crash'"
+								></span>
 								{{
 									[
 										'Files',
@@ -158,7 +175,7 @@ import {
 } from '@desktop/core/src/types';
 import { useI18n } from 'vue-i18n';
 import { useAppStore, isSystemApp } from 'stores/app';
-import DeleteAppDialog from 'components/ConfirmDeleteAppDialog.vue';
+import ConfirmDialog from 'components/ConfirmDialog.vue';
 import { borderRadiusFormat } from 'src/utils/utils';
 
 defineProps({
@@ -218,6 +235,30 @@ let lastDragFinishTime = 0;
 const carousel = ref();
 
 const openWindow = async (item: DesktopAppInfo) => {
+	if (item.state === 'suspend') {
+		$q.dialog({
+			component: ConfirmDialog,
+			componentProps: {
+				title: t('confirmation'),
+				message: t('mseeage.suspended'),
+				icon: item.icon
+			}
+		});
+		return false;
+	}
+
+	if (item.state === 'crash') {
+		$q.dialog({
+			component: ConfirmDialog,
+			componentProps: {
+				title: t('confirmation'),
+				message: t('mseeage.crashed'),
+				icon: item.icon
+			}
+		});
+		return false;
+	}
+
 	emits('appClick', {
 		appid: item.id,
 		data: {}
@@ -282,23 +323,34 @@ function deleteLaunch(
 	icon: string,
 	launchTitle: string,
 	index: number,
-	indexList: number
+	indexList: number,
+	e: any
 ) {
+	console.log('deleteLaunch e', e);
+	const message = t('mseeage.delete_app', {
+		appName: launchTitle
+	});
 	$q.dialog({
-		component: DeleteAppDialog,
+		component: ConfirmDialog,
 		componentProps: {
-			launchLogoIcon: icon,
-			launchTitle: launchTitle
+			title: t('delete'),
+			icon,
+			message,
+			showCancel: true
 		}
 	}).onOk(async () => {
-		const fatherName = appStore.desktopApps[index].fatherName;
-		let categoryLaunchPadApps = appStore.launchPadApps[indexList];
-		appStore.launchPadApps[indexList] = categoryLaunchPadApps.filter(
-			(item, itemIndex) => itemIndex !== index
-		);
+		e.target.parentNode.classList.add('uninstallAni');
 
-		await appStore.uninstall_application(fatherName);
-		await appStore.get_my_apps_info();
+		setTimeout(async () => {
+			const fatherName = appStore.desktopApps[index].fatherName;
+			let categoryLaunchPadApps = appStore.launchPadApps[indexList];
+			appStore.launchPadApps[indexList] = categoryLaunchPadApps.filter(
+				(item, itemIndex) => itemIndex !== index
+			);
+			await appStore.uninstall_application(fatherName);
+			await appStore.get_my_apps_info();
+			e.target.parentNode.classList.remove('uninstallAni');
+		}, 500);
 	});
 }
 
@@ -570,7 +622,7 @@ const goto = (value: number) => {
 .column_launch_pad_apps {
 	.launch_pad_apps_name {
 		width: 140%;
-		transform: translateX(-13%);
+		transform: translateX(-15%);
 		text-align: center;
 		font-size: 14px;
 		font-family: Roboto-Medium, Roboto;
@@ -580,17 +632,32 @@ const goto = (value: number) => {
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		margin-top: 12px;
+		.app_state {
+			display: inline-block;
+			width: 8px;
+			height: 8px;
+			border-radius: 4px;
+			&.suspend_color {
+				background-color: $warning;
+			}
+			&.crash_color {
+				background-color: $negative;
+			}
+			&.running_color {
+				background-color: $positive;
+			}
+		}
 	}
 	.delete_launch {
-		width: 36px;
-		height: 36px;
+		width: 20px;
+		height: 20px;
 		background-image: url('./../assets/delete_iocn.png');
 		background-repeat: no-repeat;
 		background-position: center;
 		background-size: contain;
 		position: absolute;
-		top: -14px;
-		left: -14px;
+		top: -5px;
+		left: -5px;
 		z-index: 99;
 		cursor: pointer;
 	}
@@ -803,32 +870,52 @@ const goto = (value: number) => {
 
 @-webkit-keyframes vibrate-1 {
 	0% {
-		transform: rotate(6deg);
-		-webkit-transform: rotate(6deg);
+		transform: rotate(4deg);
+		-webkit-transform: rotate(4deg);
 	}
 
 	50% {
-		transform: rotate(-5deg);
-		-webkit-transform: rotate(-5deg);
+		transform: rotate(-3deg);
+		-webkit-transform: rotate(-3deg);
 	}
 	100% {
-		transform: rotate(6deg);
-		-webkit-transform: rotate(6deg);
+		transform: rotate(4deg);
+		-webkit-transform: rotate(4deg);
 	}
 }
 @keyframes vibrate-1 {
 	0% {
-		transform: rotate(6deg);
-		-webkit-transform: rotate(6deg);
+		transform: rotate(4deg);
+		-webkit-transform: rotate(4deg);
 	}
 
 	50% {
-		transform: rotate(-5deg);
-		-webkit-transform: rotate(-5deg);
+		transform: rotate(-3deg);
+		-webkit-transform: rotate(-3deg);
 	}
 	100% {
-		transform: rotate(6deg);
-		-webkit-transform: rotate(6deg);
+		transform: rotate(4deg);
+		-webkit-transform: rotate(4deg);
+	}
+}
+
+.uninstallAni {
+	display: inline-block;
+	animation: scaleFadeOut 0.5s forwards ease-in-out;
+}
+
+@keyframes scaleFadeOut {
+	0% {
+		transform: scale(1);
+		opacity: 1;
+	}
+	20% {
+		transform: scale(1.2);
+		opacity: 1;
+	}
+	100% {
+		transform: scale(0);
+		opacity: 0;
 	}
 }
 

@@ -22,5 +22,17 @@ export default {
 		Dashboard: '仪表盘',
 		Settings: '设置',
 		'Control Hub': '控制面板'
+	},
+	buttons: {
+		close: '关闭',
+		confirm: '确定',
+		cancel: '取消'
+	},
+	confirmation: '确认',
+	delete: '删除',
+	mseeage: {
+		suspended: '此应用程序已暂停。您可以在“设置”中的“应用”恢复它。',
+		crashed: '应用程序已崩溃。正在重新启动，请稍候。',
+		delete_app: '您确定要删除 "{appName}" 这个应用吗？'
 	}
 };

@@ -49,6 +49,10 @@ bus.on('app_installation_event', () => {
 	appStore.update_my_apps_info();
 });
 
+bus.on('entrance_state_event', () => {
+	appStore.update_my_apps_info();
+});
+
 bus.on('system_upgrade_event', (data: any) => {
 	upgradeStore.state = data.payload.status;
 });
