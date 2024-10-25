@@ -99,6 +99,24 @@ export class AppController {
     return returnSucceed(null);
   }
 
+  @Post('/server/entrance_state_event')
+  async entrance_state_event(
+    @Body() event: ProviderRequest<Event<any>>,
+  ): Promise<Result<null>> {
+    this.logger.debug('entrance_state_event');
+    this.logger.debug(JSON.stringify(event, null, 2));
+
+    const payload = event.data.data.payload;
+
+    broadcastWebsocketMessage({
+      event: 'entrance_state_event',
+      // data: event.data.data,
+      data: payload,
+    });
+
+    return returnSucceed(null);
+  }
+
   @Post('/server/system_upgrade_event')
   async system_upgrade_event(
     @Body() event: ProviderRequest<Event<any>>,
