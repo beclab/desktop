@@ -61,6 +61,7 @@ export const useSocketStore = defineStore('counter', {
 				onmessage: (ev) => {
 					try {
 						const message = JSON.parse(ev.data);
+						console.log('WebSocketBean onmessage', message);
 
 						if (message.topic == MessageTopic.Data) {
 							if (message.event == 'updateConfig') {

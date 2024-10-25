@@ -50,6 +50,7 @@ bus.on('app_installation_event', () => {
 });
 
 bus.on('entrance_state_event', () => {
+	console.log('into entrance_state_event');
 	appStore.update_my_apps_info();
 });
 
