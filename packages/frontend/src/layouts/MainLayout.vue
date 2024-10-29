@@ -46,6 +46,12 @@ bus.on('close', () => {
 });
 
 bus.on('app_installation_event', () => {
+	console.log('into app_installation_event');
+	appStore.update_my_apps_info();
+});
+
+bus.on('entrance_state_event', () => {
+	console.log('into entrance_state_event');
 	appStore.update_my_apps_info();
 });
 
@@ -146,6 +152,7 @@ bus.on('ai_message', (cdata: any) => {
 onUnmounted(() => {
 	bus.off('close');
 	bus.off('app_installation_event');
+	bus.off('entrance_state_event');
 	bus.off('system_upgrade_event');
 	bus.off('ai');
 	bus.off('ai_message');

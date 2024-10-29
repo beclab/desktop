@@ -61,6 +61,7 @@ export const useSocketStore = defineStore('counter', {
 				onmessage: (ev) => {
 					try {
 						const message = JSON.parse(ev.data);
+						console.log('WebSocketBean onmessage', message);
 
 						if (message.topic == MessageTopic.Data) {
 							if (message.event == 'updateConfig') {
@@ -80,6 +81,8 @@ export const useSocketStore = defineStore('counter', {
 								bus.emit('intent', message.data);
 							} else if (message.event == 'n') {
 								bus.emit('notification', message.data);
+							} else if (message.event == 'entrance_state_event') {
+								bus.emit('entrance_state_event', message);
 							}
 						}
 					} catch (e) {

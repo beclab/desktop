@@ -99,7 +99,7 @@ import { useQuasar } from 'quasar';
 import { DesktopAppInfo, AppClickInfo } from '@desktop/core/src/types';
 import { useI18n } from 'vue-i18n';
 import { useAppStore, isSystemApp } from 'stores/app';
-import DeleteAppDialog from 'components/ConfirmDeleteAppDialog.vue';
+import ConfirmDialog from 'components/ConfirmDialog.vue';
 import { borderRadiusFormat } from 'src/utils/utils';
 
 defineProps({
@@ -177,11 +177,15 @@ function deleteLaunch(
 	index: number,
 	Indexlist: number
 ) {
+	const message = `Are you sure you want to delete the application "${launchTitle}"？`;
+
 	$q.dialog({
-		component: DeleteAppDialog,
+		component: ConfirmDialog,
 		componentProps: {
-			launchlogoIocn: launchlogo,
-			launchTitle: launchTitle
+			title: t('delete'),
+			icon: launchlogo,
+			message,
+			showCancel: true
 		}
 	}).onOk(async () => {
 		const fatherName = appStore.desktopApps[index].fatherName;
