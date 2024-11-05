@@ -163,9 +163,9 @@ module.exports = configure(function (ctx) {
 			workboxOptions: {}, // only for GenerateSW
 
 			manifest: {
-				name: 'Terminus',
+				name: 'Olares',
 				short_name: 'Desktop',
-				description: 'Terminus OS Launcher',
+				description: 'Olares OS Launcher',
 				display: 'standalone',
 				orientation: 'portrait',
 				theme_color: 'transparent',

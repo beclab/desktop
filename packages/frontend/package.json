@@ -1,8 +1,8 @@
 {
   "name": "@desktop/frontend",
   "version": "0.0.1",
-  "description": "Terminus OS Launcher",
-  "productName": "Terminus",
+  "description": "Olares OS Launcher",
+  "productName": "Olares",
   "author": "Peng Peng <billpengpeng@gmail.com>",
   "private": true,
   "scripts": {
