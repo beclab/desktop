@@ -379,7 +379,7 @@ export default defineComponent({
 .iframe-box {
 	box-shadow: 0 1px 5px rgb(0 0 0 / 20%), 0 2px 2px rgb(0 0 0 / 14%),
 		0 3px 1px -2px rgb(0 0 0 / 12%);
-	background: white;
+	background: $bg-background-1;
 	border-radius: 10px;
 
 	.iframe-window {
