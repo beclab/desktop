@@ -25,7 +25,7 @@
 		ref="dragRef"
 	> -->
 	<div
-		class="iframe-box-mobile"
+		class="iframe-box-mobile bg-background-1"
 		:class="isFull ? 'animationClass-mobile' : ''"
 		:style="{
 			width: `${value.width}px`,
@@ -346,7 +346,6 @@ export default defineComponent({
 .iframe-box-mobile {
 	box-shadow: 0 1px 5px rgb(0 0 0 / 20%), 0 2px 2px rgb(0 0 0 / 14%),
 		0 3px 1px -2px rgb(0 0 0 / 12%);
-	background: $bg-background-1;
 	border-radius: 10px;
 	overflow: hidden;
 

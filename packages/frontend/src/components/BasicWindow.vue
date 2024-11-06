@@ -17,7 +17,7 @@
 		v-on:resizestop="resizeStop"
 		@click="onTop"
 		:stickSize="24"
-		class="iframe-box"
+		class="iframe-box bg-background-1"
 		:class="
 			isFull ? (value.isResizable ? 'animationClass' : 'animationClass2') : ''
 		"
@@ -379,7 +379,6 @@ export default defineComponent({
 .iframe-box {
 	box-shadow: 0 1px 5px rgb(0 0 0 / 20%), 0 2px 2px rgb(0 0 0 / 14%),
 		0 3px 1px -2px rgb(0 0 0 / 12%);
-	background: $bg-background-1;
 	border-radius: 10px;
 
 	.iframe-window {
