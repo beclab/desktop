@@ -83,7 +83,6 @@
 										appStore.desktopApps[element].icon,
 										appStore.desktopApps[element].title,
 										element,
-										indexList,
 										$event
 									)
 								"
@@ -94,6 +93,10 @@
 								:style="`
 										width:${appStore.DESKTOP_APP_SIZE}px;
 										height:${appStore.DESKTOP_APP_SIZE}px;
+										border-radius: ${borderRadiusFormat(
+											appStore.DESKTOP_APP_SIZE,
+											appStore.DESKTOP_APP_SIZE
+										)}px;
 										`"
 								v-if="
 									[
@@ -110,16 +113,22 @@
 								</svg>
 							</div>
 							<img
+								:key="appStore.desktopApps[element].title"
 								:src="appStore.desktopApps[element].icon"
 								:style="`width:${appStore.DESKTOP_APP_SIZE}px;height:${
 									appStore.DESKTOP_APP_SIZE
 								}px;border-radius: ${borderRadiusFormat(
 									appStore.DESKTOP_APP_SIZE,
 									appStore.DESKTOP_APP_SIZE
-								)}px;`"
+								)}px;${
+									appStore.desktopApps[element].state == 'suspend' ||
+									appStore.desktopApps[element].state == 'crash'
+										? 'filter: grayscale(100%) brightness(0.8)'
+										: 'filter: grayscale(0%)'
+								}`"
 							/>
 							<div
-								class="launch_pad_apps_name row items-center justify-center"
+								class="launch_pad_apps_name"
 								:data-index="appStore.desktopApps[element].id"
 							>
 								<span
@@ -323,7 +332,6 @@ function deleteLaunch(
 	icon: string,
 	launchTitle: string,
 	index: number,
-	indexList: number,
 	e: any
 ) {
 	console.log('deleteLaunch e', e);
@@ -340,15 +348,10 @@ function deleteLaunch(
 		}
 	}).onOk(async () => {
 		e.target.parentNode.classList.add('uninstallAni');
+		const fatherName = appStore.desktopApps[index].fatherName;
 
 		setTimeout(async () => {
-			const fatherName = appStore.desktopApps[index].fatherName;
-			let categoryLaunchPadApps = appStore.launchPadApps[indexList];
-			appStore.launchPadApps[indexList] = categoryLaunchPadApps.filter(
-				(item, itemIndex) => itemIndex !== index
-			);
 			await appStore.uninstall_application(fatherName);
-			await appStore.get_my_apps_info();
 			e.target.parentNode.classList.remove('uninstallAni');
 		}, 500);
 	});
@@ -670,7 +673,6 @@ const goto = (value: number) => {
 		background-position: center;
 		background-size: 100% 100%;
 		background-repeat: no-repeat;
-		border-radius: 16px;
 		display: flex;
 		align-items: center;
 		justify-content: center;

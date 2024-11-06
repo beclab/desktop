@@ -17,7 +17,7 @@ export default {
 	file_no_data: '无匹配结果',
 	use_search: '使用 "{content}" 搜索...',
 	app: {
-		Files: '文件管理',
+		Files: '文件管理器',
 		Market: '应用市场',
 		Dashboard: '仪表盘',
 		Settings: '设置',

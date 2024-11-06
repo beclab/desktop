@@ -17,7 +17,7 @@
 		v-on:resizestop="resizeStop"
 		@click="onTop"
 		:stickSize="24"
-		class="iframe-box"
+		class="iframe-box bg-background-1"
 		:class="
 			isFull ? (value.isResizable ? 'animationClass' : 'animationClass2') : ''
 		"
@@ -273,6 +273,13 @@ export default defineComponent({
 				} else {
 					$q.dark.set(true);
 				}
+				iframeRef.value.contentWindow.postMessage(
+					{
+						message: 'theme_apps_update',
+						info: event.data.info
+					},
+					'*'
+				);
 			}
 		};
 
@@ -379,7 +386,6 @@ export default defineComponent({
 .iframe-box {
 	box-shadow: 0 1px 5px rgb(0 0 0 / 20%), 0 2px 2px rgb(0 0 0 / 14%),
 		0 3px 1px -2px rgb(0 0 0 / 12%);
-	background: white;
 	border-radius: 10px;
 
 	.iframe-window {
