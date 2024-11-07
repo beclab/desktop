@@ -508,11 +508,13 @@ export const useAppStore = defineStore('app', {
 			if (!app_name) {
 				return;
 			}
+
+			this.myApps = this.myApps.filter((item) => item.fatherName !== app_name);
+			this.relocate_application_place(this.myApps);
 			const data: any = await axios.get(
 				tokenStore.url + '/server/uninstall/' + app_name,
 				{}
 			);
-			console.log(data);
 		}
 	}
 });
