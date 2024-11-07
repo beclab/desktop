@@ -113,7 +113,7 @@ const onCancel = async () => {
 		}
 
 		.confirm {
-			width: 60px;
+			width: 68px;
 			text-align: center;
 			margin-top: 40px;
 			padding: 8px 12px;
@@ -128,10 +128,10 @@ const onCancel = async () => {
 		}
 
 		.cancel {
-			width: 60px;
+			width: 68px;
 			text-align: center;
 			margin-top: 40px;
-			padding: 8px 12px;
+			padding: 8px 0;
 			border-radius: 8px;
 			font-size: 12px;
 			line-height: 16px;
