@@ -2,7 +2,8 @@
 	<div class="search-footer q-pl-lg">
 		<div>
 			<q-btn
-				class="btn-size-xs btn-no-text q-mr-xs bg-grey-2"
+				class="btn-size-xs btn-no-text q-mr-xs"
+				:class="isDark ? 'bg-background-4' : 'bg-grey-2'"
 				icon="sym_r_swap_vert"
 				text-color="ink-2"
 			>
@@ -14,7 +15,8 @@
 
 		<div>
 			<q-btn
-				class="btn-size-xs btn-no-text q-mr-xs bg-grey-2"
+				class="btn-size-xs btn-no-text"
+				:class="isDark ? 'bg-background-4' : 'bg-grey-2'"
 				icon="sym_r_keyboard_return"
 				text-color="ink-2"
 			>
@@ -25,8 +27,8 @@
 		<div class="separator"></div>
 
 		<div class="row items-center justify-center">
-			<div class="esc">
-				<img src="./../../assets/esc.svg" alt="esc" />
+			<div class="esc" :class="isDark ? 'bg-background-4' : 'bg-grey-2'">
+				<img :src="isDark ? escDark : esc" alt="esc" />
 			</div>
 			<span class="q-ml-md">{{ t('quit') }}</span>
 		</div>
@@ -34,8 +36,15 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useQuasar } from 'quasar';
+import esc from './../../assets/esc.svg';
+import escDark from './../../assets/esc-dark.svg';
+
 const { t } = useI18n();
+const $q = useQuasar();
+const isDark = ref($q.dark.mode);
 </script>
 
 <style lang="scss" scoped>
@@ -53,7 +62,6 @@ const { t } = useI18n();
 		width: 24px;
 		height: 24px;
 		border-radius: 4px;
-		background-color: rgba(0, 0, 0, 0.1);
 		display: flex;
 		align-items: center;
 		justify-content: center;

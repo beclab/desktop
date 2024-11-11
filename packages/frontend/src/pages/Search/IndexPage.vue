@@ -165,8 +165,8 @@ onBeforeUnmount(() => {
 		position: relative;
 
 		.icon {
-			width: 24px;
-			height: 24px;
+			width: 18px;
+			height: 18px;
 		}
 
 		.btn {
@@ -189,7 +189,7 @@ onBeforeUnmount(() => {
 			height: 100%;
 			border: none;
 			outline: none;
-			margin: 0 16px;
+			margin: 0 12px;
 			font-weight: 400;
 			font-size: 16px;
 			line-height: 20px;
@@ -202,13 +202,14 @@ onBeforeUnmount(() => {
 		}
 
 		.appIcon {
-			height: 42px;
+			height: 32px;
 			display: flex;
 			align-items: center;
 			justify-content: space-around;
-			background: rgba(26, 19, 15, 0.06);
+			background: $background-4;
 			border-radius: 4px;
 			padding: 8px 12px;
+			margin-left: 18px;
 		}
 	}
 }

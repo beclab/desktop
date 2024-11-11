@@ -35,5 +35,13 @@ export default {
 			'This application has been suspended. You can resume it on the Application page in Settings.',
 		crashed: 'The application has crashed. Please wait while it restarts.',
 		delete_app: 'Are you sure you want to delete the application "{appName}"?'
+	},
+	upgrade: {
+		success_title: 'Congratulations',
+		success_message: 'Update successful',
+		fail_title: 'Upgrade failed',
+		fail_message: 'Upgrade failed,please try again',
+		running_title: 'Upgrading System',
+		running_message: 'Please wait a moment'
 	}
 };

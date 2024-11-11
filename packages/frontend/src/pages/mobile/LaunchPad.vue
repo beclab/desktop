@@ -10,7 +10,7 @@
 					transition-next="slide-left"
 					swipeable
 					animated
-					navigation
+					ref="carousel"
 					class="bg-grey-1 shadow-2 rounded-borders q_vackgr_carousel"
 				>
 					<q-carousel-slide
@@ -82,6 +82,21 @@
 							</div>
 						</div>
 					</q-carousel-slide>
+
+					<template v-slot:control>
+						<q-carousel-control
+							class="row items-center justify-center full-width"
+							v-if="appStore.launchPadApps.length > 1"
+						>
+							<span
+								class="carousel_dot q-mx-sm"
+								:class="slide === index ? 'active' : ''"
+								v-for="(dot, index) in appStore.launchPadApps"
+								:key="index"
+								@click.stop="goto(index)"
+							></span>
+						</q-carousel-control>
+					</template>
 				</q-carousel>
 			</template>
 			<div class="noresult" v-else>{{ t('launch_no_result') }}</div>
@@ -120,6 +135,7 @@ const searchVal = ref<string>('');
 const isFocus = ref<boolean>(true);
 
 const isDisplay = ref<boolean>(false);
+const carousel = ref();
 
 let slide = ref(0);
 let isDelete = false;
@@ -177,7 +193,9 @@ function deleteLaunch(
 	index: number,
 	Indexlist: number
 ) {
-	const message = `Are you sure you want to delete the application "${launchTitle}"？`;
+	const message = t('mseeage.delete_app', {
+		appName: launchTitle
+	});
 
 	$q.dialog({
 		component: ConfirmDialog,
@@ -198,6 +216,10 @@ function deleteLaunch(
 		await appStore.get_my_apps_info();
 	});
 }
+
+const goto = (value: number) => {
+	carousel.value.goTo(value);
+};
 </script>
 
 <style lang="scss" scoped>
@@ -281,7 +303,7 @@ function deleteLaunch(
 		background-size: contain;
 		position: absolute;
 		top: -14px;
-		left: -14px;
+		left: 7px;
 		z-index: 99;
 		cursor: pointer;
 	}
@@ -398,8 +420,8 @@ function deleteLaunch(
 		margin: auto;
 		width: 56px;
 		height: 56px;
-		border-radius: 56px;
-		background-color: #ffffff;
+		border-radius: 28px;
+		background-color: rgba(255, 255, 255, 0.9);
 	}
 }
 .in-center-page {
@@ -531,5 +553,17 @@ function deleteLaunch(
 
 :global(.q-carousel__navigation-icon) {
 	font-size: 5px !important;
+}
+
+.carousel_dot {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	background-color: rgba(255, 255, 255, 0.3);
+	border-radius: 4px;
+	cursor: pointer;
+	&.active {
+		background-color: rgba(255, 255, 255, 1);
+	}
 }
 </style>

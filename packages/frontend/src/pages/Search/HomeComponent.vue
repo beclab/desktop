@@ -83,7 +83,6 @@ const props = defineProps({
 });
 
 const emits = defineEmits(['openCommand']);
-
 const { t } = useI18n();
 const searchTxt = ref('');
 const searchRef = ref();
@@ -253,7 +252,7 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .list {
 	height: calc(100% - 48px);
-	border-top: 1px solid #d8d8d8;
+	border-top: 1px solid $separator-color;
 	overflow: scroll;
 	scrollbar-width: none;
 
@@ -269,10 +268,10 @@ onUnmounted(() => {
 	}
 	.item {
 		width: calc(100% - 32px);
-		height: 48px;
-		line-height: 48px;
+		height: 40px;
+		line-height: 40px;
 		border-radius: 12px;
-		margin: 0 16px;
+		margin: 0 16px 4px;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -284,7 +283,6 @@ onUnmounted(() => {
 			img {
 				width: 24px;
 				height: 24px;
-				border: 0.6px solid #e0e0e0;
 				border-radius: 4px;
 				margin: 0 8px;
 			}
