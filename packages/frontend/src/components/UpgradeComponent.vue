@@ -21,18 +21,18 @@
 			class="content"
 			v-if="['completed', 'not_running'].includes(upgradeStore.state)"
 		>
-			<div>Congratulations</div>
-			<div>Update successful</div>
+			<div>{{ t('upgrade.success_title') }}</div>
+			<div>{{ t('upgrade.success_message') }}</div>
 		</div>
 
 		<div class="content" v-else-if="upgradeStore.state === 'failed'">
-			<div>Upgrade failed</div>
-			<div>Upgrade failed,please try again</div>
+			<div>{{ t('upgrade.fail_title') }}</div>
+			<div>{{ t('upgrade.fail_message') }}</div>
 		</div>
 
 		<div class="content" v-else>
-			<div>Upgrading System</div>
-			<div>Please wait a moment</div>
+			<div>{{ t('upgrade.running_title') }}</div>
+			<div>{{ t('upgrade.running_message') }}</div>
 		</div>
 
 		<div
@@ -40,7 +40,7 @@
 			v-if="!['started', 'running'].includes(upgradeStore.state)"
 			@click="confirm"
 		>
-			Confirm
+			{{ t('buttons.confirm') }}
 		</div>
 		<div class="confirm" v-else style="opacity: 0"></div>
 	</div>
@@ -48,6 +48,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
 import { useUpgradeStore } from '../stores/upgrade';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	name: 'UpgradeComponent',
@@ -55,6 +56,7 @@ export default defineComponent({
 	setup(props, context) {
 		const upgradeStore = useUpgradeStore();
 		const timer = ref();
+		const { t } = useI18n();
 
 		const confirm = () => {
 			context.emit('closeUpgrade');
@@ -82,7 +84,8 @@ export default defineComponent({
 
 		return {
 			upgradeStore,
-			confirm
+			confirm,
+			t
 		};
 	}
 });

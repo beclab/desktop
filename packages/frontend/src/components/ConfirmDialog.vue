@@ -106,7 +106,7 @@ const onCancel = async () => {
 				border-radius: 8px;
 			}
 			.message {
-				max-width: 310px;
+				max-width: calc(100% - 45px);
 				font-size: 12px;
 				line-height: 16px;
 			}

@@ -6,9 +6,9 @@
 			alt="delete"
 			@click="goBack"
 		/>
-		<div class="appIcon q-ml-sm">
+		<div class="appIcon">
 			<img class="icon" :src="item?.icon" alt="search" />
-			<span class="q-ml-sm">{{ item?.title }}</span>
+			<span class="q-ml-sm text-ink-2 text-body3">{{ item?.title }}</span>
 		</div>
 		<input
 			class="input text-ink-1"
@@ -26,7 +26,7 @@
 			@click="handleClear"
 		/>
 	</div>
-	<div class="files">
+	<div class="files bg-background-2">
 		<div class="fileDetails" v-if="fileData && fileData.length > 0">
 			<bt-scroll-area class="full-width full-height q-pa-md">
 				<div
@@ -121,6 +121,7 @@
 							class="icon cursor-pointer"
 							name="sym_r_share_windows"
 							size="20px"
+							color="ink-2"
 							@click="open(file)"
 						/>
 						<q-icon
@@ -128,6 +129,7 @@
 							class="icon cursor-pointer"
 							name="sym_r_search"
 							size="20px"
+							color="ink-2"
 							@click="open(file)"
 						/>
 					</div>
@@ -344,7 +346,7 @@ hi {
 <style lang="scss" scoped>
 .files {
 	height: calc(100% - 46px);
-	border-top: 1px solid #d8d8d8;
+	border-top: 1px solid $separator-color;
 	overflow: hidden;
 	display: flex;
 

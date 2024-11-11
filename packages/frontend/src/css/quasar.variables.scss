@@ -25,5 +25,8 @@ $info: #31ccec;
 $warning: #f2c037;
 $grey: rgba(0, 0, 0, 0.4);
 
-@import '@bytetrade/ui/lib/styles/quasar.variables.sass';
+
+@import './quasar-bex.sass';
+@import '@bytetrade/ui/lib/styles/quasar.popup.scss';
 @import '@bytetrade/ui/lib/styles/quasar.btn.scss';
+@import '@bytetrade/ui/lib/styles/quasar.variables.sass';

@@ -157,6 +157,7 @@
 					<template v-slot:control>
 						<q-carousel-control
 							class="row items-center justify-center full-width"
+							v-if="appStore.launchPadApps.length > 1"
 						>
 							<span
 								class="carousel_dot q-mx-sm"
