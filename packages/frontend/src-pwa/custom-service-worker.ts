@@ -16,12 +16,14 @@ import { NetworkOnly } from 'workbox-strategies';
 // // 跳过等待
 // self.skipWaiting();
 // Use with precache injection
+
 precacheAndRoute(
 	self.__WB_MANIFEST.filter((entry) => {
 		if (typeof entry == 'string') {
 			return true;
 		}
-		return !entry.url.endsWith('.html');
+		console.log('precacheAndRoute entry', entry);
+		return !entry.url.endsWith('.html') && !entry.url.startsWith('/public/');
 	})
 );
 
