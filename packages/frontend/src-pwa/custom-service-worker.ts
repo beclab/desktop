@@ -50,3 +50,10 @@ registerRoute(
 		]
 	})
 );
+
+registerRoute(
+	({ url }) => url.pathname.startsWith('/public/'),
+	new NetworkOnly()
+);
+
+registerRoute(({ url }) => url.pathname.startsWith('/bg/'), new NetworkOnly());
