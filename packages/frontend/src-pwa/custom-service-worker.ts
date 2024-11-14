@@ -23,7 +23,11 @@ precacheAndRoute(
 			return true;
 		}
 		console.log('precacheAndRoute entry', entry);
-		return !entry.url.endsWith('.html') && !entry.url.startsWith('/public/');
+		return (
+			!entry.url.endsWith('.html') ||
+			!entry.url.startsWith('/public/') ||
+			!entry.url.startsWith('/bg/')
+		);
 	})
 );
 
