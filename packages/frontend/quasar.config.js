@@ -160,7 +160,23 @@ module.exports = configure(function (ctx) {
 
 		pwa: {
 			workboxPluginMode: 'InjectManifest', // 'GenerateSW' or 'InjectManifest'
-			workboxOptions: {}, // only for GenerateSW
+			workboxOptions: {
+				runtimeCaching: [
+					{
+						urlPattern: new RegExp('/public/'),
+						handler: 'NetworkOnly'
+					},
+					{
+						urlPattern: /\/api\/.*/,
+						handler: 'NetworkFirst',
+						options: {
+							cacheableResponse: {
+								statuses: [0, 200]
+							}
+						}
+					}
+				]
+			}, // only for GenerateSW
 
 			manifest: {
 				name: 'Olares',

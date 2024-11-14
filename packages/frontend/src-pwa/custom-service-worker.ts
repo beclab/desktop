@@ -10,7 +10,7 @@ declare const self: ServiceWorkerGlobalScope &
 import { precacheAndRoute } from 'workbox-precaching';
 // import { clientsClaim } from 'workbox-core';
 import { registerRoute } from 'workbox-routing';
-import { NetworkOnly, StaleWhileRevalidate } from 'workbox-strategies';
+import { NetworkOnly } from 'workbox-strategies';
 // 放在顶部，sw获得控制权，不然是下次打开页面获得
 // clientsClaim();
 // // 跳过等待
@@ -40,10 +40,8 @@ self.addEventListener('fetch', (event) => {
 // 自定义缓存策略
 // 例如：网络优先策略
 registerRoute(
-	({ request, url }) => {
+	({ request }) => {
 		console.log('Request mode:', request);
-		url.origin === self.location.origin && url.pathname.startsWith('/public/'),
-			new StaleWhileRevalidate();
 		return request.mode === 'navigate';
 	}, // 这是 Workbox 推荐的检查 document 请求的方式
 	new NetworkOnly({
