@@ -10,7 +10,7 @@
 			@drop="onDrop"
 		>
 			<div class="bg-container">
-				<img fit="fill" class="desktop-bg" src="/bg/0.jpg" />
+				<img fit="fill" class="desktop-bg" src="bg/1.jpg" />
 			</div>
 
 			<DailyDescription />
