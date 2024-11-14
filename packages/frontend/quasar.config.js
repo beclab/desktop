@@ -167,6 +167,10 @@ module.exports = configure(function (ctx) {
 					handler: 'NetworkOnly'
 				},
 				{
+					urlPattern: new RegExp('/bg/'),
+					handler: 'NetworkOnly'
+				},
+				{
 					urlPattern: /\/api\/.*/,
 					handler: 'NetworkFirst',
 					options: {
