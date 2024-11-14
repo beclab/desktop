@@ -10,11 +10,7 @@
 			@drop="onDrop"
 		>
 			<div class="bg-container">
-				<img
-					fit="fill"
-					class="desktop-bg"
-					:src="tokenStore.config.bg.slice(1)"
-				/>
+				<img fit="fill" class="desktop-bg" src="/bg/0.jpg" />
 			</div>
 
 			<div class="desktop-avator" @click="onLogout">
