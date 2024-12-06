@@ -1,0 +1,16 @@
+name: PR Conventional Commit Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  validate-pr-title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: PR Conventional Commit Validation
+        uses:  ytanikin/PRConventionalCommits@1.1.0
+        if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
+        with:
+          task_types: '["feat","fix","docs","test","ci","refactor","perf","chore","revert","style"]'
+          add_label: 'true'
