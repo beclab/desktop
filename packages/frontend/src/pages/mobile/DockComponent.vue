@@ -9,16 +9,19 @@
 				:key="'aood+index' + index"
 			>
 				<div class="launchapp column items-center">
-					<img
+					<div
 						class="app-img"
 						@click="openWindow(element)"
 						:id="element.id"
-						:src="element.icon"
 						:style="{
 							width: element.id === 'bdock:launchpad' ? '0.56rem' : '0.52rem',
 							height: element.id === 'bdock:launchpad' ? '0.56rem' : '0.52rem'
 						}"
-					/>
+					>
+						<img :src="element.icon" />
+						<div class="overlay"></div>
+					</div>
+
 					<div class="app-name q-mt-xs" v-if="element.id !== 'bdock:launchpad'">
 						{{ element.title }}
 					</div>
@@ -101,6 +104,25 @@ defineExpose({
 				width: 0.52rem;
 				height: 0.52rem;
 				border-radius: 0.14rem;
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+				-webkit-user-drag: none;
+				overflow: hidden;
+				position: relative;
+				img {
+					width: 100%;
+					height: 100%;
+				}
+				.overlay {
+					width: 100%;
+					height: 100%;
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					bottom: 0;
+					background: transparent;
+				}
 			}
 			.app-name {
 				width: 100%;

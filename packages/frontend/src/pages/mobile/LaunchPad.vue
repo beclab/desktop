@@ -31,6 +31,7 @@
 								-moz-user-select: none;
 								-ms-user-select: none;
 								user-select: none;
+								position: relative;
 							"
 							v-touch-hold:1200.mouse="handleHold"
 							:id="appStore.desktopApps[element].id"
@@ -68,11 +69,9 @@
 								</svg>
 							</div>
 							<img
+								class="pad-img"
 								:src="appStore.desktopApps[element].icon"
-								:style="`width:58px;height:58px;border-radius: ${borderRadiusFormat(
-									58,
-									58
-								)}px;`"
+								:style="`border-radius: ${borderRadiusFormat(58, 58)}px;`"
 							/>
 							<div
 								class="launchpadapps_name"
@@ -280,6 +279,13 @@ const goto = (value: number) => {
 	grid-template-columns: repeat(4, 25%);
 	grid-row-gap: 30px;
 	padding-top: 60px;
+	.pad-img {
+		width: 58px;
+		height: 58px;
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-webkit-user-drag: none;
+	}
 	.launchpadapps_name {
 		width: 100%;
 		text-align: center;
