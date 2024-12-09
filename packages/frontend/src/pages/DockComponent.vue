@@ -1,7 +1,10 @@
 <template>
 	<div class="desktop-box">
 		<div class="desktop_app_box">
-			<div class="desktop_app">
+			<div
+				class="desktop_app"
+				:style="`height:${DOCKER_APP_TOTAL_HEIGHT + 186}px;`"
+			>
 				<div class="desktop_user_avatar">
 					<div class="desktop_avatar" @click="onOpneProfile">
 						<TerminusAvatar :info="tokenStore.terminus" :size="36" />
@@ -9,13 +12,11 @@
 
 					<div class="desktop_avatar_border"></div>
 				</div>
-				<q-space />
 
 				<div
 					class="column_myapps_all"
 					id="app_dock_list"
 					@dragleave="onDockDragLeave"
-					:style="`height:${DOCKER_APP_TOTAL_HEIGHT}px;`"
 				>
 					<template
 						v-for="(element, index) in appStore.dockerApps"
@@ -64,7 +65,6 @@
 					</template>
 				</div>
 
-				<q-space />
 				<div class="desktop_message desktop_user_avatar">
 					<div class="desktop_avatar_border"></div>
 					<div class="dock_icon">
@@ -612,6 +612,9 @@ defineExpose({
 			filter: drop-shadow(0px 0px 40px rgba(0, 0, 0, 0.2))
 				drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.4));
 			backdrop-filter: blur(120px);
+			display: flex;
+			flex-direction: column;
+
 			.desktop_avatar_border {
 				width: 36px;
 				height: 0px;
@@ -690,8 +693,10 @@ defineExpose({
 			}
 			.column_myapps_all {
 				width: 100%;
-				max-height: 555px;
-				// overflow: hidden;
+				flex: 1;
+				// min-height: 200px;
+				// max-height: 555px;
+				overflow: hidden;
 				position: relative;
 
 				.img_parent {
