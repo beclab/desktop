@@ -1,6 +1,30 @@
 <template>
 	<q-dialog class="card-dialog" v-model="show" ref="dialogRef" @hide="onCancel">
-		<q-card class="card-continer" flat>
+		<q-card class="card-continer" v-if="isMobile" flat>
+			<div class="text-ink-1 text-subtitle2 row items-center justify-center">
+				{{ title }}
+			</div>
+
+			<div class="dialog-desc left row item-center justify-center q-my-lg">
+				{{ message }}
+			</div>
+
+			<div class="row item-center justify-between">
+				<span
+					class="cancel-mobile text-ink-2 q-mr-md"
+					v-if="showCancel"
+					@click="onCancel"
+					>{{ t('buttons.cancel') }}</span
+				>
+				<span
+					class="confirm-mobile bg-yellow-default text-ink-1"
+					@click="submit"
+					>{{ t('buttons.confirm') }}</span
+				>
+			</div>
+		</q-card>
+
+		<q-card class="card-continer" v-else flat>
 			<div class="dialog-header row items-center justify-between">
 				<div class="text-ink-1">
 					{{ title }}
@@ -43,6 +67,7 @@
 import { useI18n } from 'vue-i18n';
 import { useDialogPluginComponent } from 'quasar';
 import { ref } from 'vue';
+import { isMobile } from '../utils/resize';
 
 defineProps({
 	title: {
@@ -135,6 +160,37 @@ const onCancel = async () => {
 			border-radius: 8px;
 			font-size: 12px;
 			line-height: 16px;
+			float: right;
+			cursor: pointer;
+			border: 1px solid $btn-stroke;
+			&:hover {
+				opacity: 0.8;
+			}
+		}
+
+		.confirm-mobile {
+			width: 46%;
+			height: 48px;
+			line-height: 48px;
+			margin-top: 12px;
+			text-align: center;
+			border-radius: 8px;
+			font-size: 16px;
+			float: right;
+			cursor: pointer;
+			&:hover {
+				opacity: 0.8;
+			}
+		}
+
+		.cancel-mobile {
+			width: 46%;
+			height: 48px;
+			line-height: 48px;
+			margin-top: 12px;
+			text-align: center;
+			border-radius: 8px;
+			font-size: 16px;
 			float: right;
 			cursor: pointer;
 			border: 1px solid $btn-stroke;

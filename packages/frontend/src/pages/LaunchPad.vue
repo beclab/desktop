@@ -655,7 +655,7 @@ const goto = (value: number) => {
 	.delete_launch {
 		width: 20px;
 		height: 20px;
-		background-image: url('./../assets/delete_iocn.png');
+		background-image: url('./../assets/delete_app_icon.svg');
 		background-repeat: no-repeat;
 		background-position: center;
 		background-size: contain;
