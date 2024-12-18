@@ -384,8 +384,8 @@ export default defineComponent({
 
 <style lang="scss">
 .iframe-box {
-	box-shadow: 0 1px 5px rgb(0 0 0 / 20%), 0 2px 2px rgb(0 0 0 / 14%),
-		0 3px 1px -2px rgb(0 0 0 / 12%);
+	box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.4),
+		0px 0px 40px 0px rgba(0, 0, 0, 0.2);
 	border-radius: 10px;
 
 	.iframe-window {

@@ -119,33 +119,39 @@ export default defineComponent({
 		.shadow {
 			width: 100%;
 			height: 100%;
-			border: 4px solid transparent;
-			border-top-color: #ffffff;
+			// border: 4px solid transparent;
+			// border-top-color: #ffffff;
 			box-sizing: border-box;
 			border-radius: 50%;
-			animation: 1.2s loaderAni linear infinite;
+			animation: 2.5s loaderAni linear infinite;
 			position: absolute;
 			left: 0;
 			right: 0;
 			top: 0;
 			bottom: 0;
 			margin: auto;
-			&:before {
-				content: '';
-				display: block;
-				width: calc(100% + 2px);
-				height: calc(100% + 2px);
-				position: absolute;
-				left: -3px;
-				right: 0;
-				top: 0;
-				bottom: 0;
-				margin: auto;
-				border: 2px solid #ffffff;
-				box-sizing: content-box;
-				border-radius: 50%;
-				opacity: 0.5;
-			}
+
+			background-image: url('./../assets/upgrading.png');
+			background-repeat: no-repeat;
+			background-size: 100%;
+			background-position: center center;
+
+			// &:before {
+			// 	content: '';
+			// 	display: block;
+			// 	width: calc(100% + 0px);
+			// 	height: calc(100% + 0px);
+			// 	position: absolute;
+			// 	left: -1px;
+			// 	right: 0;
+			// 	top: 0;
+			// 	bottom: 0;
+			// 	margin: auto;
+			// 	border: 1px solid #ffffff;
+			// 	box-sizing: content-box;
+			// 	border-radius: 50%;
+			// 	opacity: 0.5;
+			// }
 
 			@keyframes loaderAni {
 				0% {
