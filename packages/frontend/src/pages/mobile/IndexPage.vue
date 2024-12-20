@@ -10,7 +10,13 @@
 			@drop="onDrop"
 		>
 			<div class="bg-container">
-				<img fit="fill" class="desktop-bg" :src="tokenStore.config.bg" />
+				<img
+					v-if="tokenStore.config.bg"
+					fit="fill"
+					class="desktop-bg"
+					:src="tokenStore.config.bg"
+				/>
+				<img v-else fit="fill" class="desktop-bg" src="/bg/0.jpg" />
 			</div>
 
 			<div class="desktop-avator" @click="onLogout">
