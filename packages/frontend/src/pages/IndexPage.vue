@@ -29,7 +29,6 @@
 			/>
 
 			<launch-pad
-				v-if="isShowLaunchPad"
 				:isShowLaunch="isShowLaunchPad"
 				@appClick="onLaunchPadAppClick"
 				@dismiss="onLaunchPadDismiss"
