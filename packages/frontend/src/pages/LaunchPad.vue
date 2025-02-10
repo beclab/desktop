@@ -1,18 +1,6 @@
 <template>
-	<div
-		class="launch_pad_page"
-		:class="{ in_center_page: isShowLaunch }"
-		@click="dismiss"
-		:style="{
-			width: isShowLaunch ? '100%' : '0px',
-			height: isShowLaunch ? '100%' : '0px'
-		}"
-	>
-		<div
-			class="launch_pad_box"
-			:class="{ in_center: isShowLaunch }"
-			ref="launchpadPage"
-		>
+	<div class="launch_pad_page in_center_page" @click="dismiss">
+		<div class="launch_pad_box in-center" ref="launchpadPage">
 			<div class="launch_pad_search" ref="searchBox">
 				<q-input
 					dense
@@ -188,7 +176,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 import {
 	DesktopAppInfo,
@@ -200,7 +188,7 @@ import { useAppStore, isSystemApp } from 'stores/app';
 import ConfirmDialog from 'components/ConfirmDialog.vue';
 import { borderRadiusFormat } from 'src/utils/utils';
 
-const props = defineProps({
+defineProps({
 	isShowLaunch: {
 		type: Boolean,
 		required: false
@@ -212,19 +200,7 @@ const emits = defineEmits(['appClick', 'dismiss', 'drag_launch_app']);
 const { t } = useI18n();
 const launchpadPage = ref<HTMLElement>();
 const searchBox = ref<HTMLElement>();
-
 onMounted(() => {
-	initResize();
-});
-
-watch(
-	() => props.isShowLaunch,
-	() => {
-		initResize();
-	}
-);
-
-const initResize = () => {
 	let grid_x: number = Math.floor(launchpadPage.value!.offsetWidth / 20);
 	const grid_y: number = Math.floor(launchpadPage.value!.offsetHeight / 11.5);
 	grid_x = grid_x < grid_y ? grid_x : grid_y;
@@ -249,7 +225,7 @@ const initResize = () => {
 	appStore.DOCKER_APP_END_X_GAP = appStore.DOCKER_APP_START_X_GAP;
 
 	appStore.resize();
-};
+});
 
 const $q = useQuasar();
 const appStore = useAppStore();
@@ -730,7 +706,6 @@ const goto = (value: number) => {
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	overflow: hidden;
 	.launch_search {
 		width: 240px;
 		height: 32px !important;
@@ -767,8 +742,8 @@ const goto = (value: number) => {
 	}
 }
 .launch_pad_box {
-	width: calc(100vw - 108px);
-	height: 100vh;
+	width: calc(100% - 108px);
+	height: 100%;
 	box-shadow: none;
 	margin-left: 108px;
 	padding-top: 36px;
@@ -820,7 +795,7 @@ const goto = (value: number) => {
 		opacity: 1;
 	}
 }
-.in_center {
+.in-center {
 	-webkit-animation: puff-in-center 0.6s;
 	animation: puff-in-center 0.6s;
 }
