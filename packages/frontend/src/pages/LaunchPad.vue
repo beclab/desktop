@@ -113,7 +113,6 @@
 								</svg>
 							</div>
 							<img
-								:key="appStore.desktopApps[element].title"
 								:src="appStore.desktopApps[element].icon"
 								:style="`width:${appStore.DESKTOP_APP_SIZE}px;height:${
 									appStore.DESKTOP_APP_SIZE
