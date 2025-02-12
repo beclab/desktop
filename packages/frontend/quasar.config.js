@@ -165,7 +165,7 @@ module.exports = configure(function (ctx) {
 		},
 
 		pwa: {
-			workboxPluginMode: 'InjectManifest', // 'GenerateSW' or 'InjectManifest'
+			workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
 			workboxOptions: {}, // only for GenerateSW
 
 			manifest: {
