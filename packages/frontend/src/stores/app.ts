@@ -10,6 +10,7 @@ import {
 import { TerminusApp } from '@bytetrade/core';
 import { useTokenStore } from './token';
 import '../assets/icon/iconfont.css';
+import { dockerAppsDefault } from 'src/utils/constants';
 
 export interface Service {
 	name: string;
@@ -93,7 +94,7 @@ export const useAppStore = defineStore('app', {
 
 			profile_id: undefined,
 
-			dockerApps: [],
+			dockerApps: dockerAppsDefault,
 			launchPadApps: [[]],
 			desktopApps: [],
 			myApps: [],

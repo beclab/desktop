@@ -12,17 +12,15 @@
 
 					<div class="desktop_avatar_border"></div>
 				</div>
-
 				<div
 					class="column_myapps_all"
 					id="app_dock_list"
 					@dragleave="onDockDragLeave"
 				>
-					<template
-						v-for="(element, index) in appStore.dockerApps"
-						:key="'aood+index' + index"
-					>
+					<template v-for="element in appStore.dockerApps" :key="element.id">
 						<img
+							crossorigin="anonymous"
+							:class="{ myapp_list_disabled: !!element.disabled }"
 							@click="openWindow(element)"
 							:id="element.id"
 							:style="`position:absolute;top:${element.top}px;width:${
@@ -151,6 +149,9 @@ const DOCKER_APP_TOTAL_HEIGHT = computed(() => {
 });
 
 const openWindow = async (item: DockerAppInfo) => {
+	if (!!item.disabled) {
+		return;
+	}
 	emits('appClick', {
 		appid: item.id,
 		data: {}
@@ -698,7 +699,10 @@ defineExpose({
 				// max-height: 555px;
 				overflow: hidden;
 				position: relative;
-
+				.myapp_list_disabled {
+					cursor: wait;
+					opacity: 0.9;
+				}
 				.img_parent {
 					display: flex;
 					&::after {

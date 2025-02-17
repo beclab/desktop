@@ -72,11 +72,12 @@ export interface DockerAppInfo {
   icon: string;
   name: string;
   title: string;
-  namespace: string;
-  owner: string;
-  url: string;
+  namespace?: string;
+  owner?: string;
+  url?: string;
   is_temp: boolean;
   show_dot: boolean;
+  disabled?: boolean;
 }
 
 export interface DesktopPosition {
