@@ -70,11 +70,11 @@
 					<div class="item-content q-mx-md">
 						<div
 							class="title"
-							v-if="file.highlight_field === 'title'"
+							v-if="file.highlight_field.includes('title')"
 							v-html="file.highlight"
 						></div>
 						<div class="title" v-else>
-							{{ file.title }}
+							{{ file.highlight[file.highlight_field.indexOf('title')] }}
 						</div>
 
 						<div class="desc q-my-xs" v-if="item?.name === 'Wise'">
@@ -110,8 +110,8 @@
 
 						<div
 							class="context"
-							v-if="file.highlight_field === 'content'"
-							v-html="file.highlight"
+							v-if="file.highlight_field.includes('content')"
+							v-html="file.highlight[file.highlight_field.indexOf('content')]"
 						></div>
 						<!-- <div class="context" v-else>{{ item.content }}</div> -->
 					</div>
