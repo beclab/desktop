@@ -42,8 +42,8 @@ export interface TextSearchItem {
 	author?: string;
 	content?: string;
 	meta: any;
-	highlight?: string;
-	highlight_field: string;
+	highlight?: string | string[];
+	highlight_field: string | string[];
 	owner_userid?: string;
 	title: string;
 	resource_uri?: string;
@@ -252,8 +252,8 @@ export const useSearchStore = defineStore('search', {
 
 			const searchRes: TextSearchItem = {
 				id: id,
-				highlight: name.replace(query, `<hi>${query}</hi>`),
-				highlight_field: 'title',
+				highlight: [name.replace(query, `<hi>${query}</hi>`)],
+				highlight_field: ['title'],
 				title: name,
 				fileType: fileType,
 				fileIcon: fileIcon || 'other',
