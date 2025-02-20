@@ -70,11 +70,17 @@
 					<div class="item-content q-mx-md">
 						<div
 							class="title"
-							v-if="file.highlight_field.includes('title')"
-							v-html="file.highlight"
+							v-if="complyLowerVersionField(file.highlight_field, 'title')"
+							v-html="
+								complyLowerVersionHighlight(
+									file.highlight,
+									file.highlight_field,
+									'title'
+								)
+							"
 						></div>
 						<div class="title" v-else>
-							{{ file.highlight[file.highlight_field.indexOf('title')] }}
+							{{ file.title }}
 						</div>
 
 						<div class="desc q-my-xs" v-if="item?.name === 'Wise'">
@@ -110,8 +116,14 @@
 
 						<div
 							class="context"
-							v-if="file.highlight_field.includes('content')"
-							v-html="file.highlight[file.highlight_field.indexOf('content')]"
+							v-if="complyLowerVersionField(file.highlight_field, 'content')"
+							v-html="
+								complyLowerVersionHighlight(
+									file.highlight,
+									file.highlight_field,
+									'content'
+								)
+							"
 						></div>
 						<!-- <div class="context" v-else>{{ item.content }}</div> -->
 					</div>
@@ -323,6 +335,41 @@ const clickItem = (file: any, index: number) => {
 			}
 			clickTimer.value = null;
 		}, clickDelay.value);
+	}
+};
+
+const complyLowerVersionField = (
+	highlight_field: string | string[],
+	field: string
+) => {
+	if (Array.isArray(highlight_field)) {
+		if (highlight_field.includes(field)) {
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		if (highlight_field === field) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+};
+
+const complyLowerVersionHighlight = (
+	highlight: string | string[],
+	highlight_field: string | string[],
+	field: string
+) => {
+	if (Array.isArray(highlight_field)) {
+		if (highlight_field.includes(field)) {
+			return highlight[highlight_field.indexOf(field)];
+		} else {
+			return highlight;
+		}
+	} else {
+		return highlight;
 	}
 };
 

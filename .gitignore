@@ -12,3 +12,6 @@ dist/
 packages/server/data
 .eslintcache
 data/
+fonttools/*
+build/*
+packages/frontend/src/assets/fonts/MaterialSymbolsRounded.woff2
