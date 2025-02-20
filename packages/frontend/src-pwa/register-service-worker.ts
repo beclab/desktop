@@ -4,38 +4,46 @@ import { register } from 'register-service-worker';
 // events passes a ServiceWorkerRegistration instance in their arguments.
 // ServiceWorkerRegistration: https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration
 
-register(process.env.SERVICE_WORKER_FILE, {
-	// The registrationOptions object will be passed as the second argument
-	// to ServiceWorkerContainer.register()
-	// https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/register#Parameter
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+const isDesktop = !/(iPhone|iPod|iPad)/i.test(navigator.userAgent);
+const key = Date.now();
 
-	// registrationOptions: { scope: './' },
+if (isDesktop && isSafari) {
+	// safari does not support pwa on the desktop
+} else {
+	register(`${process.env.SERVICE_WORKER_FILE}?key=${key}`, {
+		// The registrationOptions object will be passed as the second argument
+		// to ServiceWorkerContainer.register()
+		// https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/register#Parameter
 
-	ready(/* registration */) {
-		// console.log('Service worker is active.')
-	},
+		// registrationOptions: { scope: './' },
 
-	registered(/* registration */) {
-		// console.log('Service worker has been registered.')
-	},
+		ready(/* registration */) {
+			// console.log('Service worker is active.')
+		},
 
-	cached(/* registration */) {
-		// console.log('Content has been cached for offline use.')
-	},
+		registered(/* registration */) {
+			// console.log('Service worker has been registered.')
+		},
 
-	updatefound(/* registration */) {
-		// console.log('New content is downloading.')
-	},
+		cached(/* registration */) {
+			// console.log('Content has been cached for offline use.')
+		},
 
-	updated(/* registration */) {
-		// console.log('New content is available; please refresh.')
-	},
+		updatefound(/* registration */) {
+			// console.log('New content is downloading.')
+		},
 
-	offline() {
-		// console.log('No internet connection found. App is running in offline mode.')
-	},
+		updated(/* registration */) {
+			// console.log('New content is available; please refresh.')
+		},
 
-	error(/* err */) {
-		// console.error('Error during service worker registration:', err)
-	}
-});
+		offline() {
+			// console.log('No internet connection found. App is running in offline mode.')
+		},
+
+		error(/* err */) {
+			// console.error('Error during service worker registration:', err)
+		}
+	});
+}
