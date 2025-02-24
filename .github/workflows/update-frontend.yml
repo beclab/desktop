@@ -6,7 +6,7 @@ on:
     push:
         branches:
             - "main"
-
+            - "fix/desktop_install_event"
         tags:
           - 'v*'
 jobs:
