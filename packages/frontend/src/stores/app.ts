@@ -10,7 +10,6 @@ import {
 import { TerminusApp } from '@bytetrade/core';
 import { useTokenStore } from './token';
 import '../assets/icon/iconfont.css';
-import { dockerAppsDefault } from 'src/utils/constants';
 
 export interface Service {
 	name: string;
@@ -57,11 +56,8 @@ export const isSystemApp = (id: string): boolean => {
 
 	if (
 		rid.startsWith('files') ||
-		rid.startsWith('portfolio') ||
 		rid.startsWith('vault') ||
 		rid.startsWith('settings') ||
-		rid.startsWith('appstore') ||
-		rid.startsWith('console') ||
 		rid.startsWith('market') ||
 		rid.startsWith('profile') ||
 		rid.startsWith('dashboard') ||
@@ -94,7 +90,7 @@ export const useAppStore = defineStore('app', {
 
 			profile_id: undefined,
 
-			dockerApps: dockerAppsDefault,
+			dockerApps: [],
 			launchPadApps: [[]],
 			desktopApps: [],
 			myApps: [],
@@ -102,88 +98,16 @@ export const useAppStore = defineStore('app', {
 		} as AppState;
 	},
 	actions: {
-		async get_my_apps_info() {
-			await this.update_my_apps_info();
-
-			const files = this.myApps.find((app) => app.id.startsWith('files'));
-			const appStore = this.myApps.find((app) => app.id.startsWith('market'));
-			const settings = this.myApps.find((app) => app.id.startsWith('settings'));
-			const profile = this.myApps.find((app) => app.id.startsWith('profile'));
-			this.profile_id = profile?.id;
-
-			const docker_list = [files?.id, 'launchpad', appStore?.id, settings?.id];
-
-			this.dockerApps = [];
+		async get_default_dock_list(isMobile: boolean) {
 			let index = 0;
-			for (let j = 0; j < docker_list.length; ++j) {
-				let curApp = this.myApps.find((app) => app.id == docker_list[j]);
+			const result = [];
+			const dock_app_lists = isMobile
+				? ['files', 'settings', 'launchpad', 'profile', 'wise', 'vault']
+				: ['files', 'launchpad', 'market', 'settings', 'profile'];
 
-				if (docker_list[j] == 'launchpad') {
-					curApp = {
-						id: 'launchpad',
-						appid: 'launchpad',
-						icon: 'https://file.bttcdn.com/appstore/launchpad/icon.png',
-						name: 'Launchpad',
-						title: 'Launchpad',
-						target: '',
-						//installed: true,
-						state: 'running',
-						fatherName: null,
-						openMethod: 'default'
-					};
-				}
-
-				if (curApp) {
-					const d: DockerAppInfo = {
-						id: 'bdock:' + curApp.id,
-						left: 0,
-						top:
-							index == 0
-								? this.DOCKER_APP_START_GAP
-								: this.DOCKER_APP_START_GAP +
-								  this.DOCKER_APP_SIZE * index +
-								  this.DOCKER_APP_GAP * index,
-						size: this.DOCKER_APP_SIZE,
-						icon: curApp.icon,
-						name: curApp.name,
-						title: curApp.title,
-						namespace: curApp.namespace!,
-						owner: curApp.owner!,
-						url: curApp.url!,
-						is_temp: false,
-						show_dot: false
-					};
-					this.dockerApps.push(d);
-					index = index + 1;
-				}
-			}
-		},
-
-		async get_mobile_apps_info() {
-			await this.update_my_apps_info();
-
-			const files = this.myApps.find((app) => app.id.startsWith('files'));
-			const settings = this.myApps.find((app) => app.id.startsWith('settings'));
-			const profile = this.myApps.find((app) => app.id.startsWith('profile'));
-			const wise = this.myApps.find((app) => app.id.startsWith('wise'));
-			const vault = this.myApps.find((app) => app.id.startsWith('vault'));
-
-			this.profile_id = profile?.id;
-
-			const docker_list = [
-				settings?.id,
-				files?.id,
-				'launchpad',
-				wise?.id,
-				vault?.id
-			];
-
-			this.dockerApps = [];
-			let index = 0;
-			for (let j = 0; j < docker_list.length; ++j) {
-				let curApp = this.myApps.find((app) => app.id == docker_list[j]);
-
-				if (docker_list[j] == 'launchpad') {
+			for (const dock_app in dock_app_lists) {
+				let curApp = null;
+				if (dock_app == 'launchpad') {
 					curApp = {
 						id: 'launchpad',
 						appid: 'launchpad',
@@ -191,15 +115,23 @@ export const useAppStore = defineStore('app', {
 						name: 'Launchpad',
 						title: '',
 						target: '',
-						//installed: true,
 						state: 'running',
 						fatherName: null,
-						openMethod: 'window'
+						openMethod: isMobile ? 'window' : 'default'
 					};
+				} else {
+					const dock = this.myApps.find((app) => app.id.startsWith(dock_app));
+					if (!dock) {
+						continue;
+					}
+					if (dock_app == 'profile') {
+						this.profile_id = dock?.id;
+					}
+					curApp = this.myApps.find((app) => app.id == dock.id);
 				}
 
 				if (curApp) {
-					const d: DockerAppInfo = {
+					result.push({
 						id: 'bdock:' + curApp.id,
 						left: 0,
 						top:
@@ -217,11 +149,32 @@ export const useAppStore = defineStore('app', {
 						url: curApp.url!,
 						is_temp: false,
 						show_dot: false
-					};
-					this.dockerApps.push(d);
-					index = index + 1;
+					});
+					index++;
 				}
 			}
+
+			return result;
+		},
+
+		async remove_not_exist_apps_on_dock() {
+			// todo
+		},
+
+		async get_my_apps_info(isMobile = false) {
+			const res = localStorage.getItem('dockerApps');
+			if (res) {
+				this.dockerApps = JSON.parse(res);
+			}
+
+			await this.update_my_apps_info();
+
+			if (!res) {
+				this.dockerApps = await this.get_default_dock_list(isMobile);
+				localStorage.setItem('dockerApps', JSON.stringify(this.dockerApps));
+			}
+
+			await this.remove_not_exist_apps_on_dock();
 		},
 
 		async update_search_result(searchTxt?: string) {
@@ -424,14 +377,6 @@ export const useAppStore = defineStore('app', {
 			return this.dockerApps.find((app) => app.id == id);
 		},
 
-		async remove_app_on_docker(id: string) {
-			const index: number = this.dockerApps.findIndex((app) => app.id == id);
-
-			if (index >= 0) {
-				this.dockerApps.splice(index, 1);
-			}
-		},
-
 		is_app_in_docker(id: string) {
 			let rid = id;
 			if (rid.startsWith('bdesk:')) {
@@ -470,38 +415,34 @@ export const useAppStore = defineStore('app', {
 
 			const a: any = this.myApps.find((app) => app.id == rid);
 
-			if (a) {
-				const d: DockerAppInfo = {
-					id: 'bdock:' + a.id,
-					left: 0,
-					top: top,
-					size: this.DOCKER_APP_SIZE,
-					icon: a.icon,
-					name: a.name,
-					title: a.title,
-					namespace: a.namespace,
-					owner: a.owner,
-					url: a.url,
-					is_temp,
-					show_dot
-				};
-				this.dockerApps.push(d);
-			} else {
-				const d: DockerAppInfo = {
-					id: 'bdock:' + a.id,
-					left: 0,
-					top: top,
-					size: this.DOCKER_APP_SIZE,
-					icon: a.icon,
-					name: a.name,
-					title: a.title,
-					namespace: a.namespace,
-					owner: a.owner,
-					url: a.url,
-					is_temp,
-					show_dot
-				};
-				this.dockerApps.push(d);
+			if (!a) {
+				console.log('app not found ', rid);
+			}
+			const d: DockerAppInfo = {
+				id: 'bdock:' + a.id,
+				left: 0,
+				top: top,
+				size: this.DOCKER_APP_SIZE,
+				icon: a.icon,
+				name: a.name,
+				title: a.title,
+				namespace: a.namespace,
+				owner: a.owner,
+				url: a.url,
+				is_temp,
+				show_dot
+			};
+			this.dockerApps.push(d);
+
+			localStorage.setItem('dockerApps', JSON.stringify(this.dockerApps));
+		},
+
+		async remove_app_on_docker(id: string) {
+			const index: number = this.dockerApps.findIndex((app) => app.id == id);
+
+			if (index >= 0) {
+				this.dockerApps.splice(index, 1);
+				localStorage.setItem('dockerApps', JSON.stringify(this.dockerApps));
 			}
 		},
 

@@ -312,7 +312,7 @@ onMounted(async () => {
 	bytetrade.observeUrlChange.parentEventListener(listenerMessage);
 	//updateDesktopList();
 
-	appStore.get_mobile_apps_info();
+	appStore.get_my_apps_info(true);
 
 	window_update_interval = setInterval(() => {
 		if (need_save_window) {
