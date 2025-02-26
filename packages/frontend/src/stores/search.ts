@@ -54,13 +54,6 @@ export interface TextSearchItem {
 	isDir: boolean;
 }
 
-export enum SecondFactorMethod {
-	TOTP = 'totp',
-	Webauthn = 'webauthn',
-	MobilePush = 'mobilePush',
-	TerminusPass = 'terminus_pass'
-}
-
 enum ServiceType {
 	Files = 'files',
 	Knowledge = 'knowledge',
