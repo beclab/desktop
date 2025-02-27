@@ -1,14 +1,11 @@
 <template>
 	<div class="desktop-box">
 		<div
-			class="desktop_app_box"
+			class="desktop-app-box"
 			:class="{ dockAni: appStore.dockerApps.length > 0 }"
 		>
-			<template
-				v-for="(element, index) in appStore.dockerApps"
-				:key="'aood+index' + index"
-			>
-				<div class="launchapp column items-center">
+			<template v-for="element in appStore.dockerApps" :key="element.id">
+				<div class="launch-app column items-center">
 					<div
 						class="app-img"
 						@click="openWindow(element)"
@@ -80,14 +77,13 @@ const handleOpenApp = (appid: string) => {
 };
 
 defineExpose({
-	// handleRemoveApp,
 	handleOpenApp
 });
 </script>
 
 <style lang="scss" scoped>
 .desktop-box {
-	.desktop_app_box {
+	.desktop-app-box {
 		width: 100%;
 		display: flex;
 		align-items: center;
@@ -99,7 +95,7 @@ defineExpose({
 		margin: auto;
 		z-index: 9;
 
-		.launchapp {
+		.launch-app {
 			.app-img {
 				width: 0.52rem;
 				height: 0.52rem;

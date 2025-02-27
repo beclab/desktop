@@ -16,6 +16,7 @@ export default {
 	file_published: 'Published at',
 	file_no_data: 'No Matching Result Found',
 	use_search: 'Use ‘{content}’ with...',
+	landscape_message: 'Rotate your device to portrait mode for optimal viewing',
 	app: {
 		Files: 'Files',
 		Market: 'Market',

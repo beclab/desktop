@@ -301,15 +301,6 @@ const __beforeunload = (event: any) => {
 
 let window_update_interval: any = null;
 onMounted(async () => {
-	// const content = '<div class="content"><strong style="font-size: 14px;">Trading information</strong><div style="font-size: 12px;">Your transaction on Sep 6 was successful, please go to the Dapp to view the transaction detials.</div></div>';
-	// $q.notify({
-	// 	message: content,
-	// 	html: true,
-	// 	position: 'top-right',
-	// 	timeout: 2000,
-	// 	avatar: './icons/favicon-128x128.ico',
-	// });
-
 	upgradeStore.update_upgrade_state_info();
 
 	nextTick(() => {
@@ -320,7 +311,6 @@ onMounted(async () => {
 	});
 
 	bytetrade.observeUrlChange.parentEventListener(listenerMessage);
-	//updateDesktopList();
 
 	appStore.get_my_apps_info();
 
