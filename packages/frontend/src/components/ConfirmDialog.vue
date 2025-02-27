@@ -1,6 +1,6 @@
 <template>
 	<q-dialog class="card-dialog" v-model="show" ref="dialogRef" @hide="onCancel">
-		<q-card class="card-continer" v-if="isMobile" flat>
+		<q-card class="card-continer" v-if="tokenStore.deviceInfo.isMobile" flat>
 			<div class="text-ink-1 text-subtitle2 row items-center justify-center">
 				{{ title }}
 			</div>
@@ -67,7 +67,7 @@
 import { useI18n } from 'vue-i18n';
 import { useDialogPluginComponent } from 'quasar';
 import { ref } from 'vue';
-import { isMobile } from '../utils/resize';
+import { useTokenStore } from 'src/stores/token';
 
 defineProps({
 	title: {
@@ -94,6 +94,7 @@ defineProps({
 
 const { t } = useI18n();
 const { dialogRef, onDialogCancel, onDialogOK } = useDialogPluginComponent();
+const tokenStore = useTokenStore();
 
 const show = ref(true);
 

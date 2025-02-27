@@ -3,13 +3,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent, onMounted, onUnmounted } from 'vue';
 import { useTokenStore } from './stores/token';
 import { useSocketStore } from './stores/websocketStore';
 import axios from 'axios';
 import { WebPlatform } from './utils/platform';
 import { supportLanguages } from './i18n';
 import { i18n } from './boot/i18n';
+import { useMobile, onMobileChange } from '@bytetrade/core';
 
 const platform = new WebPlatform();
 
@@ -39,6 +40,15 @@ export default defineComponent({
 	setup() {
 		const tokenStore = useTokenStore();
 
+		const { state, cleanup } = useMobile();
+		tokenStore.deviceInfo = state;
+
+		onMobileChange(
+			(state: { isMobile: boolean; isVerticalScreen: boolean }) => {
+				tokenStore.deviceInfo = state;
+			}
+		);
+
 		onMounted(async () => {
 			const href = window.location.href;
 
@@ -58,6 +68,10 @@ export default defineComponent({
 
 			const websocketStore = useSocketStore();
 			websocketStore.start();
+		});
+
+		onUnmounted(() => {
+			cleanup();
 		});
 
 		let terminusLanguage = '';

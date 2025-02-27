@@ -16,6 +16,7 @@ export default {
 	file_published: '发布日期',
 	file_no_data: '无匹配结果',
 	use_search: '使用 "{content}" 搜索...',
+	landscape_message: '请旋转您的设备，竖屏模式下观看，享受更舒适的体验',
 	app: {
 		Files: '文件管理器',
 		Market: '应用市场',

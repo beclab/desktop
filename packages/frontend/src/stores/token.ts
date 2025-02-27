@@ -14,6 +14,10 @@ export type RootState = {
 	config: DesktopConfig;
 	terminus: TerminusInfo;
 	id: string | null;
+	deviceInfo: {
+		isMobile: boolean;
+		isVerticalScreen: boolean;
+	};
 };
 
 export const useTokenStore = defineStore('token', {
@@ -22,7 +26,11 @@ export const useTokenStore = defineStore('token', {
 			url: null,
 			config: {},
 			terminus: DefaultTerminusInfo,
-			id: null
+			id: null,
+			deviceInfo: {
+				isMobile: false,
+				isVerticalScreen: false
+			}
 		} as RootState;
 	},
 	getters: {},

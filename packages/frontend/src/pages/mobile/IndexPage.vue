@@ -19,8 +19,8 @@
 				<img v-else fit="fill" class="desktop-bg" src="/bg/0.jpg" />
 			</div>
 
-			<div class="desktop-avator" @click="onLogout">
-				<AvatorComponent :width="48" :height="48" />
+			<div class="desktop-avatar" @click="onLogout">
+				<AvatarComponent :width="48" :height="48" />
 			</div>
 
 			<DailyDescription />
@@ -54,7 +54,7 @@
 						@update:modelValue="onWindowUpdate"
 						@close="onWindowClose"
 						@mini="onWindowMiniSize"
-						@ontop="onWindowRequestOnTop"
+						@onTop="onWindowRequestOnTop"
 						:style="`z-index:${window_info.z};`"
 					/>
 				</template>
@@ -101,7 +101,7 @@ import { useUpgradeStore } from 'stores/upgrade';
 import { expiresStorage } from 'src/utils/location';
 import NotificationPopup from '../NotificationPopup.vue';
 import Search from '../Search/IndexPage.vue';
-import AvatorComponent from 'components/AvatorComponent.vue';
+import AvatarComponent from 'components/AvatarComponent.vue';
 import BasicWindow from './BasicWindow.vue';
 import UpgradeComponent from 'components/UpgradeComponent.vue';
 
@@ -641,7 +641,7 @@ const onLogout = async () => {
 	align-items: center;
 	overflow: hidden;
 }
-.desktop-avator {
+.desktop-avatar {
 	position: fixed;
 	right: 20px;
 	top: 20px;

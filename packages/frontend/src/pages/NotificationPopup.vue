@@ -34,7 +34,7 @@
 						v-if="inx === item.children.length - 1"
 						@click="toggleNotifyItem(item.application)"
 					>
-						<div class="avator" v-if="cell.icon">
+						<div class="avatar" v-if="cell.icon">
 							<q-img
 								src="./../assets/avatar.png"
 								style="width: 36px; height: 36px"
@@ -55,7 +55,7 @@
 
 			<div class="content" v-else>
 				<div class="notiy-item" v-for="cell in item.children" :key="cell.id">
-					<div class="avator" v-if="cell.icon">
+					<div class="avatar" v-if="cell.icon">
 						<q-img
 							src="./../assets/avatar.png"
 							style="width: 36px; height: 36px"
@@ -238,7 +238,7 @@ watch(
 			border-radius: 20px;
 			margin-bottom: 8px;
 
-			.avator {
+			.avatar {
 				width: 36px;
 				height: 36px;
 				border-radius: 8px;
