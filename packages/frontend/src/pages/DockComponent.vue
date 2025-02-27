@@ -6,21 +6,21 @@
 				:style="`height:${DOCKER_APP_TOTAL_HEIGHT + 186}px;`"
 			>
 				<div class="desktop_user_avatar">
-					<div class="desktop_avatar" @click="onOpneProfile">
+					<div class="desktop_avatar" @click="openProfile">
 						<TerminusAvatar :info="tokenStore.terminus" :size="36" />
 					</div>
 
 					<div class="desktop_avatar_border"></div>
 				</div>
 				<div
-					class="column_myapps_all"
+					class="column_apps_all"
 					id="app_dock_list"
 					@dragleave="onDockDragLeave"
 				>
 					<template v-for="element in appStore.dockerApps" :key="element.id">
 						<img
 							crossorigin="anonymous"
-							:class="{ myapp_list_disabled: !!element.disabled }"
+							:class="{ app_list_disabled: !!element.disabled }"
 							@click="openWindow(element)"
 							:id="element.id"
 							:style="`position:absolute;top:${element.top}px;width:${
@@ -47,19 +47,6 @@
 								element.top + 17
 							}px;right: -3px;`"
 						></div>
-						<!-- <div
-							:class="
-								contextmenuId == element.id ? 'contex_open' : 'contex_none'
-							"
-							:style="`position:absolute;top:${element.top}px;left:100px;`"
-						>
-							<p>Remove from Dock</p>
-							<p>Open</p>
-							<div
-								class="contex_triangle"
-								:style="`position:absolute;top:20px;left:-10px;`"
-							></div>
-						</div> -->
 					</template>
 				</div>
 
@@ -109,7 +96,7 @@ const props = defineProps({
 	}
 });
 
-const emits = defineEmits([]);
+const emits = defineEmits(['appClick', 'changeSearchDialog']);
 
 const tokenStore = useTokenStore();
 const appStore = useAppStore();
@@ -158,7 +145,7 @@ const openWindow = async (item: DockerAppInfo) => {
 	} as AppClickInfo);
 };
 
-const onOpneProfile = async () => {
+const openProfile = async () => {
 	emits('appClick', {
 		appid: appStore.profile_id,
 		data: {}
@@ -199,12 +186,12 @@ function animate(
 	targets: any,
 	type: number,
 	source_index: any,
-	sooure_target_y: any,
+	source_target_y: any,
 	target_top: number
 ) {
 	isAnimation = true;
 	if (type == 0) {
-		appStore.dockerApps[source_index].top = sooure_target_y;
+		appStore.dockerApps[source_index].top = source_target_y;
 	}
 
 	let p = [];
@@ -258,14 +245,14 @@ function animate(
 						return;
 					}
 
-					if (sooure_target_y > 0) {
+					if (source_target_y > 0) {
 						app_height_delta.value += 4;
-						if (sooure_target_y <= app_height_delta.value) {
+						if (source_target_y <= app_height_delta.value) {
 							finish();
 						}
-					} else if (sooure_target_y < 0) {
+					} else if (source_target_y < 0) {
 						app_height_delta.value -= 4;
-						if (sooure_target_y >= app_height_delta.value) {
+						if (source_target_y >= app_height_delta.value) {
 							finish();
 						}
 					} else {
@@ -582,14 +569,7 @@ defineExpose({
 .drag-start {
 	opacity: 0;
 }
-.desktop_message_postivs {
-	position: absolute;
-	bottom: 0px;
-	backdrop-filter: blur(20px);
-	background: rgba(0, 0, 0, 0.3);
-	box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.2),
-		inset 0px 0px 4px 0px rgba(255, 255, 255, 0.7);
-}
+
 .desktop-box {
 	.desktop_app_box {
 		width: 60px;
@@ -692,14 +672,12 @@ defineExpose({
 					}
 				}
 			}
-			.column_myapps_all {
+			.column_apps_all {
 				width: 100%;
 				flex: 1;
-				// min-height: 200px;
-				// max-height: 555px;
 				overflow: hidden;
 				position: relative;
-				.myapp_list_disabled {
+				.app_list_disabled {
 					cursor: wait;
 					opacity: 0.9;
 				}
@@ -713,64 +691,6 @@ defineExpose({
 						background: rgba(255, 255, 255, 0.8);
 						border-radius: 50%;
 						margin-right: 6px;
-					}
-				}
-				.contex_open {
-					width: 115px;
-					height: 68px;
-					background: rgba(0, 0, 0, 0.5);
-					box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.2),
-						inset 0px 0px 4px 0px rgba(255, 255, 255, 0.7);
-					border: 1px solid rgba(0, 0, 0, 0.3);
-					backdrop-filter: blur(20px);
-					border-radius: 10px;
-					padding-left: 16px;
-					padding-right: 16px;
-					.contex_triangle {
-						width: 0;
-						height: 0;
-						border-top: 10px solid transparent;
-						border-bottom: 10px solid transparent;
-						border-right: 10px solid rgba(0, 0, 0, 0.3);
-						box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.2),
-							inset 0px 0px 4px 0px rgba(255, 255, 255, 0.7);
-					}
-					p {
-						font-size: 12px;
-						font-family: Roboto-Regular, Roboto;
-						font-weight: 400;
-						color: #ffffff;
-						height: 32px;
-						line-height: 32px;
-						text-align: center;
-						margin: 0px;
-						cursor: pointer;
-					}
-					p:first-child {
-						border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-					}
-				}
-				.contex_none {
-					display: none;
-				}
-
-				.column_myapps {
-					width: 100%;
-					display: flex;
-					flex-wrap: wrap;
-					justify-content: center;
-					padding-top: 15px;
-					cursor: pointer;
-					.column_myapps_logo {
-						width: 40px;
-						height: 40px;
-						overflow: hidden;
-						box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.2);
-						border-radius: 5px;
-						margin-bottom: 16px;
-						background-position: center;
-						background-repeat: no-repeat;
-						background-size: contain;
 					}
 				}
 			}

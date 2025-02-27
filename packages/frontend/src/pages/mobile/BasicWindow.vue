@@ -1,29 +1,4 @@
 <template>
-	<!-- <VueDragResize
-		:isActive="true"
-		:key="value"
-		:w="value.width"
-		:h="value.height"
-		:parentWidth="value.max_width"
-		:parentHeight="value.max_height"
-		:minw="value.min_width"
-		:minh="value.min_height"
-		:x="value.left"
-		:y="value.top"
-		:isResizable="value.isResizable"
-		v-on:dragging="dragging"
-		v-on:dragstop="dragstop"
-		v-on:resizing="resizing"
-		v-on:resizestop="resizestop"
-		@click="onTop"
-		:stickSize="24"
-		class="iframe-box"
-		:class="
-			isFull ? (value.isResizable ? 'animationClass' : 'animationClass2') : ''
-		"
-		:parentLimitation="true"
-		ref="dragRef"
-	> -->
 	<div
 		class="iframe-box-mobile bg-background-1"
 		:class="isFull ? 'animationClass-mobile' : ''"
@@ -125,8 +100,6 @@
 		>
 		</BtLoading>
 	</div>
-
-	<!-- </VueDragResize> -->
 </template>
 
 <script lang="ts">
@@ -183,7 +156,7 @@ export default defineComponent({
 
 		let dragging = (rect: WindowRect) => {
 			if (!value.value.active) {
-				context.emit('ontop', value.value);
+				context.emit('onTop', value.value);
 			}
 			isDrag.value = true;
 			let callback_obj = {};
@@ -197,7 +170,7 @@ export default defineComponent({
 
 		let resizing = (rect: WindowRect) => {
 			if (!value.value.active) {
-				context.emit('ontop', value.value);
+				context.emit('onTop', value.value);
 			}
 			isResize.value = true;
 			let callback_obj = {};
@@ -244,7 +217,7 @@ export default defineComponent({
 			if (checkDoubleClick()) {
 				isFull.value = !isFull.value;
 			}
-			context.emit('ontop', value.value);
+			context.emit('onTop', value.value);
 		};
 
 		let lastTapTimeFunc: NodeJS.Timeout;

@@ -1,9 +1,25 @@
 <template>
-	<component :is="isMobile ? MobileHome : PcHome"></component>
+	<component :is="currentComponent"></component>
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import PcHome from './IndexPage.vue';
+import LandscapeScreenIndex from './LandscapeScreenIndex.vue';
 import MobileHome from './mobile/IndexPage.vue';
-import { isMobile } from '../utils/resize';
+
+import { useTokenStore } from 'src/stores/token';
+const tokenStore = useTokenStore();
+
+const currentComponent = computed(() => {
+	if (tokenStore.deviceInfo.isMobile) {
+		if (tokenStore.deviceInfo.isVerticalScreen) {
+			return MobileHome;
+		} else {
+			return LandscapeScreenIndex;
+		}
+	} else {
+		return PcHome;
+	}
+});
 </script>
