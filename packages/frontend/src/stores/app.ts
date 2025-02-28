@@ -102,10 +102,10 @@ export const useAppStore = defineStore('app', {
 			let index = 0;
 			const result = [];
 			const dock_app_lists = isMobile
-				? ['files', 'settings', 'launchpad', 'profile', 'wise', 'vault']
-				: ['files', 'launchpad', 'market', 'settings', 'profile'];
+				? ['settings', 'files', 'launchpad', 'wise', 'vault']
+				: ['files', 'launchpad', 'market', 'settings'];
 
-			for (const dock_app in dock_app_lists) {
+			for (const dock_app of dock_app_lists) {
 				let curApp = null;
 				if (dock_app == 'launchpad') {
 					curApp = {
@@ -124,9 +124,7 @@ export const useAppStore = defineStore('app', {
 					if (!dock) {
 						continue;
 					}
-					if (dock_app == 'profile') {
-						this.profile_id = dock?.id;
-					}
+
 					curApp = this.myApps.find((app) => app.id == dock.id);
 				}
 
@@ -158,11 +156,23 @@ export const useAppStore = defineStore('app', {
 		},
 
 		async remove_not_exist_apps_on_dock() {
-			// todo
+			const hasRemoveApp = this.dockerApps.filter(
+				(dockerApp) =>
+					!this.myApps.some((app) => 'bdock:' + app.id === dockerApp.id)
+			);
+
+			if (hasRemoveApp && hasRemoveApp.length > 0) {
+				for (let i = 0; i < hasRemoveApp.length; i++) {
+					const app = hasRemoveApp[i];
+					this.remove_app_on_docker(app.id, true);
+				}
+			}
 		},
 
 		async get_my_apps_info(isMobile = false) {
 			const res = localStorage.getItem('dockerApps');
+			console.log('get_my_apps_info res', res);
+
 			if (res) {
 				this.dockerApps = JSON.parse(res);
 			}
@@ -173,8 +183,6 @@ export const useAppStore = defineStore('app', {
 				this.dockerApps = await this.get_default_dock_list(isMobile);
 				localStorage.setItem('dockerApps', JSON.stringify(this.dockerApps));
 			}
-
-			await this.remove_not_exist_apps_on_dock();
 		},
 
 		async update_search_result(searchTxt?: string) {
@@ -215,6 +223,10 @@ export const useAppStore = defineStore('app', {
 			for (let i = 0; i < data.length; ++i) {
 				if (data[i].state === 'uninstalling') {
 					continue;
+				}
+
+				if (data[i].id == 'profile') {
+					this.profile_id = data[i].id;
 				}
 				if (!data[i].entrances || data[i].entrances.length == 0) {
 					this.myApps.push({
@@ -257,7 +269,7 @@ export const useAppStore = defineStore('app', {
 			const curApp = {
 				id: 'launchpad',
 				appid: 'launchpad',
-				icon: 'https://file.bttcdn.com/appstore/launchpad/icon.png',
+				icon: './app-icon/launch-icon.png',
 				name: 'Launchpad',
 				title: 'Launchpad',
 				target: '',
@@ -268,6 +280,8 @@ export const useAppStore = defineStore('app', {
 				openMethod: 'default'
 			};
 			this.myApps.push(curApp);
+
+			this.remove_not_exist_apps_on_dock();
 		},
 
 		relocate_application_place(relocate_apps: AppInfo[]) {
@@ -406,6 +420,8 @@ export const useAppStore = defineStore('app', {
 			is_temp: boolean,
 			show_dot: boolean
 		) {
+			console.log('add_app_on_docker is_temp', is_temp);
+
 			let rid = id;
 			if (rid.startsWith('bdock:')) {
 				rid = rid.substring(6);
@@ -437,13 +453,40 @@ export const useAppStore = defineStore('app', {
 			localStorage.setItem('dockerApps', JSON.stringify(this.dockerApps));
 		},
 
-		async remove_app_on_docker(id: string) {
+		async remove_app_on_docker(id: string, isRemove: boolean) {
 			const index: number = this.dockerApps.findIndex((app) => app.id == id);
 
-			if (index >= 0) {
+			if (index < 0) return false;
+			if (isRemove) {
+				const dockerApps = JSON.parse(JSON.stringify(this.dockerApps));
+				const targets = [];
+				for (let i = 0; i < dockerApps.length; i++) {
+					if (i == index) {
+						continue;
+					}
+
+					const top =
+						dockerApps[i].top > dockerApps[index].top
+							? dockerApps[i].top - this.DOCKER_APP_SIZE - this.DOCKER_APP_GAP
+							: dockerApps[i].top;
+
+					targets.push({
+						...dockerApps[i],
+						top
+					});
+				}
+				this.dockerApps = targets;
+			} else {
 				this.dockerApps.splice(index, 1);
-				localStorage.setItem('dockerApps', JSON.stringify(this.dockerApps));
 			}
+
+			localStorage.setItem('dockerApps', JSON.stringify(this.dockerApps));
+		},
+
+		async updateAppInDock(value: DockerAppInfo) {
+			const index = this.dockerApps.findIndex((app) => app.id === value.id);
+			this.dockerApps[index] = value;
+			localStorage.setItem('dockerApps', JSON.stringify(this.dockerApps));
 		},
 
 		async uninstall_application(app_name: string | null) {

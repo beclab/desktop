@@ -44,5 +44,13 @@ export default {
 		fail_message: 'Upgrade failed,please try again',
 		running_title: 'Upgrading System',
 		running_message: 'Please wait a moment'
+	},
+	dock_operation: {
+		open: 'Open',
+		show: 'Show',
+		hide: 'Hide',
+		keepInDock: 'Keep in Dock',
+		removeFromDock: 'Remove from Dock',
+		quit: 'Quit'
 	}
 };
