@@ -249,7 +249,7 @@ const mini = (item: DockerAppInfo) => {
 const onClose = (item: DockerAppInfo) => {
 	const curItem = JSON.parse(JSON.stringify(item));
 	if (curItem.is_temp) {
-		appStore.update_dock_app_position(curItem.id);
+		appStore.remove_app_on_docker(curItem.id, true);
 	}
 	if (curItem.id.startsWith('bdock:')) {
 		curItem.id = curItem.id.substring(6);
