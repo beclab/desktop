@@ -26,9 +26,9 @@
 			<DailyDescription />
 
 			<dock-component
-				@appClick="onDockerClick"
-				:drag_launch_app="drag_launch_app"
 				ref="dockRef"
+				:drag_launch_app="drag_launch_app"
+				@appClick="onDockerClick"
 				@changeSearchDialog="changeSearchDialog"
 			/>
 
@@ -93,7 +93,11 @@ import {
 	Encoder,
 	bytetrade
 } from '@bytetrade/core';
-import { WindowInfo, AppClickInfo, MessageData } from '@desktop/core/src/types';
+import {
+	WindowInfo,
+	AppClickInfo,
+	MessageData
+} from '../../../../core/src/types';
 import { bus } from 'src/utils/bus';
 import { useAppStore } from 'stores/app';
 import { useTokenStore } from 'stores/token';
@@ -312,7 +316,7 @@ onMounted(async () => {
 	bytetrade.observeUrlChange.parentEventListener(listenerMessage);
 	//updateDesktopList();
 
-	appStore.get_mobile_apps_info();
+	appStore.get_my_apps_info(true);
 
 	window_update_interval = setInterval(() => {
 		if (need_save_window) {

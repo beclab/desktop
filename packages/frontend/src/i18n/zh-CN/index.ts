@@ -43,5 +43,13 @@ export default {
 		fail_message: '更新失败，请再试一次',
 		running_title: '系统更新中',
 		running_message: '请稍等...'
+	},
+	dock_operation: {
+		open: '打开',
+		show: '显示',
+		hide: '隐藏',
+		keepInDock: '在程序坞中保留',
+		removeFromDock: '从程序坞中移除',
+		quit: '退出'
 	}
 };

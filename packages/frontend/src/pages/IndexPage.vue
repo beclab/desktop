@@ -22,10 +22,13 @@
 			<DailyDescription />
 
 			<dock-component
+				ref="dockRef"
+				:window_infos="window_infos"
 				@appClick="onDockerClick"
 				:drag_launch_app="drag_launch_app"
-				ref="dockRef"
 				@changeSearchDialog="changeSearchDialog"
+				@onClose="onWindowClose"
+				@mini="onWindowMiniSize"
 			/>
 
 			<launch-pad
@@ -151,7 +154,11 @@ const onWindowClose = (window_info: WindowInfo) => {
 };
 
 const onWindowMiniSize = (window_info: WindowInfo) => {
-	window_info.is_show = false;
+	window_infos.value.map((info: WindowInfo) => {
+		if (window_info.id === info.id) {
+			info.is_show = false;
+		}
+	});
 	need_save_window = true;
 };
 
