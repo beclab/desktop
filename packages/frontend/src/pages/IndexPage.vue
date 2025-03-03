@@ -88,7 +88,8 @@ import {
 	Action,
 	Category,
 	Encoder,
-	bytetrade
+	bytetrade,
+	DeviceType
 } from '@bytetrade/core';
 import { WindowInfo, AppClickInfo, MessageData } from '@desktop/core/src/types';
 import { bus } from 'src/utils/bus';
@@ -467,6 +468,15 @@ const onAppClick = async (click: AppClickInfo) => {
 
 	if (app) {
 		let url = app.url;
+		if (
+			[DeviceType.MOBILE, DeviceType.TABLET].includes(
+				tokenStore.deviceInfo.device
+			)
+		) {
+			window.open('//' + url);
+			return false;
+		}
+
 		if (click.data.path) {
 			url = url + '/' + click.data.path;
 			url = url.replaceAll('//', '/');

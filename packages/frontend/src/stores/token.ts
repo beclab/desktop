@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Cookies } from 'quasar';
 import { TerminusInfo, DefaultTerminusInfo } from '@bytetrade/core';
 import { v4 as uuidv4 } from 'uuid';
-import { Encoder } from '@bytetrade/core';
+import { Encoder, DeviceType } from '@bytetrade/core';
 
 export interface DesktopConfig {
 	bg: string;
@@ -15,7 +15,7 @@ export type RootState = {
 	terminus: TerminusInfo;
 	id: string | null;
 	deviceInfo: {
-		isMobile: boolean;
+		device: DeviceType;
 		isVerticalScreen: boolean;
 	};
 };
@@ -28,7 +28,7 @@ export const useTokenStore = defineStore('token', {
 			terminus: DefaultTerminusInfo,
 			id: null,
 			deviceInfo: {
-				isMobile: false,
+				device: DeviceType.DESKTOP,
 				isVerticalScreen: false
 			}
 		} as RootState;
