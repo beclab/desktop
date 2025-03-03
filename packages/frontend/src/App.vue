@@ -10,7 +10,7 @@ import axios from 'axios';
 import { WebPlatform } from './utils/platform';
 import { supportLanguages } from './i18n';
 import { i18n } from './boot/i18n';
-import { useMobile, onMobileChange } from '@bytetrade/core';
+import { useDevice, onDeviceChange, DeviceType } from '@bytetrade/core';
 
 const platform = new WebPlatform();
 
@@ -40,11 +40,11 @@ export default defineComponent({
 	setup() {
 		const tokenStore = useTokenStore();
 
-		const { state, cleanup } = useMobile();
+		const { state, cleanup } = useDevice();
 		tokenStore.deviceInfo = state;
 
-		onMobileChange(
-			(state: { isMobile: boolean; isVerticalScreen: boolean }) => {
+		onDeviceChange(
+			(state: { device: DeviceType; isVerticalScreen: boolean }) => {
 				tokenStore.deviceInfo = state;
 			}
 		);
