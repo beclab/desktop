@@ -1,5 +1,6 @@
 <template>
 	<div class="launch_pad_page in_center_page" @click="dismiss">
+		<div class="launch_page_mask"></div>
 		<div class="launch_pad_box in-center" ref="launchpadPage">
 			<div class="launch_pad_search" ref="searchBox">
 				<q-input
@@ -55,6 +56,7 @@
 							:style="`
 									border-radius: 16px;
 									position:absolute;
+									z-index: 1;
 									top:${appStore.desktopApps[element].top}px;
 									left:${appStore.desktopApps[element].left}px;
 									width:${appStore.DESKTOP_APP_SIZE}px;`"
@@ -701,12 +703,20 @@ const goto = (value: number) => {
 .launch_pad_page {
 	width: 100%;
 	height: 100%;
-	background: rgba(0, 0, 0, 0.5);
-	backdrop-filter: blur(10px);
 	z-index: 9;
-	position: absolute;
+	position: relative;
 	top: 0px;
 	left: 0px;
+	.launch_page_mask {
+		position: absolute;
+		left: 0;
+		height: 0;
+		z-index: -1;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5);
+		backdrop-filter: blur(10px);
+	}
 	.launch_search {
 		width: 240px;
 		height: 32px !important;
