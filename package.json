@@ -19,7 +19,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@bytetrade/core": "0.3.75",
+    "@bytetrade/core": "0.3.76",
     "axios": "^0.21.1",
     "uuid": "9.0.1"
   },
