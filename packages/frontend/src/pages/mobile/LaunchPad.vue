@@ -212,7 +212,7 @@ function deleteLaunch(
 		);
 
 		await appStore.uninstall_application(fatherName);
-		await appStore.get_my_apps_info();
+		await appStore.get_my_apps_info(true);
 	});
 }
 

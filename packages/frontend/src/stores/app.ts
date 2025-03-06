@@ -111,7 +111,9 @@ export const useAppStore = defineStore('app', {
 					curApp = {
 						id: 'launchpad',
 						appid: 'launchpad',
-						icon: './app-icon/launch-icon.png',
+						icon: isMobile
+							? './app-icon/launch-icon.png'
+							: 'https://file.bttcdn.com/appstore/launchpad/icon.png',
 						name: 'Launchpad',
 						title: '',
 						target: '',
@@ -177,7 +179,7 @@ export const useAppStore = defineStore('app', {
 				this.dockerApps = JSON.parse(res);
 			}
 
-			await this.update_my_apps_info();
+			await this.update_my_apps_info(isMobile);
 
 			if (!res) {
 				this.dockerApps = await this.get_default_dock_list(isMobile);
@@ -208,7 +210,7 @@ export const useAppStore = defineStore('app', {
 			this.relocate_application_place(this.myApps);
 		},
 
-		async update_my_apps_info() {
+		async update_my_apps_info(isMobile = false) {
 			// if (!tokenStore.token) {
 			// 	return;
 			// }
@@ -269,7 +271,9 @@ export const useAppStore = defineStore('app', {
 			const curApp = {
 				id: 'launchpad',
 				appid: 'launchpad',
-				icon: './app-icon/launch-icon.png',
+				icon: isMobile
+					? './app-icon/launch-icon.png'
+					: 'https://file.bttcdn.com/appstore/launchpad/icon.png',
 				name: 'Launchpad',
 				title: 'Launchpad',
 				target: '',
