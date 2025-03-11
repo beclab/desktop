@@ -44,8 +44,6 @@ export type AppState = {
 	axiosAppInfo: TerminusApp[];
 };
 
-const tokenStore = useTokenStore();
-
 export const isSystemApp = (id: string): boolean => {
 	let rid = id;
 	if (rid.startsWith('bdock:')) {
@@ -173,7 +171,6 @@ export const useAppStore = defineStore('app', {
 
 		async get_my_apps_info(isMobile = false) {
 			const res = localStorage.getItem('dockerApps');
-			console.log('get_my_apps_info res', res);
 
 			if (res) {
 				this.dockerApps = JSON.parse(res);
@@ -214,6 +211,8 @@ export const useAppStore = defineStore('app', {
 			// if (!tokenStore.token) {
 			// 	return;
 			// }
+			const tokenStore = useTokenStore();
+
 			const data: TerminusApp[] = await axios.post(
 				tokenStore.url + '/server/myApps',
 				{}
@@ -497,6 +496,7 @@ export const useAppStore = defineStore('app', {
 			if (!app_name) {
 				return;
 			}
+			const tokenStore = useTokenStore();
 
 			this.myApps = this.myApps.filter((item) => item.fatherName !== app_name);
 			this.relocate_application_place(this.myApps);

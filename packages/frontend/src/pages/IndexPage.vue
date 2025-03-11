@@ -309,8 +309,6 @@ const __beforeunload = (event: any) => {
 
 let window_update_interval: any = null;
 onMounted(async () => {
-	upgradeStore.update_upgrade_state_info();
-
 	nextTick(() => {
 		const window_infos_string = expiresStorage.getItem('window_infos_string');
 		if (window_infos_string && JSON.parse(window_infos_string)) {
@@ -319,8 +317,6 @@ onMounted(async () => {
 	});
 
 	bytetrade.observeUrlChange.parentEventListener(listenerMessage);
-
-	appStore.get_my_apps_info();
 
 	window_update_interval = setInterval(() => {
 		if (need_save_window) {
