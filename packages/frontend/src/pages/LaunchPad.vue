@@ -106,7 +106,8 @@
 										'upgrading',
 										'uninstalling',
 										'installing',
-										'initializing'
+										'initializing',
+										'downloading'
 									].includes(appStore.desktopApps[element].state)
 								"
 							>

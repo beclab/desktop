@@ -8,6 +8,8 @@ import {
 } from '@bytetrade/core';
 import { bus } from '../utils/bus';
 import { useTokenStore } from './token';
+import { useAppStore } from './app';
+import { useUpgradeStore } from './upgrade';
 export interface WebSocketState {
 	websocket: WebSocketBean | null;
 }
@@ -33,6 +35,15 @@ export const useSocketStore = defineStore('counter', {
 
 	actions: {
 		start() {
+			if (this.isConnecting() || this.isConnected()) {
+				return;
+			}
+
+			if (this.websocket) {
+				this.websocket.start();
+				return;
+			}
+
 			let ws_url = process.env.WS_URL || window.location.origin + '/ws';
 
 			if (ws_url.startsWith('http://')) {
@@ -46,11 +57,11 @@ export const useSocketStore = defineStore('counter', {
 			this.websocket = new WebSocketBean({
 				url: ws_url,
 				needReconnect: true,
-				reconnectMaxNum: 5,
-				reconnectGapTime: 3000,
 				heartSend: JSON.stringify({
-					event: 'ping',
-					data: {}
+					event: 'ping'
+				}),
+				heartGet: JSON.stringify({
+					event: 'pong'
 				}),
 				onopen: async () => {
 					this.send({
@@ -94,9 +105,16 @@ export const useSocketStore = defineStore('counter', {
 					console.log('socket error');
 				},
 				onreconnect: () => {
-					console.log('socket start reconnect');
+					console.log('socket reconnecting');
 				},
-				onFailReconnect: () => {
+				onReconnectSuccess: async () => {
+					console.log('socket success reconnect');
+					const upgradeStore = useUpgradeStore();
+					const appStore = useAppStore();
+					upgradeStore.update_upgrade_state_info();
+					appStore.get_my_apps_info();
+				},
+				onReconnectFailure: () => {
 					console.log('socket fail reconnect');
 				}
 			});
@@ -109,6 +127,18 @@ export const useSocketStore = defineStore('counter', {
 				return false;
 			}
 			return this.websocket.status == WebSocketStatusEnum.open;
+		},
+		isConnecting() {
+			if (!this.websocket) {
+				return false;
+			}
+			return this.websocket.status == WebSocketStatusEnum.load;
+		},
+		isClosed() {
+			if (!this.websocket) {
+				return true;
+			}
+			return this.websocket.status == WebSocketStatusEnum.close;
 		},
 		send(data: any, resend = false) {
 			if (!this.websocket) {

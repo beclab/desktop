@@ -45,50 +45,18 @@
 		<div class="confirm" v-else style="opacity: 0"></div>
 	</div>
 </template>
-<script lang="ts">
-import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
+<script lang="ts" setup>
 import { useUpgradeStore } from '../stores/upgrade';
 import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	name: 'UpgradeComponent',
-	components: {},
-	setup(props, context) {
-		const upgradeStore = useUpgradeStore();
-		const timer = ref();
-		const { t } = useI18n();
+const emits = defineEmits(['closeUpgrade']);
 
-		const confirm = () => {
-			context.emit('closeUpgrade');
-		};
+const upgradeStore = useUpgradeStore();
+const { t } = useI18n();
 
-		const getUpgradeStatus = async () => {
-			await upgradeStore.update_upgrade_state_info();
-			if (upgradeStore.state === 'not_running') {
-				confirm();
-			} else if (upgradeStore.state === 'completed') {
-				clearInterval(timer.value);
-			}
-		};
-
-		onMounted(() => {
-			getUpgradeStatus();
-			timer.value = setInterval(async () => {
-				getUpgradeStatus();
-			}, 10000);
-		});
-
-		onUnmounted(() => {
-			clearInterval(timer.value);
-		});
-
-		return {
-			upgradeStore,
-			confirm,
-			t
-		};
-	}
-});
+const confirm = () => {
+	emits('closeUpgrade');
+};
 </script>
 
 <style lang="scss" scoped>
