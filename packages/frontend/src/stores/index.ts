@@ -8,9 +8,9 @@ import { Router } from 'vue-router';
  * @see https://pinia.vuejs.org/core-concepts/plugins.html#typing-new-store-properties
  */
 declare module 'pinia' {
-	export interface PiniaCustomProperties {
-		readonly router: Router;
-	}
+  export interface PiniaCustomProperties {
+    readonly router: Router;
+  }
 }
 
 /*
@@ -24,10 +24,10 @@ declare module 'pinia' {
 const pinia = createPinia();
 
 export default store((/* { ssrContext } */) => {
-	// You can add Pinia plugins here
-	// pinia.use(SomePiniaPlugin)
+  // You can add Pinia plugins here
+  // pinia.use(SomePiniaPlugin)
 
-	return pinia;
+  return pinia;
 });
 
 export { pinia };
