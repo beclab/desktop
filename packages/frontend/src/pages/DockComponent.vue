@@ -389,7 +389,7 @@ function animate(
       appStore.remove_app_on_docker(source_index, false);
       app_height_delta.value = 0;
     } else if (type == 2) {
-      appStore.add_app_on_docker(remove_id!, target_top, false, false);
+      appStore.add_app_on_docker(source_index, target_top, false, false);
       app_height_delta.value = 0;
       remove_top = -1;
       remove_id = null;
