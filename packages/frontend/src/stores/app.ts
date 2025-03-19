@@ -423,8 +423,6 @@ export const useAppStore = defineStore('app', {
       is_temp: boolean,
       show_dot: boolean
     ) {
-      console.log('add_app_on_docker is_temp', is_temp);
-
       let rid = id;
       if (rid.startsWith('bdock:')) {
         rid = rid.substring(6);
@@ -451,7 +449,17 @@ export const useAppStore = defineStore('app', {
         is_temp,
         show_dot
       };
-      this.dockerApps.push(d);
+
+      const adjustRes = this.adjustDockerAppPosition(
+        [...this.dockerApps, d],
+        this.DOCKER_APP_SIZE + this.DOCKER_APP_GAP
+      );
+
+      if (adjustRes) {
+        this.dockerApps = adjustRes;
+      } else {
+        this.dockerApps.push(d);
+      }
 
       localStorage.setItem('dockerApps', JSON.stringify(this.dockerApps));
     },
@@ -460,36 +468,90 @@ export const useAppStore = defineStore('app', {
       const index: number = this.dockerApps.findIndex((app) => app.id == id);
 
       if (index < 0) return false;
+      let tempDockerApps = JSON.parse(JSON.stringify(this.dockerApps));
+
       if (isRemove) {
-        const dockerApps = JSON.parse(JSON.stringify(this.dockerApps));
         const targets = [];
-        for (let i = 0; i < dockerApps.length; i++) {
+        for (let i = 0; i < tempDockerApps.length; i++) {
           if (i == index) {
             continue;
           }
 
           const top =
-            dockerApps[i].top > dockerApps[index].top
-              ? dockerApps[i].top - this.DOCKER_APP_SIZE - this.DOCKER_APP_GAP
-              : dockerApps[i].top;
+            tempDockerApps[i].top > tempDockerApps[index].top
+              ? tempDockerApps[i].top -
+                this.DOCKER_APP_SIZE -
+                this.DOCKER_APP_GAP
+              : tempDockerApps[i].top;
 
           targets.push({
-            ...dockerApps[i],
+            ...tempDockerApps[i],
             top
           });
         }
-        this.dockerApps = targets;
+        tempDockerApps = targets;
       } else {
-        this.dockerApps.splice(index, 1);
+        tempDockerApps.splice(index, 1);
       }
+
+      const adjustRes = this.adjustDockerAppPosition(
+        tempDockerApps,
+        this.DOCKER_APP_SIZE + this.DOCKER_APP_GAP
+      );
+
+      this.dockerApps = adjustRes || tempDockerApps;
 
       localStorage.setItem('dockerApps', JSON.stringify(this.dockerApps));
     },
 
     async updateAppInDock(value: DockerAppInfo) {
+      const tempDockerApps = JSON.parse(JSON.stringify(this.dockerApps));
       const index = this.dockerApps.findIndex((app) => app.id === value.id);
-      this.dockerApps[index] = value;
+      tempDockerApps[index] = value;
+
+      const adjustRes = this.adjustDockerAppPosition(
+        tempDockerApps,
+        this.DOCKER_APP_SIZE + this.DOCKER_APP_GAP
+      );
+
+      this.dockerApps = adjustRes || tempDockerApps;
+
       localStorage.setItem('dockerApps', JSON.stringify(this.dockerApps));
+    },
+
+    adjustDockerAppPosition(data: DockerAppInfo[], tolerance = 46) {
+      data.sort((a, b) => a.top - b.top);
+
+      let hasSort = true;
+      for (let i = 1; i < data.length; i++) {
+        if (data[i].top - data[i - 1].top !== tolerance) {
+          hasSort = false;
+          break;
+        }
+      }
+
+      if (hasSort) {
+        if (data[0].top === this.DOCKER_APP_START_GAP) {
+          return;
+        }
+      }
+
+      const adjustedData: DockerAppInfo[] = [];
+      let currentTop = this.DOCKER_APP_START_GAP;
+
+      for (const item of data) {
+        if (adjustedData.find((adjustedItem) => adjustedItem.id === item.id)) {
+          continue;
+        }
+
+        item.top !== currentTop && (item.top = currentTop);
+
+        adjustedData.push({ ...item });
+
+        currentTop += tolerance;
+      }
+
+      return adjustedData;
     },
 
     async uninstall_application(app_name: string | null) {
