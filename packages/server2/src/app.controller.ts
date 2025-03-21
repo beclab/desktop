@@ -280,14 +280,4 @@ export class AppController {
       return returnError(1, err);
     }
   }
-
-  // @Post('/server/ai_message')
-  // async ai_message(
-  //   @Body() token: ProviderRequest<Result<FileSearchAIQuestionMessage>>,
-  // ): Promise<Result<null>> {
-  //   this.logger.log('ai_message');
-  //   this.logger.log(token.data);
-
-  //   return returnSucceed(null);
-  // }
 }

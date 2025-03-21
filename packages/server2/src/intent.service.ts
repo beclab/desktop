@@ -39,7 +39,7 @@ export class IntentService implements OnModuleInit {
     return this.filters;
   }
 
-  async registerIntenFilter(newFilter: IntentFilter): Promise<string> {
+  async registerIntentFilter(newFilter: IntentFilter): Promise<string> {
     for (const filter of this.filters) {
       if (newFilter.equal(filter)) {
         throw new BadRequestException('Filter already exists', {
@@ -188,11 +188,14 @@ export class IntentService implements OnModuleInit {
     this.logger.log('initIntentFilter step1');
 
     let adminCosole = null;
+    let files = null;
     const video = 'home';
     for (const app of apps) {
       console.log(app.id);
       if (app.id.startsWith('monitoring')) {
         adminCosole = app.id;
+      } else if (app.id.startsWith('files')) {
+        files = app.id;
       }
       // else if (app.id.startsWith('edge-desktop')) {
       //   video = app.id;
@@ -200,7 +203,7 @@ export class IntentService implements OnModuleInit {
     }
     this.logger.log('video ' + video);
 
-    await this.registerIntenFilter(
+    await this.registerIntentFilter(
       new IntentFilter({
         router_id: video,
         actions: [Action.ACTION_VIEW],
@@ -208,7 +211,7 @@ export class IntentService implements OnModuleInit {
       }),
     );
 
-    await this.registerIntenFilter(
+    await this.registerIntentFilter(
       new IntentFilter({
         router_id: video,
         actions: [Action.ACTION_VIEW],
@@ -216,7 +219,15 @@ export class IntentService implements OnModuleInit {
       }),
     );
 
-    await this.registerIntenFilter(
+    await this.registerIntentFilter(
+      new IntentFilter({
+        router_id: files,
+        actions: [Action.ACTION_VIEW],
+        categories: [Category.CATEGORY_DEFAULT],
+      }),
+    );
+
+    await this.registerIntentFilter(
       new IntentFilter({
         router_id: adminCosole,
         actions: [Action.ACTION_VIEW],
@@ -227,37 +238,5 @@ export class IntentService implements OnModuleInit {
         // },
       }),
     );
-
-    // await this.registerIntenFilter(
-    //   new IntentFilter({
-    //     router_id: video,
-    //     actions: [Action.ACTION_EDIT],
-    //     categories: [Category.CATEGORY_LAUNCHER],
-    //   }),
-    // );
-
-    // await this.appService.registerIntenFilter(
-    //   new IntentFilter({
-    //     router_id: adminCosole,
-    //     actions: [Action.ACTION_VIEW],
-    //     categories: [Category.CATEGORY_CONTAINER_LOG],
-    //     data: {
-    //       statefulset: 'statefulset',
-    //       container: 'container',
-    //     },
-    //   }),
-    // );
-
-    // await this.appService.registerIntenFilter(
-    //   new IntentFilter({
-    //     router_id: adminCosole,
-    //     actions: [Action.ACTION_VIEW],
-    //     categories: [Category.CATEGORY_CONTAINER_LOG],
-    //     data: {
-    //       daemonset: 'daemonset',
-    //       container: 'container',
-    //     },
-    //   }),
-    // );
   }
 }

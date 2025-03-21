@@ -36,21 +36,21 @@ export class IntentController {
   }
 
   @Post('/server/intent/register')
-  async registerIntenFilter(
+  async registerIntentFilter(
     @Body() intentFilter: IntentFilter,
   ): Promise<Result<string>> {
-    this.logger.log('registerIntenFilter ' + JSON.stringify(intentFilter));
+    this.logger.log('registerIntentFilter ' + JSON.stringify(intentFilter));
 
-    const id = await this.intentService.registerIntenFilter(intentFilter);
+    const id = await this.intentService.registerIntentFilter(intentFilter);
 
-    this.logger.log('registerIntenFilter Finished' + id);
+    this.logger.log('registerIntentFilter Finished' + id);
 
     return returnSucceed(id);
   }
 
   @Get('/server/intent/unregister/:id')
-  async unregisterIntenFilter(@Param('id') id): Promise<Result<null>> {
-    this.logger.log('unregisterIntenFilter ' + id);
+  async unregisterIntentFilter(@Param('id') id): Promise<Result<null>> {
+    this.logger.log('unregisterIntentFilter ' + id);
     await this.intentService.unregisterIntentFilter(id);
     return returnSucceed(null);
   }
@@ -99,7 +99,7 @@ export class IntentController {
         if (intent.data) {
           fi.data = intent.data;
         }
-        this.logger.log('snet intent');
+        this.logger.log('sent intent');
         //this.ws.broadcast('intent', fi);
         broadcastWebsocketMessage({ event: 'intent', data: fi });
         return returnSucceed(

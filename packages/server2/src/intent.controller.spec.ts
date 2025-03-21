@@ -13,7 +13,7 @@ import {
   Action,
   Category,
 } from '@bytetrade/core';
-import { Result, ProviderRequest } from '@bytetrade/core';
+import { Result } from '@bytetrade/core';
 
 // function buildProviderRegister(data: any): ProviderRequest<any> {
 //   return {
@@ -41,7 +41,7 @@ describe('AppController', () => {
 
   describe('root', () => {
     it('Unregister not exist filter', async () => {
-      await expect(appController.unregisterIntenFilter(10)).rejects.toThrow(
+      await expect(appController.unregisterIntentFilter(10)).rejects.toThrow(
         'Filter not exists',
       );
     });
@@ -53,9 +53,9 @@ describe('AppController', () => {
         data: {},
       });
 
-      const res = await appController.registerIntenFilter(filter);
+      const res = await appController.registerIntentFilter(filter);
       await expect(
-        appController.unregisterIntenFilter(res.data),
+        appController.unregisterIntentFilter(res.data),
       ).resolves.toEqual({ code: 0, data: null, message: null });
     });
     it('Simple intent with implicit event', async () => {
@@ -66,7 +66,7 @@ describe('AppController', () => {
         data: {},
       });
 
-      const registerFilterResult = await appController.registerIntenFilter(
+      const registerFilterResult = await appController.registerIntentFilter(
         filter,
       );
 
@@ -94,7 +94,7 @@ describe('AppController', () => {
       expect(filters1.code).toEqual(0);
       expect(filters1.data.result).toEqual(SendIntentResult.NO_MATCH_FILTER);
 
-      await appController.unregisterIntenFilter(registerFilterResult.data);
+      await appController.unregisterIntentFilter(registerFilterResult.data);
       filters1 = await appController.sendIntent(intent1);
       expect(filters1.code).toEqual(0);
       expect(filters1.data.result).toEqual(SendIntentResult.NO_MATCH_FILTER);
@@ -121,7 +121,7 @@ describe('AppController', () => {
     });
 
     it('Test View log2', async () => {
-      await appController.registerIntenFilter(
+      await appController.registerIntentFilter(
         new IntentFilter({
           router_id: 'admin-console-user-space-pengpeng',
           actions: [Action.ACTION_VIEW],
@@ -129,14 +129,7 @@ describe('AppController', () => {
           data: { deployment: 'deployment', container: 'container' },
         }),
       );
-      // await appController.registerIntenFilter(
-      //   new IntentFilter({
-      //     router_id: 'admin-console-user-space-pengpeng',
-      //     actions: [Action.ACTION_VIEW],
-      //     categories: [Category.CATEGORY_CONTAINER_LOG],
-      //     data: { deployment: 'statefulset', container: 'container' },
-      //   }),
-      // );
+
       expect(appService.filters.length).toEqual(1);
     });
 
@@ -159,7 +152,7 @@ describe('AppController', () => {
             data: {
               name: '2.mp4',
               path: '/Home/Downloads/2.mp4',
-              extention: '.mp4',
+              extension: '.mp4',
             },
           }),
         ),
@@ -194,7 +187,7 @@ describe('AppController', () => {
         ),
       ).toBeTruthy();
 
-      await appController.registerIntenFilter(filter);
+      await appController.registerIntentFilter(filter);
 
       const intent1 = new Intent({
         action: Action.ACTION_MAIN,
@@ -219,8 +212,8 @@ describe('AppController', () => {
         data: {},
       });
 
-      await appController.registerIntenFilter(filterA);
-      await appController.registerIntenFilter(filterB);
+      await appController.registerIntentFilter(filterA);
+      await appController.registerIntentFilter(filterB);
 
       const intent1 = new Intent({
         action: Action.ACTION_MAIN,
