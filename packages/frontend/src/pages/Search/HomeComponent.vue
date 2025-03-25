@@ -39,8 +39,7 @@
           ref="isActiveRef"
           v-for="item in items.children"
           :key="item.title"
-          @click="handleActive(item.title, item.type)"
-          @dblclick="openCommand(item)"
+          @click="openCommand(item)"
         >
           <div class="txt">
             <img :src="item.icon" />
