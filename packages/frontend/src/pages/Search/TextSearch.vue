@@ -363,7 +363,7 @@ hi {
       }
 
       &:hover {
-        background-color: rgba(0, 0, 0, 0.1);
+        background: $background-hover;
       }
 
       .item-icon {
