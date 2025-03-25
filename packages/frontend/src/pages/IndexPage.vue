@@ -377,6 +377,13 @@ onMounted(async () => {
             path: intent.data.path
           }
         });
+      } else if (intent.categories.indexOf(Category.CATEGORY_DEFAULT) >= 0) {
+        onAppClick({
+          appid: intent.router_id,
+          data: {
+            path: intent.data.path
+          }
+        });
       }
     } else if (intent.actions.indexOf(Action.ACTION_EDIT) >= 0) {
       if (intent.categories.indexOf(Category.CATEGORY_LAUNCHER) >= 0) {
