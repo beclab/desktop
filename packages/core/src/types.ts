@@ -42,6 +42,7 @@ export interface AppInfo {
   type?: SearchCategory;
   fatherName: string | null;
   openMethod: string;
+  isSysApp: boolean;
 }
 
 export interface DesktopAppInfo {
@@ -62,6 +63,7 @@ export interface DesktopAppInfo {
   //installed: boolean;
   state: string;
   fatherName: string | null;
+  isSysApp: boolean;
 }
 
 export interface DockerAppInfo {

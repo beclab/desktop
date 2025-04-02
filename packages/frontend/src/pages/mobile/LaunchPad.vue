@@ -41,7 +41,7 @@
               <!-- <div class="dragMask"></div> -->
               <div
                 :style="
-                  isDisplay && !isSystemApp(appStore.desktopApps[element].id)
+                  isDisplay && !appStore.desktopApps[element].isSysApp
                     ? 'display: block;'
                     : 'display: none;'
                 "
@@ -112,7 +112,7 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { DesktopAppInfo, AppClickInfo } from '@desktop/core/src/types';
 import { useI18n } from 'vue-i18n';
-import { useAppStore, isSystemApp } from 'stores/app';
+import { useAppStore } from 'stores/app';
 import ConfirmDialog from 'components/ConfirmDialog.vue';
 import { borderRadiusFormat } from 'src/utils/utils';
 
