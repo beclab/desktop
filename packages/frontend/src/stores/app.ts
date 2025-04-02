@@ -44,30 +44,6 @@ export type AppState = {
   axiosAppInfo: TerminusApp[];
 };
 
-export const isSystemApp = (id: string): boolean => {
-  let rid = id;
-  if (rid.startsWith('bdock:')) {
-    rid = rid.substring(6);
-  } else if (rid.startsWith('bdesk:')) {
-    rid = rid.substring(6);
-  }
-
-  if (
-    rid.startsWith('files') ||
-    rid.startsWith('vault') ||
-    rid.startsWith('settings') ||
-    rid.startsWith('market') ||
-    rid.startsWith('profile') ||
-    rid.startsWith('dashboard') ||
-    rid.startsWith('wise') ||
-    rid.startsWith('control-hub')
-  ) {
-    return true;
-  }
-
-  return false;
-};
-
 export const useAppStore = defineStore('app', {
   state: () => {
     return {
@@ -240,7 +216,8 @@ export const useAppStore = defineStore('app', {
             appid: data[i].id,
             type: SearchCategory.Application,
             fatherName: null,
-            openMethod: 'default'
+            openMethod: 'default',
+            isSysApp: data[i].isSysApp
           });
         } else {
           for (let j = 0; j < data[i].entrances.length; ++j) {
@@ -262,7 +239,8 @@ export const useAppStore = defineStore('app', {
                 url: data[i].entrances[j].url || data[i].url,
                 icon: data[i].entrances[j].icon || data[i].icon,
                 fatherName: data[i].name,
-                openMethod: data[i].entrances[j].openMethod || 'default'
+                openMethod: data[i].entrances[j].openMethod || 'default',
+                isSysApp: data[i].isSysApp
               });
             }
           }
@@ -284,7 +262,8 @@ export const useAppStore = defineStore('app', {
         state: 'running',
         type: SearchCategory.Application,
         fatherName: null,
-        openMethod: 'default'
+        openMethod: 'default',
+        isSysApp: true
       };
       this.myApps.push(curApp);
 
@@ -336,7 +315,8 @@ export const useAppStore = defineStore('app', {
           namespace: '',
           owner: '',
           url: '',
-          fatherName: relocate_apps[i].fatherName
+          fatherName: relocate_apps[i].fatherName,
+          isSysApp: relocate_apps[i].isSysApp
         };
 
         this.launchPadApps[this.launchPadApps.length - 1].push(i);
