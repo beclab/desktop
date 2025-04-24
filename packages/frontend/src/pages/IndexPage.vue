@@ -289,7 +289,16 @@ watch(
 const computeWidowLeft = () => {
   window_infos.value.map((item) => {
     item.left = item.left + widthDiff.value;
+    item.max_width = getWindowParentInfo().width;
+    item.max_height = getWindowParentInfo().height;
   });
+};
+
+const getWindowParentInfo = () => {
+  return {
+    width: window_parent.value?.firstElementChild?.offsetWidth || 600,
+    height: window_parent.value?.firstElementChild?.offsetHeight || 800
+  };
 };
 
 const __beforeunload = (event: any) => {
@@ -534,8 +543,8 @@ const onAppClick = async (click: AppClickInfo) => {
       let obj: WindowInfo = {
         width: width,
         height: height,
-        max_height: window_parent.value?.offsetHeight || 800,
-        max_width: window_parent.value?.offsetWidth || 600,
+        max_height: getWindowParentInfo().height,
+        max_width: getWindowParentInfo().width,
         min_width: 400,
         min_height: 200,
         left: left + screenWidth.value,
