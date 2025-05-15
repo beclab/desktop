@@ -63,6 +63,8 @@ export const useSocketStore = defineStore('counter', {
         heartGet: JSON.stringify({
           event: 'pong'
         }),
+        reconnectMaxNum: -1,
+        heartFailNum: 1,
         onopen: async () => {
           this.send({
             event: 'login',

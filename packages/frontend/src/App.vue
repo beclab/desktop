@@ -18,12 +18,7 @@ import { useSocketStore } from './stores/websocketStore';
 import { WebPlatform } from './utils/platform';
 import { supportLanguages } from './i18n';
 import { i18n } from './boot/i18n';
-import {
-  useDevice,
-  onDeviceChange,
-  DeviceType,
-  networkMonitor
-} from '@bytetrade/core';
+import { useDevice, onDeviceChange, DeviceType } from '@bytetrade/core';
 
 const platform = new WebPlatform();
 
@@ -125,22 +120,10 @@ onBeforeUnmount(() => {
   document.addEventListener('visibilitychange', onVisibilityChange);
 });
 
-const networkStatus = ref(true);
 const refreshTimer = ref();
-const customMonitor = networkMonitor(`${tokenStore.url}/server/init`, 10000);
 
 onMounted(async () => {
   await initializeApp(true);
-
-  customMonitor.startMonitoring(async (isOnline: boolean) => {
-    if (isOnline) {
-      if (!networkStatus.value) {
-        await initializeApp(true);
-      }
-    }
-
-    networkStatus.value = isOnline;
-  });
 
   refreshTimer.value = setInterval(async () => {
     tokenStore.refresh_token();
@@ -151,7 +134,6 @@ onMounted(async () => {
 
 onUnmounted(() => {
   cleanup();
-  customMonitor.stopMonitoring();
   clearInterval(refreshTimer.value);
 });
 </script>

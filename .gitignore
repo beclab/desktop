@@ -15,3 +15,6 @@ data/
 fonttools/*
 build/*
 packages/frontend/src/assets/fonts/MaterialSymbolsRounded.woff2
+.yalc
+yalc.lock
+packages/frontend/.env
